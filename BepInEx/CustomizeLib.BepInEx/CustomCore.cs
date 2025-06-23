@@ -154,6 +154,21 @@ namespace CustomizeLib.BepInEx
             }
         }
 
+        public static void PlaySound(AudioClip audio, float volume = 1.0f)
+        {
+            GameObject soundObj = new("SoundPlayer");
+            AudioSource audioSource = soundObj.AddComponent<AudioSource>();
+            SoundCtrl newSoundCtrl = soundObj.AddComponent<SoundCtrl>();
+            // 初始化组件
+            audioSource.clip = audio;
+
+            // 设置音量（应用全局音量调整）
+            audioSource.volume = volume * GameAPP.gameSoundVolume;
+            GameAPP.sound.Add(newSoundCtrl);
+            // 播放音效
+            audioSource.Play();
+        }
+
         public static int RegisterCustomBuff(string text, BuffType buffType, Func<bool> canUnlock, int cost, string? color = null, PlantType plantType = PlantType.Nothing)
         {
             //if (color is not null) text = $"<color={color}>{text}</color>";
@@ -202,6 +217,14 @@ namespace CustomizeLib.BepInEx
                 bulletPrefab.AddComponent<TBullet>();
                 CustomBullets.Add(id, bulletPrefab);
             }
+        }
+
+        public static int RegisterCustomLevel(CustomLevelData ldata)
+        {
+            int id = CustomLevels.Count;
+            ldata.ID = id;
+            CustomLevels.Add(ldata);
+            return id;
         }
 
         public static void RegisterCustomParticle(ParticleType id, GameObject particle) => CustomParticles.Add(id, particle);
@@ -493,13 +516,10 @@ namespace CustomizeLib.BepInEx
         }
 
         public static Dictionary<int, (PlantType, string, Func<bool>, int, string?)> CustomAdvancedBuffs { get; set; } = [];
-
         public static Dictionary<BulletType, GameObject> CustomBullets { get; set; } = [];
-
         public static Dictionary<int, string> CustomDebuffs { get; set; } = [];
-
         public static List<(int, int, int)> CustomFusions { get; set; } = [];
-
+        public static List<CustomLevelData> CustomLevels { get; set; } = [];
         public static Dictionary<ParticleType, GameObject> CustomParticles { get; set; } = [];
 
         public static Dictionary<PlantType, Action<Plant>> CustomPlantClicks { get; set; } = [];

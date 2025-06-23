@@ -10,6 +10,38 @@ using UnityEngine.Experimental.Rendering;
 
 namespace CustomizeLib.BepInEx
 {
+    public struct CustomLevelData
+    {
+        public CustomLevelData()
+        {
+        }
+
+        public Func<List<int>> AdvBuffs { get; set; } = () => [];
+        public MusicType BgmType { get; set; } = MusicType.Day;
+        public Board.BoardTag BoardTag { get; set; } = default;
+        public Func<List<PlantType>> ConveyBeltPlantTypes { get; set; } = () => [];
+        public Func<List<int>> Debuffs { get; set; } = () => [];
+        public int ID { get; set; }
+        public Sprite Logo { get; set; } = new();
+        public Func<string> Name { get; set; } = () => "";
+        public bool NeedSelectCard { get; set; } = true;
+        public Action<Board> PostBoard { get; set; } = (_) => { };
+        public Action<InitBoard> PostInitBoard { get; set; } = (_) => { };
+        public Action PreInitBoard { get; set; } = () => { };
+        public Func<List<(int, int, PlantType)>> PrePlants { get; set; } = () => [];
+        public Func<List<PlantType>> PreSelectCards { get; set; } = () => [];
+        public bool RealBoss2 { get; set; } = false;
+        public int RowCount { get; set; } = 5;
+        public SceneType SceneType { get; set; } = SceneType.Day;
+        public Func<List<PlantType>> SeedRainPlantTypes { get; set; } = () => [];
+        public Func<int> Sun { get; set; } = () => 500;
+        public Func<List<(int, int)>> UltiBuffs { get; set; } = () => [];
+        public Func<List<int>> UnlockPlants { get; set; } = () => [];
+        public Func<int> WaveCount { get; set; } = () => 10;
+        public Func<int> ZombieHealthRate { get; set; } = () => 1;
+        public Func<List<ZombieType>> ZombieList { get; set; } = () => [];
+    }
+
     public struct CustomPlantAlmanac
     {
         public string Description { get; set; }
@@ -153,6 +185,8 @@ namespace CustomizeLib.BepInEx
             }
             throw new ArgumentException($"Could not find {name} from {ab.name}");
         }
+
+        public static T GetRandomItem<T>(this IList<T> list) => list[UnityEngine.Random.RandomRangeInt(0, list.Count)];
 
         public static int GetTotalHealth(this Zombie zombie) => (int)zombie.theHealth + zombie.theFirstArmorHealth + zombie.theSecondArmorHealth;
 

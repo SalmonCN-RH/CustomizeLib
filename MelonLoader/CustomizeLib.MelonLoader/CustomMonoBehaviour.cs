@@ -6,6 +6,27 @@ using UnityEngine;
 using Random = System.Random;
 
 namespace CustomizeLib.MelonLoader;
+/*    /// <summary>
+    /// 大哥的获取子弹，现在可以开大了
+    /// </summary>
+[HarmonyPatch(typeof(SuperSnowGatling), nameof(SuperSnowGatling.GetBulletType))]
+[HarmonyPatch(typeof(SuperGatling), nameof(SuperGatling.GetBulletType))]
+public static class SuperSnowGatling_GetBulletType
+{
+    [HarmonyPrefix]
+    public static bool Prefix(SuperSnowGatling __instance, ref BulletType __result)
+    {
+        if (CustomCore.CustomPlantsSkinActive.ContainsKey(__instance.thePlantType))
+        {
+            Dictionary<int, int> bulletDic = CustomPlantMonoBehaviour.BulletTypes[__instance.thePlantType];
+            List<int> bulletTypes = [.. bulletDic.Keys];
+            BulletType bulletType = (BulletType)bulletTypes[new Random().Next(0, bulletTypes.Count)];
+            __result = bulletType;
+            return false;
+        }
+        return true;
+    }
+}*/
 
 /// <summary>
 /// made by @likefengzi
@@ -13,28 +34,6 @@ namespace CustomizeLib.MelonLoader;
 [RegisterTypeInIl2Cpp]
 public class CustomPlantMonoBehaviour : MonoBehaviour
 {
-    /// <summary>
-    /// 大哥的获取子弹，现在可以开大了
-    /// </summary>
-    [HarmonyPatch(typeof(SuperSnowGatling), nameof(SuperSnowGatling.GetBulletType))]
-    [HarmonyPatch(typeof(SuperGatling), nameof(SuperGatling.GetBulletType))]
-    public static class SuperSnowGatling_GetBulletType
-    {
-        [HarmonyPrefix]
-        public static bool Prefix(SuperSnowGatling __instance, ref BulletType __result)
-        {
-            if (CustomCore.CustomPlantsSkinActive.ContainsKey(__instance.thePlantType))
-            {
-                Dictionary<int, int> bulletDic = BulletTypes[__instance.thePlantType];
-                List<int> bulletTypes = [.. bulletDic.Keys];
-                BulletType bulletType = (BulletType)bulletTypes[new Random().Next(0, bulletTypes.Count)];
-                __result = bulletType;
-                return false;
-            }
-            return true;
-        }
-    }
-
     /// <summary>
     /// 自定义恢复
     /// </summary>

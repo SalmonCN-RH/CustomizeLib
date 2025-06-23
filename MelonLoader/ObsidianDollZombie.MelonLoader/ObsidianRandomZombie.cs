@@ -143,7 +143,7 @@ namespace ObsidianDollZombie.MelonLoader
         [HarmonyPostfix]
         public static void PostStart(Zombie __instance)
         {
-            if (__instance.TryCast<UltimateGargantuar>() is not null)
+            if (__instance.TryCast<UltimateGargantuar>() is not null && GameAPP.theGameStatus is GameStatus.InGame)
             {
                 if (!__instance.isMindControlled)
                 {
@@ -154,7 +154,7 @@ namespace ObsidianDollZombie.MelonLoader
                     CreateZombie.Instance.SetZombieWithMindControl(__instance.theZombieRow, (ZombieType)98, __instance.transform.position.x);
                 }
             }
-            if (__instance.TryCast<DiamondRandomZombie>() is not null && UnityEngine.Random.RandomRangeInt(0, 9) == 1)
+            if (__instance.TryCast<DiamondRandomZombie>() is not null && UnityEngine.Random.RandomRangeInt(0, 9) == 1 && GameAPP.theGameStatus is GameStatus.InGame)
             {
                 CreateZombie.Instance.SetZombie(__instance.theZombieRow, (ZombieType)99, __instance.transform.position.x);
             }

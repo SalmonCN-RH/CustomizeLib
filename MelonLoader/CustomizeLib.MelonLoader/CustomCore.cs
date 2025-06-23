@@ -1,10 +1,8 @@
 ﻿using CustomizeLib.MelonLoader;
-using Il2Cpp;
 using MelonLoader;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using UnityEngine;
-using static MelonLoader.MelonLogger;
 
 ///
 ///Credit to likefengzi(https://github.com/likefengzi)(https://space.bilibili.com/237491236)
@@ -158,6 +156,21 @@ namespace CustomizeLib.MelonLoader
             }
         }
 
+        public static void PlaySound(AudioClip audio, float volume = 1.0f)
+        {
+            GameObject soundObj = new("SoundPlayer");
+            AudioSource audioSource = soundObj.AddComponent<AudioSource>();
+            SoundCtrl newSoundCtrl = soundObj.AddComponent<SoundCtrl>();
+            // 初始化组件
+            audioSource.clip = audio;
+
+            // 设置音量（应用全局音量调整）
+            audioSource.volume = volume * GameAPP.gameSoundVolume;
+            GameAPP.sound.Add(newSoundCtrl);
+            // 播放音效
+            audioSource.Play();
+        }
+
         /// <summary>
         /// 注册自定义词条
         /// </summary>
@@ -231,6 +244,14 @@ namespace CustomizeLib.MelonLoader
                 bulletPrefab.AddComponent<TBullet>();
                 CustomBullets.Add(id, bulletPrefab);
             }
+        }
+
+        public static int RegisterCustomLevel(CustomLevelData ldata)
+        {
+            int id = CustomLevels.Count;
+            ldata.ID = id;
+            CustomLevels.Add(ldata);
+            return id;
         }
 
         /// <summary>
@@ -595,6 +616,9 @@ namespace CustomizeLib.MelonLoader
         public override void OnLateInitializeMelon()
         {
             ReplaceTextureRoutine = MelonCoroutines.Start(TextureStore.ReplaceTexturesCoroutine());//启动换贴图协程
+            GameObject ccore = new("CustomizeLib by Infinite75");
+            ccore.AddComponent<CustomizeLib>().CustomCore = this;
+            UnityEngine.Object.DontDestroyOnLoad(ccore);
         }
 
         /// <summary>
@@ -616,6 +640,11 @@ namespace CustomizeLib.MelonLoader
         /// 自定义融合配方列表
         /// </summary>
         public static List<(int, int, int)> CustomFusions { get; set; } = [];
+
+        /// <summary>
+        /// 自定义关卡列表
+        /// </summary>
+        public static List<CustomLevelData> CustomLevels { get; set; } = [];
 
         /// <summary>
         /// 自定义粒子效果列表

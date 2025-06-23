@@ -1,4 +1,6 @@
 ﻿using HarmonyLib;
+using Il2Cpp;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppTMPro;
 using MelonLoader;
 using MelonLoader.Utils;
@@ -6,7 +8,9 @@ using System;
 using System.Drawing;
 using System.Text.Json;
 using System.Xml.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 ///
 /// Specially credit to 暗影Dev
@@ -15,6 +19,17 @@ using UnityEngine;
 ///
 namespace CustomizeLib.MelonLoader
 {
+    [HarmonyPatch(typeof(AlmanacMenu))]
+    public static class AlmanacMenuPatch
+    {
+        [HarmonyPatch(nameof(AlmanacMenu.Awake))]
+        [HarmonyPostfix]
+        public static void PostAwake(AlmanacMenu __instance)
+        {
+            __instance.transform.FindChild("AlmanacPlant2").FindChild("Cards").GetComponent<GridManager>().maxY = 75;
+        }
+    }
+
     /// <summary>
     /// 植物图鉴
     /// </summary>
@@ -487,6 +502,187 @@ namespace CustomizeLib.MelonLoader
             foreach (var spr in CustomCore.CustomSprites)//注册自定义精灵贴图
             {
                 GameAPP.spritePrefab[spr.Key] = spr.Value;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(InGameUI))]
+    public static class InGameUIPatch
+    {
+        [HarmonyPatch(nameof(InGameUI.SetUniqueText))]
+        [HarmonyPostfix]
+        public static void PostSetUniqueText(InGameUI __instance, ref Il2CppReferenceArray<TextMeshProUGUI> T)
+        {
+            if (GameAPP.theBoardType is (LevelType)66)
+            {
+                __instance.ChangeString(T, CustomCore.CustomLevels[GameAPP.theBoardLevel].Name());
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(InitBoard))]
+    public static class InitBoardPatch
+    {
+        [HarmonyPatch(nameof(InitBoard.PreSelectCard))]
+        [HarmonyPostfix]
+        public static void PostPreSelectCard(InitBoard __instance)
+        {
+            if (GameAPP.theBoardType is (LevelType)66)
+            {
+                foreach (var c in CustomCore.CustomLevels[GameAPP.theBoardLevel].PreSelectCards())
+                {
+                    __instance.PreSelect(c);
+                }
+            }
+        }
+
+        [HarmonyPatch(nameof(InitBoard.RightMoveCamera))]
+        [HarmonyPostfix]
+        public static void PostRightMoveCamera()
+        {
+            if (GameAPP.theBoardType is not (LevelType)66) return;
+            var levelData = CustomCore.CustomLevels[GameAPP.theBoardLevel];
+            var travelMgr = GameAPP.gameAPP.GetOrAddComponent<TravelMgr>();
+            foreach (var a in levelData.AdvBuffs())
+            {
+                if (a >= 0 && a < travelMgr.advancedUpgrades.Count)
+                {
+                    travelMgr.advancedUpgrades[a] = true;
+                }
+            }
+            foreach (var u in levelData.UltiBuffs())
+            {
+                if (u.Item1 >= 0 && u.Item1 < travelMgr.ultimateUpgrades.Count && u.Item2 >= 0)
+                {
+                    travelMgr.ultimateUpgrades[u.Item1] = u.Item2;
+                }
+            }
+            foreach (var p in levelData.UnlockPlants())
+            {
+                if (p >= 0 && p < travelMgr.unlockPlant.Count)
+                {
+                    travelMgr.unlockPlant[p] = true;
+                }
+            }
+            foreach (var d in levelData.Debuffs())
+            {
+                if (d >= 0 && d < travelMgr.debuff.Count)
+                {
+                    travelMgr.debuff[d] = true;
+                }
+            }
+        }
+
+        [HarmonyPatch(nameof(InitBoard.MoveOverEvent))]
+        [HarmonyPrefix]
+        public static bool PreMoveOverEvent(InitBoard __instance, ref string direction)
+        {
+            if (GameAPP.theBoardType is not (LevelType)66) return true;
+            var levelData = CustomCore.CustomLevels[GameAPP.theBoardLevel];
+            if (direction == "right")
+            {
+                if (__instance.board is not null)
+                {
+                    if (__instance.board.cardSelectable)
+                    {
+                        // 设置游戏状态
+                        GameAPP.theGameStatus = GameStatus.Selecting;
+
+                        // UI控制
+                        InGameUI.Instance.ConveyorBelt.SetActive(false);
+                        InGameUI.Instance.Bottom.SetActive(true);
+
+                        // 启动协程移动UI元素
+                        __instance.StartCoroutine(__instance.MoveDirection(InGameUI.Instance.SeedBank, 79f, 0));
+                        __instance.StartCoroutine(__instance.MoveDirection(InGameUI.Instance.Bottom, 525f, 1));
+                    }
+                    else
+                    {
+                        // 延迟执行方法
+                        __instance.Invoke("LeftMoveCamera", 1.5f);
+                        InGameUI.Instance.Bottom.SetActive(false);
+                    }
+                }
+            }
+            else if (direction == "left")
+            {
+                if (__instance.board is null) return false;
+
+                if (!__instance.board.cardSelectable)
+                {
+                    if (__instance.board.cardBank)
+                    {
+                        __instance.StartCoroutine(__instance.MoveDirection(InGameUI.Instance.SeedBank, 79f, 0));
+                        __instance.AddCard();
+                    }
+                    else
+                    {
+                        InGameUI.Instance.SeedBank.SetActive(false);
+                    }
+                    InGameUI.Instance.Bottom.SetActive(false);
+                }
+
+                // 音量渐变协程
+                __instance.StartCoroutine(__instance.DecreaseVolume());
+
+                // 降低UI位置
+                InGameUI.Instance.LowerUI();
+
+                // 初始化割草机（特定模式下）
+                if (!__instance.board.boardTag.disableMower)
+                {
+                    __instance.InitMower();
+                }
+
+                // 雾效果移动
+                if (__instance.board.fog != null)
+                {
+                    Vector3 fogPosition = __instance.board.fog.transform.position;
+                    Vector3 boardPosition = __instance.board.background.transform.position;
+
+                    FogMgr.Instance.MoveObject(
+                        new(fogPosition.x,
+                        fogPosition.y,
+                        boardPosition.z),
+                        10f  // 移动速度
+                    );
+                }
+
+                // BOSS战特殊处理
+                float invokeDelay = 0.5f;
+                if (__instance.board.boardTag.isBoss || __instance.board.boardTag.isBoss2)
+                {
+                    GameObject zombie = CreateZombie.Instance.SetZombie(0, levelData.RealBoss2 ? ZombieType.ZombieBoss2 : ZombieType.ZombieBoss, 0f);
+                    Zombie zombieComp = zombie.GetComponent<Zombie>();
+
+                    if (__instance.board.boss2)
+                    {
+                        Lawnf.SetZombieHealth(zombieComp, 5f);
+                    }
+                    invokeDelay = 3.5f;
+                    __instance.board.boss2 = levelData.RealBoss2;
+                }
+
+                // 延迟调用方法
+                __instance.Invoke("ReadySetPlant", invokeDelay);
+            }
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(InitZombieList))]
+    public static class InitZombieListPatch
+    {
+        [HarmonyPatch(nameof(InitZombieList.InitList))]
+        [HarmonyPostfix]
+        public static void PostInitList()
+        {
+            if (GameAPP.theBoardType is (LevelType)66)
+            {
+                foreach (var z in CustomCore.CustomLevels[GameAPP.theBoardLevel].ZombieList())
+                {
+                    InitZombieList.zombieTypeList.Add(z);
+                }
             }
         }
     }
@@ -1517,6 +1713,126 @@ namespace CustomizeLib.MelonLoader
             }
 
             return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(UIMgr))]
+    public static class UIMgrPatch
+    {
+        [HarmonyPatch(nameof(UIMgr.EnterChallengeMenu))]
+        [HarmonyPostfix]
+        public static void PostEnterChallengeMenu()
+        {
+            var levels = GameAPP.canvas.GetChild(0).FindChild("Levels");
+            var firstBtns = levels.FindChild("FirstBtns");
+            if (firstBtns.FindChild("CustomLevels") is null || firstBtns.FindChild("CustomLevels").IsDestroyed())
+            {
+                GameObject custom = UnityEngine.Object.Instantiate(firstBtns.GetChild(0).gameObject, firstBtns);
+                custom.name = "CustomLevels";
+                custom.transform.localPosition = new(-150, 30, 0);
+                var window = custom.transform.FindChild("Window");
+                window.FindChild("Name").GetComponent<TextMeshProUGUI>().text = "二创关卡";
+                var adv = levels.FindChild("PageAdvantureLevel");
+                var customLevels = UnityEngine.Object.Instantiate(adv.gameObject, levels);
+                customLevels.active = false;
+                customLevels.name = "PageCustomLevel";
+                var pages = customLevels.transform.FindChild("Pages");
+                var levelSample = UnityEngine.Object.Instantiate(pages.FindChild("Page1").FindChild("Lv1").gameObject);
+                foreach (var l in pages.FindChild("Page1").GetComponentsInChildren<Transform>(true))
+                {
+                    UnityEngine.Object.Destroy(l.gameObject);
+                }
+                var pageSample = UnityEngine.Object.Instantiate(pages.FindChild("Page1").gameObject);
+                UnityEngine.Object.Destroy(pages.FindChild("Page1").gameObject);
+                UnityEngine.Object.Destroy(pages.FindChild("Page2").gameObject);
+                UnityEngine.Object.Destroy(pages.FindChild("Page3").gameObject);
+                int levelIndex = 0;
+                int columnIndex = 0;
+                int rowIndex = 0;
+                int pageIndex = 0;
+                foreach (var level in CustomCore.CustomLevels)
+                {
+                    if (levelIndex % 18 is 0)
+                    {
+                        UnityEngine.Object.Instantiate(pageSample, pages).name = $"Pages{levelIndex / 18 + 1}";
+                    }
+                    columnIndex = levelIndex % 6;
+                    rowIndex = levelIndex / 6;
+                    pageIndex = rowIndex / 3;
+                    var levelBtn = UnityEngine.Object.Instantiate(levelSample, pages.FindChild($"Pages{levelIndex / 18 + 1}"));
+                    levelBtn.transform.localPosition = new(-50 + 150 * columnIndex, 60 - 130 * rowIndex, 0);
+                    levelBtn.transform.GetChild(0).GetComponent<UnityEngine.UI.Image>().sprite = level.Logo;
+                    levelBtn.transform.GetChild(1).GetComponent<Advanture_Btn>().levelType = (LevelType)66;
+                    levelBtn.transform.GetChild(1).GetComponent<Advanture_Btn>().buttonNumber = level.ID;
+                    levelBtn.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = level.Name();
+                    levelIndex++;
+                }
+                window.GetComponent<FirstBtns>().pageToOpen = customLevels;
+                window.GetComponent<FirstBtns>().originPosition = new(-150, 30, 0);
+                UnityEngine.Object.Destroy(pageSample);
+                UnityEngine.Object.Destroy(levelSample);
+            }
+        }
+
+        [HarmonyPatch(nameof(UIMgr.EnterGame))]
+        [HarmonyPrefix]
+        public static bool PreEnterGame(ref int levelType, ref int levelNumber, ref int id, ref string name)
+        {
+            if (levelType is not 66) return true;
+            var levelData = CustomCore.CustomLevels[levelNumber];
+
+            // 清理UI资源
+            GameAPP.UIManager.PopAll();
+
+            // 重置相机
+            CamaraFollowMouse.Instance.ResetCamera();
+
+            // 设置游戏速度
+            Time.timeScale = GameAPP.gameSpeed;
+
+            // 设置当前关卡信息
+            GameAPP.theBoardType = (LevelType)levelType;
+            GameAPP.theBoardLevel = levelNumber;
+
+            // 清理现有的Travel管理器
+            if (TravelMgr.Instance != null)
+            {
+                UnityEngine.Object.Destroy(TravelMgr.Instance);
+                TravelMgr.Instance = null;
+            }
+
+            // 创建游戏板
+            GameObject boardGO = new("Board");
+            GameAPP.board = boardGO;
+            Board board = boardGO.AddComponent<Board>();
+            board.boardTag = levelData.BoardTag;
+            board.rowNum = levelData.RowCount;
+            board.theMaxWave = levelData.WaveCount();
+            board.cardSelectable = levelData.NeedSelectCard;
+            board.theSun = levelData.Sun();
+            levelData.PostBoard(board);
+            // 获取场景类型和地图路径
+            string mapPath = MapData_cs.GetMapPath(levelData.SceneType);
+
+            // 加载并实例化地图
+            GameObject mapInstance = UnityEngine.Object.Instantiate(Resources.Load<GameObject>(mapPath), boardGO.transform);
+            board.ChangeMap(mapInstance);
+
+            InitZombieList.InitZombie((LevelType)levelType, levelNumber);
+
+            // 播放音乐并开始游戏
+            GameAPP.Instance.PlayMusic(MusicType.SelectCard);
+            GameAPP.theGameStatus = GameStatus.InInterlude;
+
+            // 初始化游戏板
+            levelData.PreInitBoard();
+
+            levelData.PostInitBoard(board.gameObject.AddComponent<InitBoard>());
+            foreach (var p in levelData.PrePlants())
+            {
+                CreatePlant.Instance.SetPlant(p.Item1, p.Item2, p.Item3);
+            }
+            return false;
         }
     }
 

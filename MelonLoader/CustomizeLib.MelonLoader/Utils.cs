@@ -1,9 +1,44 @@
 ﻿using Il2Cpp;
+using Il2CppInterop.Runtime.Attributes;
+using Il2CppInterop.Runtime.Injection;
+using MelonLoader;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace CustomizeLib.MelonLoader
 {
+    public struct CustomLevelData
+    {
+        public CustomLevelData()
+        {
+        }
+
+        public Func<List<int>> AdvBuffs { get; set; } = () => [];
+        public MusicType BgmType { get; set; } = MusicType.Day;
+        public Board.BoardTag BoardTag { get; set; } = default;
+        public Func<List<PlantType>> ConveyBeltPlantTypes { get; set; } = () => [];
+        public Func<List<int>> Debuffs { get; set; } = () => [];
+        public int ID { get; set; }
+        public Sprite Logo { get; set; } = new();
+        public Func<string> Name { get; set; } = () => "";
+        public bool NeedSelectCard { get; set; } = true;
+        public Action<Board> PostBoard { get; set; } = (_) => { };
+        public Action<InitBoard> PostInitBoard { get; set; } = (_) => { };
+        public Action PreInitBoard { get; set; } = () => { };
+        public Func<List<(int, int, PlantType)>> PrePlants { get; set; } = () => [];
+        public Func<List<PlantType>> PreSelectCards { get; set; } = () => [];
+        public bool RealBoss2 { get; set; } = false;
+        public int RowCount { get; set; } = 5;
+        public SceneType SceneType { get; set; } = SceneType.Day;
+        public Func<List<PlantType>> SeedRainPlantTypes { get; set; } = () => [];
+        public Func<int> Sun { get; set; } = () => 500;
+        public Func<List<(int, int)>> UltiBuffs { get; set; } = () => [];
+        public Func<List<int>> UnlockPlants { get; set; } = () => [];
+        public Func<int> WaveCount { get; set; } = () => 10;
+        public Func<int> ZombieHealthRate { get; set; } = () => 1;
+        public Func<List<ZombieType>> ZombieList { get; set; } = () => [];
+    }
+
     /// <summary>
     /// 二创植物图鉴数据
     /// </summary>
@@ -177,6 +212,8 @@ namespace CustomizeLib.MelonLoader
 
             throw new ArgumentException($"Could not find {name} from {ab.name}");
         }
+
+        public static T GetRandomItem<T>(this IList<T> list) => list[UnityEngine.Random.RandomRangeInt(0, list.Count)];
 
         /// <summary>
         /// 获取僵尸总血量
@@ -681,6 +718,18 @@ namespace CustomizeLib.MelonLoader
             //     }
             // }
         }
+    }
+
+    [RegisterTypeInIl2Cpp]
+    public class CustomizeLib : MonoBehaviour
+    {
+        public CustomizeLib() : base(ClassInjector.DerivedConstructorPointer<CustomizeLib>()) => ClassInjector.DerivedConstructorBody(this);
+
+        public CustomizeLib(IntPtr i) : base(i)
+        {
+        }
+
+        public CustomCore? CustomCore { [HideFromIl2Cpp] get; [HideFromIl2Cpp] set; }
     }
 
     // json对象
