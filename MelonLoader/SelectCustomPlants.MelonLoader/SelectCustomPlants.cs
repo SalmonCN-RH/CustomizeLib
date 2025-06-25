@@ -1,13 +1,13 @@
-﻿using CustomizeLib.MelonLoader;
+﻿using System.Text;
+using CustomizeLib.MelonLoader;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppTMPro;
 using MelonLoader;
 using UnityEngine;
+using System.Linq;
 
-[assembly: MelonInfo(typeof(SelectCustomPlants.MelonLoader.SelectCustomPlants), "SelectCustomPlants", "1.0.0",
-    "likefengzi",
-    null)]
+[assembly: MelonInfo(typeof(SelectCustomPlants.MelonLoader.SelectCustomPlants), "SelectCustomPlants", "1.0.0", "likefengzi")]
 [assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
 [assembly: MelonPlatformDomain(MelonPlatformDomainAttribute.CompatibleDomains.IL2CPP)]
 
@@ -16,44 +16,41 @@ namespace SelectCustomPlants.MelonLoader;
 public class SelectCustomPlants : MelonMod
 {
     /// <summary>
-    /// 二创植物Button
+    /// 点击其他Button，隐藏二创植物界面
     /// </summary>
-    public static GameObject? MyShowCustomPlantsButton;
-
-    /// <summary>
-    /// 二创植物页面
-    /// </summary>
-    public static GameObject? MyPageParent;
-
-    /// <summary>
-    /// 类似Update
-    /// </summary>
-    public override void OnUpdate()
+    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
+    public class HideCustomPlantCards
     {
-        //判断鼠标按下
-        if (Input.GetMouseButtonDown(0) && MyShowCustomPlantsButton != null)
+        [HarmonyPostfix]
+        private static void Postfix()
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
-
-            //击中二创植物Button
-            if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton)
-            {
-                //打开二创植物页面
-                OpenCustomPlantCards();
-            }
+            CloseCustomPlantCards();
         }
+    }
 
-        //设置鼠标特效
-        if (MyShowCustomPlantsButton != null)
+    /// <summary>
+    /// 进入一局游戏，显示二创植物Button
+    /// </summary>
+    [HarmonyPatch(typeof(Board), nameof(Board.Start))]
+    public class ShowCustomPlantCards
+    {
+        [HarmonyPostfix]
+        private static void Postfix()
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+            InitCustomCards();
+        }
+    }
 
-            if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton)
-            {
-                CursorChange.SetClickCursor();
-            }
+    /// <summary>
+    /// 隐藏二创植物界面
+    /// </summary>
+    public static void CloseCustomPlantCards()
+    {
+        if (MyPageParent != null)
+        {
+            //MyPageParent.SetActive(false);
+            UnityEngine.Object.Destroy(MyPageParent);
+            MyPageParent = null;
         }
     }
 
@@ -62,6 +59,8 @@ public class SelectCustomPlants : MelonMod
     /// </summary>
     public static void InitCustomCards()
     {
+        //控制台支持中文
+        Console.OutputEncoding = Encoding.UTF8;
         //用正常植物Button创建二创植物Button
         MyShowCustomPlantsButton = UnityEngine.Object.Instantiate(
             Resources.Load<GameObject>("ui/prefabs/InGameUI").transform.FindChild("Bottom/SeedLibrary/ShowNormal")
@@ -127,9 +126,8 @@ public class SelectCustomPlants : MelonMod
                 }
             }
 
-            //获得自定义植物列表
-            List<PlantType> plantTypes = new List<PlantType>();
-            foreach (PlantType plantType in CustomCore.CustomPlantTypes)
+            List<PlantType> plantTypes = [];
+            foreach (PlantType plantType in GameAPP.resourcesManager.allPlants)
             {
                 //如果不是融合版植物，就加载
                 if (!Enum.IsDefined(typeof(PlantType), plantType) &&
@@ -138,9 +136,11 @@ public class SelectCustomPlants : MelonMod
                     plantTypes.Add(plantType);
                 }
             }
+
             //创建卡片
-            for (int i = 0; i < plantTypes.Count; i++)
+            for (int i = PageNum * CardInPage; i < (PageNum + 1) * CardInPage; i++)
             {
+                if (i >= plantTypes.Count) break;
                 GameObject TempCard = UnityEngine.Object.Instantiate(MyCard);
                 if (TempCard != null)
                 {
@@ -167,43 +167,67 @@ public class SelectCustomPlants : MelonMod
                     component.fullCD = PlantDataLoader.plantDatas[plantTypes[i]].field_Public_Single_2;
                 }
             }
+
+            PageNum++;
+            if (PageNum > (plantTypes.Count - 1) / CardInPage)
+            {
+                PageNum = 0;
+            }
         }
     }
 
     /// <summary>
-    /// 隐藏二创植物界面
+    /// 类似Update
     /// </summary>
-    public static void CloseCustomPlantCards()
+    public override void OnUpdate()
     {
-        if (MyPageParent != null)
+        //判断鼠标按下
+        if (Input.GetMouseButtonDown(0) && MyShowCustomPlantsButton != null)
         {
-            MyPageParent.SetActive(false);
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+
+            //击中二创植物Button
+            if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton)
+            {
+                try
+                {
+                    CloseCustomPlantCards();
+                }
+                catch (Exception e)
+                {
+                    var a = e;
+                }
+
+                //打开二创植物页面
+                OpenCustomPlantCards();
+            }
+        }
+
+        //设置鼠标特效
+        if (MyShowCustomPlantsButton != null)
+        {
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+
+            if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton)
+            {
+                CursorChange.SetClickCursor();
+            }
         }
     }
 
-    /// <summary>
-    /// 进入一局游戏，显示二创植物Button
-    /// </summary>
-    [HarmonyPatch(typeof(Board), nameof(Board.Start))]
-    public class ShowCustomPlantCards
-    {
-        [HarmonyPostfix]
-        private static void Postfix()
-        {
-            InitCustomCards();
-        }
-    }
+    public static int CardInPage = 6 * 9;
 
     /// <summary>
-    /// 点击其他Button，隐藏二创植物界面
+    /// 二创植物页面
     /// </summary>
-    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
-    public class HideCustomPlantCards
-    {
-        [HarmonyPostfix]
-        private static void Postfix()
-        {
-            CloseCustomPlantCards();
-        }
-    }
+    public static GameObject? MyPageParent;
+
+    /// <summary>
+    /// 二创植物Button
+    /// </summary>
+    public static GameObject? MyShowCustomPlantsButton;
+
+    public static int PageNum = 0;
 }

@@ -6,6 +6,7 @@ using MelonLoader;
 using SuperDiamondNut.MelonLoader;
 using System.Reflection;
 using UnityEngine;
+using static MelonLoader.MelonLogger;
 
 [assembly: MelonInfo(typeof(Core), "SuperDiamondNut", "1.0", "Infinite75", null)]
 [assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
@@ -53,7 +54,7 @@ namespace SuperDiamondNut.MelonLoader
                 ab.GetAsset<GameObject>("SuperDiamondNutPreview"), [(905, 31)], 3, 0, 20, 4000, 7.5f, 800);
             CustomCore.RegisterCustomPlantClickEvent(161, SuperDiamondNut.SummonAndRecover);
             CustomCore.AddFusion(905, 161, 1);
-            CustomCore.RegisterCustomPlant<BigWallNut>(162, ab.GetAsset<GameObject>("BigDiamondNutPrefab"),
+            CustomCore.RegisterCustomPlant<BigSunNut>(162, ab.GetAsset<GameObject>("BigDiamondNutPrefab"),
                 ab.GetAsset<GameObject>("BigDiamondNutPreview"), [], 3, 0, 1800, 4000, 7.5f, 200);
             CustomCore.TypeMgrExtra.IsNut.Add((PlantType)161);
             CustomCore.TypeMgrExtra.BigNut.Add((PlantType)162);
@@ -74,15 +75,51 @@ namespace SuperDiamondNut.MelonLoader
 
         public static void SummonAndRecover(Plant plant)
         {
-            if (plant.board.theMoney >= 3000)
+            var ssn = plant.TryCast<SuperSunNut>();
+
+            if (plant.board.theMoney >= 3000 && ssn is not null)
             {
-                plant.board.theMoney -= 3000;
+                Money.Instance?.UsedEvent(plant.thePlantColumn, plant.thePlantRow, 3000);
                 plant.Recover(Lawnf.TravelAdvanced(4) ? 4000 : 1500);
-                GameObject gameObject = CreatePlant.Instance.SetPlant(plant.thePlantColumn + 1, plant.thePlantRow, (PlantType)162, null, default, true);
-                if (gameObject is not null)
+
+                if (ssn.targetPlant != null && ssn.targetPlant.theStatus is not PlantStatus.BigSunNut_round)
                 {
-                    Vector3 position = gameObject.GetComponent<Plant>().axis.position;
-                    Instantiate(GameAPP.particlePrefab[11], position + new Vector3(0f, 0.5f, 0f), Quaternion.identity, plant.board.transform);
+                    // 如果是 BigSunNut 类型则强化它
+                    if (ssn.targetPlant is BigSunNut bigSunNut)
+                    {
+                        bigSunNut.Larger();
+                        return;
+                    }
+                }
+
+                GameObject newPlantObj = CreatePlant.Instance.SetPlant(
+                    ssn.thePlantColumn + 1,
+                    ssn.thePlantRow,
+                    (PlantType)162
+                );
+
+                if (newPlantObj != null)
+                {
+                    // 获取 BigSunNut 组件并设置为目标植物
+                    ssn.targetPlant = newPlantObj.GetComponent<BigSunNut>();
+
+                    // 在植物位置播放粒子效果
+                    if (ssn.targetPlant != null && ssn.targetPlant.axis != null)
+                    {
+                        Vector3 position = ssn.targetPlant.axis.position;
+                        ParticleManager.Instance.SetParticle(
+                            ParticleType.RandomCloud,
+                            new Vector2(position.x, position.y + 0.5f),
+                            ssn.targetPlant.thePlantRow
+                        );
+                    }
+                    /*
+                    GameObject gameObject = CreatePlant.Instance.SetPlant(plant.thePlantColumn + 1, plant.thePlantRow, (PlantType)162, null, default, true);
+                    if (gameObject is not null)
+                    {
+                        Vector3 position = gameObject.GetComponent<Plant>().axis.position;
+                        Instantiate(GameAPP.particlePrefab[11], position + new Vector3(0f, 0.5f, 0f), Quaternion.identity, plant.board.transform);
+                    }*/
                 }
             }
         }
