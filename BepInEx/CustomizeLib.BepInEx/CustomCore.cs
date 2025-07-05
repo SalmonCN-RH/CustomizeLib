@@ -504,6 +504,8 @@ namespace CustomizeLib.BepInEx
         {
             ClassInjector.RegisterTypeInIl2Cpp<CoroutineRunner>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomPlantMonoBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<SelectCustomPlants>();
+
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
             Instance = new(this);
             TextureStore.Init();

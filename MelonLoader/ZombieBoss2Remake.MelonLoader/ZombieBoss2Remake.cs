@@ -812,7 +812,7 @@ namespace ZombieBoss2Remake.MelonLoader
 
             foreach (var z in GameAPP.resourcesManager.allZombieTypes)
             {
-                if ((int)z >= 200)
+                if ((int)z >= 200 && !TypeMgr.WaterZombie(z) && !BanList.Contains((int)z))
                 {
                     if (TypeMgr.IsBossZombie(z) && z is not ZombieType.UltimateMachineNutZombie)
                     {
@@ -964,6 +964,7 @@ namespace ZombieBoss2Remake.MelonLoader
         public bool Alive { get; set; } = true;
         public float AttackCountDown { get; set; } = 0;
         public float AttackInterval { get; set; } = 0.1f;
+        public int[] BanList { [HideFromIl2Cpp] get; [HideFromIl2Cpp] set; } = [302, 305, 306, 309, 317, 320, 323, 326, 329, 332, 335];
         public GameObject? BlackHole { get; set; }
         public Board board => Board.Instance;
         public List<ZombieType> BossZombies { [HideFromIl2Cpp] get; [HideFromIl2Cpp] set; } = [];

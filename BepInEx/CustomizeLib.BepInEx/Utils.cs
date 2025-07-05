@@ -674,6 +674,41 @@ namespace CustomizeLib.BepInEx
             //     }
             // }
         }
+
+        public static Il2CppSystem.Collections.Generic.List<T> ToIl2CppList<T>(this List<T> list)
+        {
+            Il2CppSystem.Collections.Generic.List<T> newList = new();
+            foreach (T t in list)
+            {
+                newList.Add(t);
+            }
+            return newList;
+        }
+    }
+
+    public static class Utils
+    {
+        public static bool InGame() => GameAPP.theGameStatus is GameStatus.InGame or GameStatus.Pause;
+
+        public static bool IsCustomLevel(out CustomLevelData levelData)
+        {
+            if (GameAPP.theBoardType == CustomLevelType)
+            {
+                levelData = CustomCore.CustomLevels[GameAPP.theBoardLevel];
+                return true;
+            }
+            else
+            {
+                levelData = default;
+                return false;
+            }
+        }
+
+        public static bool IsGameRunning() => GameAPP.theGameStatus is GameStatus.InGame;
+
+        public static bool IsNotNull<T>(this T obj) => obj is not null;
+
+        public static LevelType CustomLevelType => (LevelType)66;
     }
 
     // json对象

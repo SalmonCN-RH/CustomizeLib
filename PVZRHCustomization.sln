@@ -71,10 +71,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZombieBoss2Remake.BepInEx",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkyBlover.BepInEx", "BepInEx\MilkyBlover.BepInEx\MilkyBlover.BepInEx.csproj", "{58026148-33EE-4F10-8742-177A263E3A8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelectCustomPlants.MelonLoader", "MelonLoader\SelectCustomPlants.MelonLoader\SelectCustomPlants.MelonLoader.csproj", "{CD7BEB65-4F8B-4D0A-9728-CE51138CCD04}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelectCustomPlants.BepInEx", "BepInEx\SelectCustomPlants.BepInEx\SelectCustomPlants.BepInEx.csproj", "{F55235CE-7817-4A39-8DEF-3CD5E656521C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -201,14 +197,6 @@ Global
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD7BEB65-4F8B-4D0A-9728-CE51138CCD04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD7BEB65-4F8B-4D0A-9728-CE51138CCD04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD7BEB65-4F8B-4D0A-9728-CE51138CCD04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD7BEB65-4F8B-4D0A-9728-CE51138CCD04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F55235CE-7817-4A39-8DEF-3CD5E656521C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F55235CE-7817-4A39-8DEF-3CD5E656521C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F55235CE-7817-4A39-8DEF-3CD5E656521C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F55235CE-7817-4A39-8DEF-3CD5E656521C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

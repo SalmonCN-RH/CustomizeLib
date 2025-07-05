@@ -417,6 +417,30 @@ namespace CustomizeLib.BepInEx
         }
     }
 
+    [HarmonyPatch(typeof(ConveyBeltMgr))]
+    public static class ConveyBeltMgrPatch
+    {
+        [HarmonyPatch(nameof(ConveyBeltMgr.Awake))]
+        [HarmonyPostfix]
+        public static void PostAwake(ConveyBeltMgr __instance)
+        {
+            if (Utils.IsCustomLevel(out var levelData) && levelData.BoardTag.isConvey && levelData.ConveyBeltPlantTypes().Count > 0)
+            {
+                __instance.plants = levelData.ConveyBeltPlantTypes().ToIl2CppList();
+            }
+        }
+
+        [HarmonyPatch(nameof(ConveyBeltMgr.GetCardPool))]
+        [HarmonyPostfix]
+        public static void PostGetCardPool(ref Il2CppSystem.Collections.Generic.List<PlantType> __result)
+        {
+            if (Utils.IsCustomLevel(out var levelData) && levelData.BoardTag.isConvey && levelData.ConveyBeltPlantTypes().Count > 0)
+            {
+                __result = levelData.ConveyBeltPlantTypes().ToIl2CppList();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(CreatePlant), "SetPlant")]
     public static class CreatePlantPatch
     {
@@ -475,6 +499,19 @@ namespace CustomizeLib.BepInEx
             {
                 GameAPP.spritePrefab[spr.Key] = spr.Value;
             }
+        }
+    }
+
+    /// <summary>
+    /// 点击其他Button，隐藏二创植物界面
+    /// </summary>
+    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
+    public static class HideCustomPlantCards
+    {
+        [HarmonyPostfix]
+        private static void Postfix()
+        {
+            SelectCustomPlants.CloseCustomPlantCards();
         }
     }
 
@@ -739,6 +776,19 @@ namespace CustomizeLib.BepInEx
                 CustomCore.CustomUseItems[(__instance.thePlantType, type)](__instance);
                 UnityEngine.Object.Destroy(bucket.gameObject);
             }
+        }
+    }
+
+    /// <summary>
+    /// 进入一局游戏，显示二创植物Button
+    /// </summary>
+    [HarmonyPatch(typeof(Board), nameof(Board.Start))]
+    public static class ShowCustomPlantCards
+    {
+        [HarmonyPostfix]
+        private static void Postfix()
+        {
+            SelectCustomPlants.InitCustomCards();
         }
     }
 
@@ -1736,6 +1786,8 @@ namespace CustomizeLib.BepInEx
             board.theMaxWave = levelData.WaveCount();
             board.cardSelectable = levelData.NeedSelectCard;
             board.theSun = levelData.Sun();
+            board.zombieDamageAdder = levelData.ZombieHealthRate();
+            board.seedPool = levelData.SeedRainPlantTypes().ToIl2CppList();
             levelData.PostBoard(board);
             // 获取场景类型和地图路径
             string mapPath = MapData_cs.GetMapPath(levelData.SceneType);

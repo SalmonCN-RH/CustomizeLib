@@ -1,16 +1,11 @@
 ﻿using HarmonyLib;
-using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppTMPro;
 using MelonLoader;
 using MelonLoader.Utils;
-using System;
-using System.Drawing;
 using System.Text.Json;
-using System.Xml.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 ///
 /// Specially credit to 暗影Dev
@@ -26,7 +21,7 @@ namespace CustomizeLib.MelonLoader
         [HarmonyPostfix]
         public static void PostAwake(AlmanacMenu __instance)
         {
-            __instance.transform.FindChild("AlmanacPlant2").FindChild("Cards").GetComponent<GridManager>().maxY = 75;
+            __instance.transform.FindChild("AlmanacPlant2").FindChild("Cards").GetComponent<GridManager>().maxY = GameAPP.resourcesManager.allPlants.Count / 9 * 1.5f;
         }
     }
 
@@ -429,6 +424,30 @@ namespace CustomizeLib.MelonLoader
         }
     }
 
+    [HarmonyPatch(typeof(ConveyBeltMgr))]
+    public static class ConveyBeltMgrPatch
+    {
+        [HarmonyPatch(nameof(ConveyBeltMgr.Awake))]
+        [HarmonyPostfix]
+        public static void PostAwake(ConveyBeltMgr __instance)
+        {
+            if (Utils.IsCustomLevel(out var levelData) && levelData.BoardTag.isConvey && levelData.ConveyBeltPlantTypes().Count > 0)
+            {
+                __instance.plants = levelData.ConveyBeltPlantTypes().ToIl2CppList();
+            }
+        }
+
+        [HarmonyPatch(nameof(ConveyBeltMgr.GetCardPool))]
+        [HarmonyPostfix]
+        public static void PostGetCardPool(ref Il2CppSystem.Collections.Generic.List<PlantType> __result)
+        {
+            if (Utils.IsCustomLevel(out var levelData) && levelData.BoardTag.isConvey && levelData.ConveyBeltPlantTypes().Count > 0)
+            {
+                __result = levelData.ConveyBeltPlantTypes().ToIl2CppList();
+            }
+        }
+    }
+
     /// <summary>
     /// 为二创植物附加植物特性
     /// </summary>
@@ -469,7 +488,6 @@ namespace CustomizeLib.MelonLoader
                 GameAPP.resourcesManager.plantPreviews[plant.Key] = plant.Value.Preview;//注册植物预览
                 GameAPP.resourcesManager.plantPreviews[plant.Key].tag = "Preview";//必修打tag
             }
-
             Il2CppSystem.Array array = MixData.data.Cast<Il2CppSystem.Array>();//注册融合配方
             foreach (var f in CustomCore.CustomFusions)
             {
@@ -503,6 +521,19 @@ namespace CustomizeLib.MelonLoader
             {
                 GameAPP.spritePrefab[spr.Key] = spr.Value;
             }
+        }
+    }
+
+    /// <summary>
+    /// 点击其他Button，隐藏二创植物界面
+    /// </summary>
+    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
+    public static class HideCustomPlantCards
+    {
+        [HarmonyPostfix]
+        private static void Postfix()
+        {
+            SelectCustomPlants.CloseCustomPlantCards();
         }
     }
 
@@ -540,7 +571,7 @@ namespace CustomizeLib.MelonLoader
         [HarmonyPostfix]
         public static void PostRightMoveCamera()
         {
-            if (GameAPP.theBoardType is not (LevelType)66) return;
+            if (!Utils.IsCustomLevel(out _)) return;
             var levelData = CustomCore.CustomLevels[GameAPP.theBoardLevel];
             var travelMgr = GameAPP.gameAPP.GetOrAddComponent<TravelMgr>();
             foreach (var a in levelData.AdvBuffs())
@@ -577,8 +608,7 @@ namespace CustomizeLib.MelonLoader
         [HarmonyPrefix]
         public static bool PreMoveOverEvent(InitBoard __instance, ref string direction)
         {
-            if (GameAPP.theBoardType is not (LevelType)66) return true;
-            var levelData = CustomCore.CustomLevels[GameAPP.theBoardLevel];
+            if (!Utils.IsCustomLevel(out var levelData)) return true;
             if (direction == "right")
             {
                 if (__instance.board is not null)
@@ -677,9 +707,9 @@ namespace CustomizeLib.MelonLoader
         [HarmonyPostfix]
         public static void PostInitList()
         {
-            if (GameAPP.theBoardType is (LevelType)66)
+            if (Utils.IsCustomLevel(out var levelData))
             {
-                foreach (var z in CustomCore.CustomLevels[GameAPP.theBoardLevel].ZombieList())
+                foreach (var z in levelData.ZombieList())
                 {
                     InitZombieList.zombieTypeList.Add(z);
                 }
@@ -810,6 +840,19 @@ namespace CustomizeLib.MelonLoader
             //为什么PostShowNormalCard会无限递归？？？
             //Grid
             __instance.transform.FindCardUIAndChangeSprite();
+        }
+    }
+
+    /// <summary>
+    /// 进入一局游戏，显示二创植物Button
+    /// </summary>
+    [HarmonyPatch(typeof(Board), nameof(Board.Start))]
+    public static class ShowCustomPlantCards
+    {
+        [HarmonyPostfix]
+        private static void Postfix()
+        {
+            SelectCustomPlants.InitCustomCards();
         }
     }
 
@@ -1810,6 +1853,8 @@ namespace CustomizeLib.MelonLoader
             board.theMaxWave = levelData.WaveCount();
             board.cardSelectable = levelData.NeedSelectCard;
             board.theSun = levelData.Sun();
+            board.zombieDamageAdder = levelData.ZombieHealthRate();
+            board.seedPool = levelData.SeedRainPlantTypes().ToIl2CppList();
             levelData.PostBoard(board);
             // 获取场景类型和地图路径
             string mapPath = MapData_cs.GetMapPath(levelData.SceneType);

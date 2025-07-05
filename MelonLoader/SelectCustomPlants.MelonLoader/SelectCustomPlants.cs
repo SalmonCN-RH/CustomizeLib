@@ -1,11 +1,8 @@
 ﻿using System.Text;
-using CustomizeLib.MelonLoader;
 using HarmonyLib;
-using Il2Cpp;
 using Il2CppTMPro;
 using MelonLoader;
 using UnityEngine;
-using System.Linq;
 
 [assembly: MelonInfo(typeof(SelectCustomPlants.MelonLoader.SelectCustomPlants), "SelectCustomPlants", "1.0.0", "likefengzi")]
 [assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
