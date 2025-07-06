@@ -168,11 +168,6 @@ namespace ZombieBoss2Remake.BepInEx
             return false;
         }
 
-        [HarmonyPatch(nameof(ZombieBoss.SetCold))]
-        [HarmonyPatch(nameof(ZombieBoss.SetFreeze))]
-        [HarmonyPrefix]
-        public static bool PreSetCold(ZombieBoss __instance) => __instance is not ZombieBoss2;
-
         public static ZombieBoss2Remake Remake(this ZombieBoss zomboss2) => zomboss2.GetComponent<ZombieBoss2Remake>();
 
         [HarmonyPatch("Update")]

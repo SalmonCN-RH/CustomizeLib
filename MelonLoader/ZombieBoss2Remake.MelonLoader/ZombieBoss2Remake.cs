@@ -889,6 +889,7 @@ namespace ZombieBoss2Remake.MelonLoader
             if (AttackCountDown > 0) AttackCountDown -= Time.deltaTime;
             if (AttackCountDown < -1) AttackCountDown = 0;
             zombie.UpdateHealthText();
+            zombie.RemoveDeBuff();
             BanGoldMelon();
             if (ThirdStage)
             {
