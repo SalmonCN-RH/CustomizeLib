@@ -473,6 +473,25 @@ namespace CustomizeLib.BepInEx
                         CreatePlant.Instance.SetPlant(p.thePlantColumn, p.thePlantRow, newPlant);
                     });
 
+        /// <summary>
+        /// 注册肥料使用事件
+        /// </summary>
+        /// <param name="id">目标植物id</param>
+        /// <param name="callback">事件</param>
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) => CustomUseFertilize.Add(id, callback);
+
+        /// <summary>
+        /// 注册肥料融合配方
+        /// </summary>
+        /// <param name="id">亲本植物id</param>
+        /// <param name="newPlant">新植物类型</param>
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] PlantType newPlant)
+            => CustomUseFertilize.Add(id, (p) =>
+            {
+                p.Die();
+                CreatePlant.Instance.SetPlant(p.thePlantColumn, p.thePlantRow, newPlant);
+            });
+
         public static void RegisterCustomZombie<TBase, TClass>(ZombieType id, GameObject zombie, int spriteId,
                     int theAttackDamage, int theMaxHealth, int theFirstArmorMaxHealth, int theSecondArmorMaxHealth)
                     where TBase : Zombie where TClass : MonoBehaviour
@@ -545,6 +564,12 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<int, (PlantType, string, int, string?)> CustomUltimateBuffs { get; set; } = [];
 
         public static Dictionary<(PlantType, BucketType), Action<Plant>> CustomUseItems { get; set; } = [];
+
+
+        /// <summary>
+        /// 自定义肥料物品事件列表
+        /// </summary>
+        public static Dictionary<PlantType, Action<Plant>> CustomUseFertilize { get; set; } = [];
 
         public static Dictionary<ZombieType, (GameObject, int, ZombieData.ZombieData_)> CustomZombies { get; set; } = [];
 

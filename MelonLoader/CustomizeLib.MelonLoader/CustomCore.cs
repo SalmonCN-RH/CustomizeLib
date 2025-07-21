@@ -566,6 +566,25 @@ namespace CustomizeLib.MelonLoader
             });
 
         /// <summary>
+        /// 注册肥料使用事件
+        /// </summary>
+        /// <param name="id">目标植物id</param>
+        /// <param name="callback">事件</param>
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) => CustomUseFertilize.Add(id, callback);
+
+        /// <summary>
+        /// 注册肥料融合配方
+        /// </summary>
+        /// <param name="id">亲本植物id</param>
+        /// <param name="newPlant">新植物类型</param>
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] PlantType newPlant)
+            => CustomUseFertilize.Add(id, (p) =>
+            {
+                p.Die();
+                CreatePlant.Instance.SetPlant(p.thePlantColumn, p.thePlantRow, newPlant);
+            });
+
+        /// <summary>
         /// 注册自定义僵尸
         /// </summary>
         /// <typeparam name="TBase">僵尸基类</typeparam>
@@ -690,6 +709,11 @@ namespace CustomizeLib.MelonLoader
         /// 自定义使用物品事件列表
         /// </summary>
         public static Dictionary<(PlantType, BucketType), Action<Plant>> CustomUseItems { get; set; } = [];
+
+        /// <summary>
+        /// 自定义肥料物品事件列表
+        /// </summary>
+        public static Dictionary<PlantType, Action<Plant>> CustomUseFertilize { get; set; } = [];
 
         /// <summary>
         /// 自定义僵尸列表

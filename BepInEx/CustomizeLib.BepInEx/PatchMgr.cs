@@ -10,6 +10,41 @@ using UnityEngine;
 ///
 namespace CustomizeLib.BepInEx
 {
+    /// <summary>
+    /// 注册肥料使用事件
+    /// </summary>
+    [HarmonyPatch(typeof(Fertilize))]
+    public class FertilizePatch
+    {
+        [HarmonyPatch(nameof(Fertilize.Upgrade))]
+        [HarmonyPostfix]
+        public static void PostUpgrade(Fertilize __instance)
+        {
+            if (__instance == null || __instance.theTargetPlant == null) return;
+
+            int column = __instance.theTargetPlant.thePlantColumn;
+            int row = __instance.theTargetPlant.thePlantRow;
+
+            List<Plant> plants = Lawnf.Get1x1Plants(column, row).ToArray().ToList<Plant>(); // 获取植物，il2cpp窝爱你
+            if (plants == null) return;
+
+            for (int i = 0; i < plants.Count; i++)
+            {
+                Plant plant = plants[i];
+                if (plant == null) continue;
+                if (plant.thePlantColumn != column || plant.thePlantRow != row) continue;
+                if (Board.Instance == null) return;
+
+                if (CustomCore.CustomUseFertilize.ContainsKey(plant.thePlantType))
+                {
+                    CustomCore.CustomUseFertilize[plant.thePlantType](plant);
+                }
+            }
+
+            UnityEngine.Object.Destroy(__instance.gameObject);
+        }
+    }
+
     [HarmonyPatch(typeof(AlmanacMenu))]
     public static class AlmanacMenuPatch
     {
