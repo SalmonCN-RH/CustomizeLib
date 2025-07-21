@@ -1,8 +1,15 @@
+# 窝是标题
 Release每个大版本更新一次，有想弄最新的可以自己编译一下，想发就发
+
 哪天实在弄不会了或者自己忙了就不更了.jpg
+
 如果有那天让[听雨夜荷](https://github.com/CarefreeSongs712)接着更[doge]
+
 愿融合版有更多的modder
+
 最后纪念伟大的Infinite75，撑起了二创界的半壁江山（？）
+
+↓芝士原来的README↓
 
 # PVZRHCustomization
 植物大战僵尸融合版二创植物与僵尸 by [@Infinite75](https://space.bilibili.com/672619350)    
