@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZombieBoss2Remake.BepInEx",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MilkyBlover.BepInEx", "BepInEx\MilkyBlover.BepInEx\MilkyBlover.BepInEx.csproj", "{58026148-33EE-4F10-8742-177A263E3A8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrazySqualour", "..\CrazySqualour\CrazySqualour\CrazySqualour.csproj", "{DBE643E1-1B76-0596-F185-3A7390F8E8DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,10 @@ Global
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58026148-33EE-4F10-8742-177A263E3A8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBE643E1-1B76-0596-F185-3A7390F8E8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBE643E1-1B76-0596-F185-3A7390F8E8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBE643E1-1B76-0596-F185-3A7390F8E8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBE643E1-1B76-0596-F185-3A7390F8E8DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
