@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoroCat_BepInEx", "DoroCat_BepInEx\DoroCat_BepInEx.csproj", "{2FC0312C-B991-4EF6-9C6A-54C8679A608D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC0312C-B991-4EF6-9C6A-54C8679A608D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC0312C-B991-4EF6-9C6A-54C8679A608D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC0312C-B991-4EF6-9C6A-54C8679A608D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC0312C-B991-4EF6-9C6A-54C8679A608D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3D77B8F1-0562-4E37-AA50-65C3CF1C38E4}
+	EndGlobalSection
+EndGlobal
