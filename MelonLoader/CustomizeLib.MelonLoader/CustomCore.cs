@@ -226,6 +226,8 @@ namespace CustomizeLib.MelonLoader
                 bulletPrefab.AddComponent<TBullet>().theBulletType = id;
                 CustomBullets.Add(id, bulletPrefab);
             }
+            else
+                MelonLogger.Error($"Duplicate Bullet ID: {id}");
         }
 
         /// <summary>
@@ -244,6 +246,8 @@ namespace CustomizeLib.MelonLoader
                 bulletPrefab.AddComponent<TBullet>();
                 CustomBullets.Add(id, bulletPrefab);
             }
+            else
+                MelonLogger.Error($"Duplicate Bullet ID: {id}");
         }
 
         public static int RegisterCustomLevel(CustomLevelData ldata)
@@ -585,6 +589,81 @@ namespace CustomizeLib.MelonLoader
             });
 
         /// <summary>
+        /// 注册自定义卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型</param>
+        /// <param name="parent">父对象，所有Func的返回值都应为想要设置的父对象</param>
+        public static void RegisterCustomCard([NotNull]PlantType thePlantType, [NotNull]List<Func<Transform?>> parent)
+        {
+            if (!CustomCards.ContainsKey(thePlantType))
+                CustomCards.Add(thePlantType, parent);
+            else
+                foreach (Func<Transform?> action in parent)
+                    CustomCards[thePlantType].Add(action);
+        }
+
+        /// <summary>
+        /// 注册自定义卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型</param>
+        /// <param name="parent">父对象，返回值应为想要设置的父对象</param>
+        public static void RegisterCustomCard([NotNull]PlantType thePlantType, [NotNull]Func<Transform> parent)
+        {
+            if (!CustomCards.ContainsKey(thePlantType))
+                CustomCards.Add(thePlantType, new List<Func<Transform?>>() { parent });
+            else
+                CustomCards[thePlantType].Add(parent);
+        }
+
+        /// <summary>
+        /// 注册自定义卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型，父对象将在实例化时自动设置</param>
+        public static void RegisterCustomCard([NotNull]PlantType thePlantType)
+        {
+            if (!CustomCards.ContainsKey(thePlantType))
+                CustomCards.Add(thePlantType, new List<Func<Transform?>>()
+                {
+                    () =>
+                    {
+                        if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
+                        {
+                            try
+                            {
+                                Transform? parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages/Page1");
+                                return parent;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                return null;
+                            };
+                        }
+                        return null;
+                    }
+                });
+            else
+                CustomCards[thePlantType].Add(
+                    () =>
+                    {
+                        if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
+                        {
+                            try
+                            {
+                                Transform? parent = null;
+                                parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/Grid/SeedLibrary/Pages/Page1");
+                                return parent;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                return null;
+                            }
+                            ;
+                        }
+                        return null;
+                    });
+        }
+
+        /// <summary>
         /// 注册自定义僵尸
         /// </summary>
         /// <typeparam name="TBase">僵尸基类</typeparam>
@@ -603,14 +682,19 @@ namespace CustomizeLib.MelonLoader
             zombie.AddComponent<TBase>().theZombieType = id;
             zombie.AddComponent<TClass>();
 
-            CustomZombieTypes.Add(id);
-            CustomZombies.Add(id, (zombie, spriteId, new()
+            if (!CustomZombieTypes.Contains(id))
             {
-                theAttackDamage = theAttackDamage,
-                theFirstArmorMaxHealth = theFirstArmorMaxHealth,
-                theMaxHealth = theMaxHealth,
-                theSecondArmorMaxHealth = theSecondArmorMaxHealth
-            }));
+                CustomZombieTypes.Add(id);
+                CustomZombies.Add(id, (zombie, spriteId, new()
+                {
+                    theAttackDamage = theAttackDamage,
+                    theFirstArmorMaxHealth = theFirstArmorMaxHealth,
+                    theMaxHealth = theMaxHealth,
+                    theSecondArmorMaxHealth = theSecondArmorMaxHealth
+                }));
+            }
+            else
+                MelonLogger.Error($"Duplicate ZombieType: {id}");
         }
 
         /// <summary>
@@ -716,6 +800,11 @@ namespace CustomizeLib.MelonLoader
         public static Dictionary<PlantType, Action<Plant>> CustomUseFertilize { get; set; } = [];
 
         /// <summary>
+        /// 自定义卡牌列表
+        /// </summary>
+        public static Dictionary<PlantType, List<Func<Transform?>>> CustomCards { get; set; } = [];
+
+        /// <summary>
         /// 自定义僵尸列表
         /// </summary>
         public static Dictionary<ZombieType, (GameObject, int, ZombieData.ZombieData_)> CustomZombies { get; set; } = [];
@@ -749,5 +838,10 @@ namespace CustomizeLib.MelonLoader
         /// 换贴图协程对象
         /// </summary>
         public object? ReplaceTextureRoutine { get; set; } = null;
+
+        /// <summary>
+        /// 存卡片检查的列表，用于管理Packet显示，你不应该使用它
+        /// </summary>
+        public static List<CheckCardState> checkBehaviours = new List<CheckCardState>();
     }
 }

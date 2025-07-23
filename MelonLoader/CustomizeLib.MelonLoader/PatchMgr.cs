@@ -6,6 +6,8 @@ using MelonLoader.Utils;
 using System.Text.Json;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.Object;
 
 ///
 /// Specially credit to 暗影Dev
@@ -45,7 +47,7 @@ namespace CustomizeLib.MelonLoader
                 }
             }
 
-            UnityEngine.Object.Destroy(__instance.gameObject);
+            Destroy(__instance.gameObject);
         }
     }
 
@@ -565,13 +567,24 @@ namespace CustomizeLib.MelonLoader
     /// <summary>
     /// 点击其他Button，隐藏二创植物界面
     /// </summary>
-    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
+    [HarmonyPatch(typeof(UIButton))]
     public static class HideCustomPlantCards
     {
+        [HarmonyPatch(nameof(UIButton.OnMouseUpAsButton))]
         [HarmonyPostfix]
         private static void Postfix()
         {
             SelectCustomPlants.CloseCustomPlantCards();
+        }
+
+        [HarmonyPatch(nameof(UIButton.Start))]
+        [HarmonyPostfix]
+        public static void PostfixStart(UIButton __instance)
+        {
+            if (__instance.name == "LastPage" && Board.Instance != null && Board.Instance.isIZ)
+            {
+                SelectCustomPlants.InitCustomCards_IZ();
+            }
         }
     }
 
@@ -585,6 +598,34 @@ namespace CustomizeLib.MelonLoader
             if (GameAPP.theBoardType is (LevelType)66)
             {
                 __instance.ChangeString(T, CustomCore.CustomLevels[GameAPP.theBoardLevel].Name());
+            }
+        }
+
+        [HarmonyPatch(nameof(InGameUI.MoveCard))]
+        [HarmonyPrefix]
+        public static void PostMoveCard(ref CardUI card)
+        {
+            foreach (CheckCardState check in CustomCore.checkBehaviours)
+            {
+                if (check != null)
+                {
+                    check.movingCardUI = card.gameObject;
+                    check.CheckState();
+                }
+            }
+        }
+
+        [HarmonyPatch(nameof(InGameUI.RemoveCardFromBank))]
+        [HarmonyPostfix]
+        public static void PostReMoveCardFromBank(ref CardUI card)
+        {
+            foreach (CheckCardState check in CustomCore.checkBehaviours)
+            {
+                if (check != null)
+                {
+                    check.movingCardUI = card.gameObject;
+                    check.CheckState();
+                }
             }
         }
     }
@@ -878,6 +919,76 @@ namespace CustomizeLib.MelonLoader
             //为什么PostShowNormalCard会无限递归？？？
             //Grid
             __instance.transform.FindCardUIAndChangeSprite();
+        }
+
+        [HarmonyPatch(nameof(SeedLibrary.Start))]
+        [HarmonyPostfix]
+        public static void PostStart(SeedLibrary __instance)
+        {
+            // 注册自定义卡牌
+            GameObject? MyCard = Utils.GetCardGameObject();
+            // MelonLogger.Msg(MyCard == null);
+            if (MyCard == null)
+                return;
+            foreach (var card in CustomCore.CustomCards)
+            {
+                List<Transform?> parents = new List<Transform?>();
+                List<PlantType> cardsOnSeedBank = new List<PlantType>();
+                GameObject seedGroup = InGameUI.Instance.SeedBank.transform.GetChild(0).gameObject;
+                for (int i = 0; i < seedGroup.transform.childCount; i++)
+                {
+                    GameObject seed = seedGroup.transform.GetChild(i).gameObject;
+                    if (seed.transform.childCount > 0)
+                        cardsOnSeedBank.Add(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType);
+                }
+                foreach (Func<Transform?> cardFunc in card.Value)
+                {
+                    Transform? result = cardFunc();
+                    if (!parents.Contains(result))
+                    {
+                        GameObject TempCard = Instantiate(MyCard, result);
+                        if (TempCard != null)
+                        {
+                            //设置父节点
+                            //激活
+                            TempCard.SetActive(true);
+                            //设置位置
+                            TempCard.transform.position = MyCard.transform.position;
+                            TempCard.transform.localPosition = MyCard.transform.localPosition;
+                            TempCard.transform.localScale = MyCard.transform.localScale;
+                            TempCard.transform.localRotation = MyCard.transform.localRotation;
+                            //背景图片
+                            // 设置背景植物图标
+                            Image image = TempCard.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+                            image.sprite = GameAPP.resourcesManager.plantPreviews[card.Key].GetComponent<SpriteRenderer>().sprite;
+                            image.SetNativeSize();
+                            // 设置背景价格
+                            TempCard.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = PlantDataLoader.plantDatas[card.Key].field_Public_Int32_1.ToString();
+                            //卡片
+                            CardUI component = TempCard.transform.GetChild(1).GetComponent<CardUI>();
+                            component.gameObject.SetActive(true);
+                            //修改图片
+                            Mouse.Instance.ChangeCardSprite(card.Key, component);
+                            // 修改缩放
+                            RectTransform bgRect = TempCard.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
+                            RectTransform packetRect = TempCard.transform.GetChild(1).GetChild(0).GetComponent<RectTransform>();
+                            bgRect.localScale = packetRect.localScale;
+                            bgRect.sizeDelta = packetRect.sizeDelta;
+                            //设置数据
+                            component.thePlantType = card.Key;
+                            component.theSeedType = (int)card.Key;
+                            component.theSeedCost = PlantDataLoader.plantDatas[card.Key].field_Public_Int32_1;
+                            component.fullCD = PlantDataLoader.plantDatas[card.Key].field_Public_Single_2;
+                            if (cardsOnSeedBank.Contains(card.Key))
+                                TempCard.transform.GetChild(1).gameObject.SetActive(false);
+                            CheckCardState customComponent = TempCard.AddComponent<CheckCardState>();
+                            customComponent.card = TempCard;
+                            customComponent.cardType = component.thePlantType;
+                            parents.Add(cardFunc());
+                        }
+                    }
+                }
+            }
         }
     }
 

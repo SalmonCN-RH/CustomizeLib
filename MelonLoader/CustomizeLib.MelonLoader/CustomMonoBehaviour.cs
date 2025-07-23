@@ -149,3 +149,37 @@ public class CustomPlantMonoBehaviour : MonoBehaviour
     //public BulletType bulletType;
     public static Dictionary<PlantType, Dictionary<int, int>> BulletTypes = [];
 }
+
+// 跟踪自定义卡牌状态
+[RegisterTypeInIl2Cpp]
+public class CheckCardState : MonoBehaviour
+{
+    public GameObject? card = null;
+    public PlantType cardType = PlantType.Nothing;
+    public GameObject? movingCardUI = null;
+
+    public void Start()
+    {
+        CustomCore.checkBehaviours.Add(this);
+    }
+
+    public void CheckState()
+    {
+        List<PlantType> cardsOnSeedBank = new List<PlantType>();
+        GameObject seedGroup = InGameUI.Instance.SeedBank.transform.GetChild(0).gameObject;
+        for (int i = 0; i < seedGroup.transform.childCount; i++)
+        {
+            GameObject seed = seedGroup.transform.GetChild(i).gameObject;
+            if (seed.transform.childCount > 0)
+                cardsOnSeedBank.Add(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType);
+        }
+
+        if (card != movingCardUI && card.transform.childCount >= 2 && card.transform.GetChild(1).GetComponent<CardUI>().thePlantType == cardType)
+        {
+            if (cardsOnSeedBank.Contains(cardType))
+                card.transform.GetChild(1).gameObject.SetActive(false);
+            else
+                card.transform.GetChild(1).gameObject.SetActive(true);
+        }
+    }
+}
