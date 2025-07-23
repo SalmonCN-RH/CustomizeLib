@@ -691,6 +691,27 @@ namespace CustomizeLib.BepInEx
         }
 
         /// <summary>
+        /// 注册自定义卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型，父对象将在实例化时自动设置</param>
+        public static void RegisterCustomCardToColorfulCards([NotNull] PlantType thePlantType) => RegisterCustomCard(thePlantType, () =>
+        {
+            if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
+            {
+                try
+                {
+                    Transform? parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1");
+                    return parent;
+                }
+                catch (NullReferenceException)
+                {
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        /// <summary>
         /// 注册自定义僵尸
         /// </summary>
         /// <typeparam name="TBase">僵尸基类</typeparam>

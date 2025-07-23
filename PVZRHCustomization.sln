@@ -97,6 +97,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuffSuperGatling_BepInEx", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuffSuperSnowGatling_BepInEx", "BepInEx\PuffSuperSnowGatling_BepInEx\PuffSuperSnowGatling_BepInEx\PuffSuperSnowGatling_BepInEx.csproj", "{FB0BBCB0-CF98-AF0F-0ADA-C953EBE75E1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoroCat", "MelonLoader\DoroCat\DoroCat\DoroCat.csproj", "{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -275,6 +277,10 @@ Global
 		{FB0BBCB0-CF98-AF0F-0ADA-C953EBE75E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB0BBCB0-CF98-AF0F-0ADA-C953EBE75E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB0BBCB0-CF98-AF0F-0ADA-C953EBE75E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
