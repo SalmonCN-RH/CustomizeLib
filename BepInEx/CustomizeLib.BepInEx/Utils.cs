@@ -709,6 +709,50 @@ namespace CustomizeLib.BepInEx
         public static bool IsNotNull<T>(this T obj) => obj is not null;
 
         public static LevelType CustomLevelType => (LevelType)66;
+
+        public static GameObject? GetCardGameObject()
+        {
+            if (InGameUI.Instance is not null && !Board.Instance.isIZ)
+            {
+                GameObject? MyPage = null;
+                GameObject? MyCard = null;
+                int value = 0;
+                try
+                {
+                    MyCard = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1/CattailGirl").gameObject;
+                }
+                catch (NullReferenceException)
+                {
+                    SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
+                }
+                if (MyCard.transform.childCount < 2)
+                    SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
+                if (MyCard == null)
+                    return null;
+                return MyCard;
+            }
+            else if (Board.Instance is not null && Board.Instance.isIZ)
+            {
+
+                GameObject? MyPage = null;
+                GameObject? MyCard = null;
+                int value = 0;
+                try
+                {
+                    MyCard = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards/Page1/CattailGirl").gameObject;
+                }
+                catch (NullReferenceException)
+                {
+                    SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
+                }
+                if (MyCard.transform.childCount < 2)
+                    SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
+                if (MyCard == null)
+                    return null;
+                return MyCard;
+            }
+            return null;
+        }
     }
 
     // json对象

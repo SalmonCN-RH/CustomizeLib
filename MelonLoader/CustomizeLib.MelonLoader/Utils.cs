@@ -101,12 +101,6 @@ namespace CustomizeLib.MelonLoader
         public int WaterZombie { get; set; } = -1;
     }
 
-    public enum CardType
-    {
-        NormalCard = 0,   // 普通卡
-        ColorfulCard = 1  // 彩卡（只能选一次）
-    }
-
     public static class Extensions
     {
         /// <summary>
