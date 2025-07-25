@@ -235,6 +235,7 @@ namespace CustomizeLib.BepInEx
                         //修改图片
                         Mouse.Instance.ChangeCardSprite(plantTypes[i], component);
                         // 修改缩放
+                        TempCard.transform.GetChild(1).GetComponent<BoxCollider2D>().enabled = true;
                         RectTransform bgRect = TempCard.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
                         RectTransform packetRect = TempCard.transform.GetChild(1).GetChild(0).GetComponent<RectTransform>();
                         bgRect.localScale = packetRect.localScale;
