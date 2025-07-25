@@ -183,6 +183,19 @@ namespace CustomizeLib.BepInEx
             }
         }
 
+        public static AssetBundle GetAssetBundleFromPath(String path, String name)
+        {
+            try
+            {
+                AssetBundleCreateRequest ab = AssetBundle.LoadFromFileAsync(path);
+                Instance.Value.Log.LogInfo($"Successfully load AssetBundle {name}.");
+                return ab.assetBundle;
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException($"Failed to load {name} \n{e}");
+            }
+        }
         public static void PlaySound(AudioClip audio, float volume = 1.0f)
         {
             GameObject soundObj = new("SoundPlayer");
@@ -620,7 +633,7 @@ namespace CustomizeLib.BepInEx
         /// </summary>
         /// <param name="thePlantType">植物类型</param>
         /// <param name="parent">父对象，所有Func的返回值都应为想要设置的父对象</param>
-        public static void RegisterCustomCard([NotNull]PlantType thePlantType, [NotNull]List<Func<Transform?>> parent)
+        public static void RegisterCustomCard([NotNull] PlantType thePlantType, [NotNull] List<Func<Transform?>> parent)
         {
             if (!CustomCards.ContainsKey(thePlantType))
                 CustomCards.Add(thePlantType, parent);
@@ -632,84 +645,57 @@ namespace CustomizeLib.BepInEx
         /// <summary>
         /// 注册自定义卡牌
         /// </summary>
-        /// <param name="thePlantType">植物类型</param>
-        /// <param name="parent">父对象，返回值应为想要设置的父对象</param>
-        public static void RegisterCustomCard([NotNull]PlantType thePlantType, [NotNull]Func<Transform> parent)
-        {
-            if (!CustomCards.ContainsKey(thePlantType))
-                CustomCards.Add(thePlantType, new List<Func<Transform?>>() { parent });
-            else
-                CustomCards[thePlantType].Add(parent);
-        }
-
-        /// <summary>
-        /// 注册自定义卡牌
-        /// </summary>
         /// <param name="thePlantType">植物类型，父对象将在实例化时自动设置</param>
-        public static void RegisterCustomCard([NotNull]PlantType thePlantType)
+        public static void RegisterCustomCard([NotNull] PlantType thePlantType)
         {
             if (!CustomCards.ContainsKey(thePlantType))
                 CustomCards.Add(thePlantType, new List<Func<Transform?>>()
                 {
-                    () =>
-                    {
-                        if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
-                        {
-                            try
-                            {
-                                Transform? parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages/Page1");
-                                return parent;
-                            }
-                            catch (NullReferenceException)
-                            {
-                                return null;
-                            };
-                        }
-                        return null;
-                    }
+                    () => Utils.GetNormalCardParent()
                 });
             else
                 CustomCards[thePlantType].Add(
-                    () =>
-                    {
-                        if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
-                        {
-                            try
-                            {
-                                Transform? parent = null;
-                                parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/Grid/SeedLibrary/Pages/Page1");
-                                return parent;
-                            }
-                            catch (NullReferenceException)
-                            {
-                                return null;
-                            }
-                            ;
-                        }
-                        return null;
-                    });
+                    () => Utils.GetNormalCardParent());
         }
 
         /// <summary>
         /// 注册自定义卡牌
         /// </summary>
         /// <param name="thePlantType">植物类型，父对象将在实例化时自动设置</param>
-        public static void RegisterCustomCardToColorfulCards([NotNull] PlantType thePlantType) => RegisterCustomCard(thePlantType, () =>
+        public static void RegisterCustomCardToColorfulCards([NotNull] PlantType thePlantType) => RegisterCustomCard(thePlantType, new List<Func<Transform?>>
         {
-            if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
-            {
-                try
-                {
-                    Transform? parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1");
-                    return parent;
-                }
-                catch (NullReferenceException)
-                {
-                    return null;
-                }
-            }
-            return null;
+            () => Utils.GetColorfulCardParent()
         });
+
+        /// <summary>
+        /// 注册自定义普通卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型</param>
+        /// <param name="parent">父对象，所有Func的返回值都应为想要设置的父对象</param>
+        public static void RegisterCustomNormalCard([NotNull] PlantType thePlantType, List<Func<Transform?>> parent)
+        {
+            if (!CustomNormalCards.ContainsKey(thePlantType))
+                CustomNormalCards.Add(thePlantType, parent);
+            else
+                foreach (Func<Transform?> action in parent)
+                    CustomNormalCards[thePlantType].Add(action);
+        }
+
+        /// <summary>
+        /// 注册自定义普通卡牌
+        /// </summary>
+        /// <param name="thePlantType">植物类型，父对象将在实例化时自动设置</param>
+        public static void RegisterCustomNormalCard([NotNull] PlantType thePlantType)
+        {
+            if (!CustomNormalCards.ContainsKey(thePlantType))
+                CustomNormalCards.Add(thePlantType, new List<Func<Transform?>>()
+                {
+                    () => Utils.GetNormalCardParent()
+                });
+            else
+                CustomNormalCards[thePlantType].Add(
+                    () => Utils.GetNormalCardParent());
+        }
 
         /// <summary>
         /// 注册自定义僵尸
@@ -816,9 +802,14 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<PlantType, Action<Plant>> CustomUseFertilize { get; set; } = [];
 
         /// <summary>
-        /// 自定义卡牌列表
+        /// 自定义彩色卡牌列表
         /// </summary>
         public static Dictionary<PlantType, List<Func<Transform?>>> CustomCards { get; set; } = [];
+
+        /// <summary>
+        /// 自定义普通卡牌列表
+        /// </summary>
+        public static Dictionary<PlantType, List<Func<Transform?>>> CustomNormalCards { get; set; } = [];
 
         public static Dictionary<ZombieType, (GameObject, int, ZombieData.ZombieData_)> CustomZombies { get; set; } = [];
 

@@ -23,23 +23,7 @@ namespace DoroCat
             CustomCore.RegisterCustomPlant<CattailPlant, DoroCat>(DoroCat.PlantID, ab.GetAsset<GameObject>("DoroCatPrefab"),
                 ab.GetAsset<GameObject>("DoroCatPreview"), [], 1.5f, 0, 150, 300, 30f, 325);
             CustomCore.AddPlantAlmanacStrings(DoroCat.PlantID, $"Doro({DoroCat.PlantID})", "发射子弹驱逐一般僵尸，对于无法驱逐的僵尸造成8倍伤害\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>150/1200*2/1.5秒</color>\n\n<color=#3D1400>哦润吉汁水丰富，气味芬香，便宜，也十分好保存。Doro曾想把哦润吉分享给僵尸们，最终都以僵尸快速远离而收尾。或许那群食脑者都不明白哦润吉的美味？</color>");
-            CustomCore.RegisterCustomCard((PlantType)DoroCat.PlantID,
-                () =>
-                {
-                    if (Board.Instance != null && !Board.Instance.isIZ && InGameUI.Instance != null)
-                    {
-                        try
-                        {
-                            Transform? parent = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1");
-                            return parent;
-                        }
-                        catch (NullReferenceException)
-                        {
-                            return null;
-                        }
-                    }
-                    return null;
-                });
+            CustomCore.RegisterCustomCardToColorfulCards((PlantType)DoroCat.PlantID);
             CreateWhiteListZombieFile();
         }
 

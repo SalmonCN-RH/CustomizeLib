@@ -127,37 +127,38 @@ namespace CustomizeLib.BepInEx
                 GameObject? MyPage = null;
                 GameObject? MyCard = null;
                 int index = 0;
-                try
+                if (Board.Instance != null && !Board.Instance.isIZ)
                 {
-                    //使用彩色植物界面创建二创植物界面
-                    if (Board.Instance != null && !Board.Instance.isIZ)
-                    {
-                        MyPageParent = Instantiate(
-                            InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards")
-                                .gameObject
-                                .gameObject, InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid"));
-                        MyPageParent.gameObject.SetActive(true);
-                        MyPage = MyPageParent.transform.GetChild(0).gameObject;
-                        MyPage.gameObject.SetActive(true);
-                        MyCard = MyPage.transform.GetChild(0).gameObject;
-                        MyCard.gameObject.SetActive(false);
-                    }
-                    else if (Board.Instance != null && Board.Instance.isIZ)
-                    {
-                        MyPageParent = Instantiate(
-                            IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards").gameObject,
-                            IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid"));
-                        MyPageParent.gameObject.SetActive(true);
-                        MyPage = MyPageParent.transform.GetChild(0).gameObject;
-                        MyPage.gameObject.SetActive(true);
-                        MyCard = MyPage.transform.GetChild(0).gameObject;
-                        MyCard.gameObject.SetActive(false);
-                    }
+                    MyPageParent = Instantiate(
+                        InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards")
+                            .gameObject
+                            .gameObject, InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid"));
+                    MyPageParent.gameObject.SetActive(true);
+                    MyPage = MyPageParent.transform.GetChild(0).gameObject;
+                    MyPage.gameObject.SetActive(true);
+                    MyCard = MyPage.transform.GetChild(0).gameObject;
+                    MyCard.gameObject.SetActive(false);
                 }
-                catch (NullReferenceException)
+                else if (Board.Instance != null && Board.Instance.isIZ)
                 {
-                    GetCardGUI(ref MyPage, ref MyCard, ref index);
+                    MyPageParent = Instantiate(
+                        IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards").gameObject,
+                        IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid"));
+                    MyPageParent.gameObject.SetActive(true);
+                    MyPage = MyPageParent.transform.GetChild(0).gameObject;
+                    MyPage.gameObject.SetActive(true);
+                    MyCard = MyPage.transform.GetChild(0).gameObject;
+                    MyCard.gameObject.SetActive(false);
                 }
+                /*                try
+                                {
+                                    //使用彩色植物界面创建二创植物界面
+
+                                }
+                                catch (NullReferenceException)
+                                {
+                                    GetCardGUI(ref MyPage, ref MyCard, ref index);
+                                }*/
                 if (MyPage == null)
                     throw new NullReferenceException("找不到Page");
                 if (MyCard == null)
@@ -305,7 +306,7 @@ namespace CustomizeLib.BepInEx
             }
         }
 
-        public static void GetCardGUI(ref GameObject MyPage, ref GameObject MyCard, ref int Index)
+        /*public static void GetCardGUI(ref GameObject MyPage, ref GameObject MyCard, ref int Index)
         {
             if (Board.Instance != null && !Board.Instance.isIZ)
             {
@@ -403,7 +404,7 @@ namespace CustomizeLib.BepInEx
                         continue;
                 }
             }
-        }
+        }*/
 
         public static int CardInPage => 6 * 9;
 

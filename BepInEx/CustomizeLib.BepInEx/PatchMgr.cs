@@ -577,13 +577,13 @@ namespace CustomizeLib.BepInEx
 
         [HarmonyPatch(nameof(InGameUI.MoveCard))]
         [HarmonyPrefix]
-        public static void PostMoveCard(ref CardUI card)
+        public static void PreMoveCard(ref CardUI card)
         {
             foreach (CheckCardState check in CustomCore.checkBehaviours)
             {
                 if (check != null)
                 {
-                    check.movingCardUI = card.gameObject;
+                    check.movingCardUI = card;
                     check.CheckState();
                 }
             }
@@ -597,7 +597,7 @@ namespace CustomizeLib.BepInEx
             {
                 if (check != null)
                 {
-                    check.movingCardUI = card.gameObject;
+                    check.movingCardUI = card;
                     check.CheckState();
                 }
             }
@@ -873,37 +873,49 @@ namespace CustomizeLib.BepInEx
         public static void PostStart(SeedLibrary __instance)
         {
             // 注册自定义卡牌
-            GameObject? MyCard = Utils.GetCardGameObject();
-            // MelonLogger.Msg(MyCard == null);
-            if (MyCard == null)
+            GameObject? MyColorfulCard = Utils.GetColorfulCardGameObject();
+            Dictionary<PlantType, List<Transform?>> parents_colorful = new Dictionary<PlantType, List<Transform?>>();
+            List<PlantType> cardsOnSeedBank = new List<PlantType>();
+            Dictionary<PlantType, List<bool>> cardsOnSeedBankExtra = new Dictionary<PlantType, List<bool>>();
+            GameObject? seedGroup = null;
+            if (Board.Instance != null && !Board.Instance.isIZ)
+                seedGroup = InGameUI.Instance.SeedBank.transform.GetChild(0).gameObject;
+            else if (Board.Instance != null && Board.Instance.isIZ)
+                seedGroup = InGameUI_IZ.Instance.transform.FindChild("SeedBank/SeedGroup").gameObject;
+            if (seedGroup == null)
+                return;
+            for (int i = 0; i < seedGroup.transform.childCount; i++)
+            {
+                GameObject seed = seedGroup.transform.GetChild(i).gameObject;
+                if (seed.transform.childCount > 0)
+                {
+                    cardsOnSeedBank.Add(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType);
+                    if (!cardsOnSeedBankExtra.ContainsKey(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType))
+                        cardsOnSeedBankExtra.Add(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType, new List<bool>() { seed.transform.GetChild(0).GetComponent<CardUI>().isExtra });
+                    else
+                        cardsOnSeedBankExtra[seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType].Add(seed.transform.GetChild(0).GetComponent<CardUI>().isExtra);
+                }
+            }
+            if (MyColorfulCard == null)
                 return;
             foreach (var card in CustomCore.CustomCards)
             {
-                List<Transform?> parents = new List<Transform?>();
-                List<PlantType> cardsOnSeedBank = new List<PlantType>();
-                GameObject seedGroup = InGameUI.Instance.SeedBank.transform.GetChild(0).gameObject;
-                for (int i = 0; i < seedGroup.transform.childCount; i++)
-                {
-                    GameObject seed = seedGroup.transform.GetChild(i).gameObject;
-                    if (seed.transform.childCount > 0)
-                        cardsOnSeedBank.Add(seed.transform.GetChild(0).GetComponent<CardUI>().thePlantType);
-                }
                 foreach (Func<Transform?> cardFunc in card.Value)
                 {
                     Transform? result = cardFunc();
-                    if (!parents.Contains(result))
+                    if (!(parents_colorful.ContainsKey(card.Key) && parents_colorful[card.Key].Contains(result)))
                     {
-                        GameObject TempCard = Instantiate(MyCard, result);
+                        GameObject TempCard = Instantiate(MyColorfulCard, result);
                         if (TempCard != null)
                         {
                             //设置父节点
                             //激活
                             TempCard.SetActive(true);
                             //设置位置
-                            TempCard.transform.position = MyCard.transform.position;
-                            TempCard.transform.localPosition = MyCard.transform.localPosition;
-                            TempCard.transform.localScale = MyCard.transform.localScale;
-                            TempCard.transform.localRotation = MyCard.transform.localRotation;
+                            TempCard.transform.position = MyColorfulCard.transform.position;
+                            TempCard.transform.localPosition = MyColorfulCard.transform.localPosition;
+                            TempCard.transform.localScale = MyColorfulCard.transform.localScale;
+                            TempCard.transform.localRotation = MyColorfulCard.transform.localRotation;
                             //背景图片
                             // 设置背景植物图标
                             Image image = TempCard.transform.GetChild(0).GetChild(0).GetComponent<Image>();
@@ -931,7 +943,79 @@ namespace CustomizeLib.BepInEx
                             CheckCardState customComponent = TempCard.AddComponent<CheckCardState>();
                             customComponent.card = TempCard;
                             customComponent.cardType = component.thePlantType;
-                            parents.Add(cardFunc());
+                            if (!parents_colorful.ContainsKey(card.Key))
+                                parents_colorful.Add(card.Key, new List<Transform?>() { result });
+                            else
+                                parents_colorful[card.Key].Add(result);
+                        }
+                    }
+                }
+            }
+
+            GameObject? MyNormalCard = Utils.GetNormalCardGameObject();
+            Dictionary<PlantType, List<Transform?>> parents_normal = new Dictionary<PlantType, List<Transform?>>();
+            if (MyNormalCard == null)
+                return;
+            foreach (var card in CustomCore.CustomNormalCards)
+            {
+                foreach (Func<Transform?> cardFunc in card.Value)
+                {
+                    Transform? result = cardFunc();
+                    if (!(parents_normal.ContainsKey(card.Key) && parents_normal[card.Key].Contains(result)))
+                    {
+                        GameObject TempCard = Instantiate(MyNormalCard, result);
+                        if (TempCard != null)
+                        {
+                            //设置父节点
+                            //激活
+                            TempCard.SetActive(true);
+                            //设置位置
+                            TempCard.transform.position = MyNormalCard.transform.position;
+                            TempCard.transform.localPosition = MyNormalCard.transform.localPosition;
+                            TempCard.transform.localScale = MyNormalCard.transform.localScale;
+                            TempCard.transform.localRotation = MyNormalCard.transform.localRotation;
+                            //背景图片
+                            // 设置背景植物图标
+                            Image image = TempCard.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+                            image.sprite = GameAPP.resourcesManager.plantPreviews[card.Key].GetComponent<SpriteRenderer>().sprite;
+                            image.SetNativeSize();
+                            // 设置背景价格
+                            TempCard.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = PlantDataLoader.plantDatas[card.Key].field_Public_Int32_1.ToString();
+                            //卡片
+                            CardUI component = TempCard.transform.GetChild(2).GetComponent<CardUI>(); // 主卡
+                            component.gameObject.SetActive(true);
+                            CardUI component1 = TempCard.transform.GetChild(1).GetComponent<CardUI>(); // 副卡
+                            component1.gameObject.SetActive(true);
+                            //修改图片
+                            Mouse.Instance.ChangeCardSprite(card.Key, component);
+                            Mouse.Instance.ChangeCardSprite(card.Key, component1);
+                            // 修改缩放
+                            RectTransform bgRect = TempCard.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
+                            RectTransform packetRect = TempCard.transform.GetChild(2).GetChild(0).GetComponent<RectTransform>();
+                            bgRect.localScale = packetRect.localScale;
+                            bgRect.sizeDelta = packetRect.sizeDelta;
+                            //设置数据
+                            component.thePlantType = card.Key;
+                            component.theSeedType = (int)card.Key;
+                            component.theSeedCost = PlantDataLoader.plantDatas[card.Key].field_Public_Int32_1;
+                            component.fullCD = PlantDataLoader.plantDatas[card.Key].field_Public_Single_2;
+                            //设置副卡数据
+                            component1.thePlantType = card.Key;
+                            component1.theSeedType = (int)card.Key;
+                            component1.theSeedCost = PlantDataLoader.plantDatas[card.Key].field_Public_Int32_1 * 2;
+                            component1.fullCD = PlantDataLoader.plantDatas[card.Key].field_Public_Single_2;
+                            if (cardsOnSeedBankExtra.ContainsKey(card.Key) && cardsOnSeedBankExtra[card.Key].Contains(true))
+                                TempCard.transform.GetChild(1).gameObject.SetActive(false);
+                            if (cardsOnSeedBankExtra.ContainsKey(card.Key) && cardsOnSeedBankExtra[card.Key].Contains(false))
+                                TempCard.transform.GetChild(2).gameObject.SetActive(false);
+                            CheckCardState customComponent = TempCard.AddComponent<CheckCardState>();
+                            customComponent.card = TempCard;
+                            customComponent.cardType = component.thePlantType;
+                            customComponent.isNormalCard = true;
+                            if (!parents_normal.ContainsKey(card.Key))
+                                parents_normal.Add(card.Key, new List<Transform?>() { result });
+                            else
+                                parents_normal[card.Key].Add(result);
                         }
                     }
                 }

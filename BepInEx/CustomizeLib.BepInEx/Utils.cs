@@ -710,16 +710,20 @@ namespace CustomizeLib.BepInEx
 
         public static LevelType CustomLevelType => (LevelType)66;
 
-        public static GameObject? GetCardGameObject()
+        /// <summary>
+        /// 获取卡牌GameObject
+        /// </summary>
+        /// <returns>卡牌GameObject，Child 0:PacketBg背景图，Child 1：默认展示，1有CardUI组件</returns>
+        public static GameObject? GetColorfulCardGameObject()
         {
-            if (InGameUI.Instance is not null && !Board.Instance.isIZ)
+            if (Board.Instance is not null && !Board.Instance.isIZ)
             {
-                GameObject? MyPage = null;
                 GameObject? MyCard = null;
-                int value = 0;
+                MyCard = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1/CattailGirl").gameObject;
+                /*int value = 0;
+                GameObject? MyPage = null;
                 try
                 {
-                    MyCard = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1/CattailGirl").gameObject;
                 }
                 catch (NullReferenceException)
                 {
@@ -728,18 +732,19 @@ namespace CustomizeLib.BepInEx
                 if (MyCard.transform.childCount < 2)
                     SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
                 if (MyCard == null)
-                    return null;
+                    return null;*/
                 return MyCard;
             }
             else if (Board.Instance is not null && Board.Instance.isIZ)
             {
 
-                GameObject? MyPage = null;
                 GameObject? MyCard = null;
-                int value = 0;
+                MyCard = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards/Page1/CattailGirl").gameObject;
+                /*int value = 0;
+                GameObject? MyPage = null;
                 try
                 {
-                    MyCard = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards/Page1/CattailGirl").gameObject;
+                    
                 }
                 catch (NullReferenceException)
                 {
@@ -748,8 +753,59 @@ namespace CustomizeLib.BepInEx
                 if (MyCard.transform.childCount < 2)
                     SelectCustomPlants.GetCardGUI(ref MyPage, ref MyCard, ref value);
                 if (MyCard == null)
-                    return null;
+                    return null;*/
                 return MyCard;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 获取卡牌GameObject
+        /// </summary>
+        /// <returns>卡牌GameObject，Child 0:PacketBg背景图，Child 1:二次选卡，Child 2：默认展示，12均有CardUI组件</returns>
+        public static GameObject? GetNormalCardGameObject()
+        {
+            if (Board.Instance is not null && !Board.Instance.isIZ)
+            {
+                GameObject? MyCard = null;
+                MyCard = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages/Page1/PeaShooter").gameObject;
+                return MyCard;
+            }
+            else if (Board.Instance is not null && Board.Instance.isIZ)
+            {
+                GameObject? MyCard = null;
+                MyCard = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/Pages/Page1/PeaShooter").gameObject;
+                return MyCard;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 获取彩卡选卡父级
+        /// </summary>
+        /// <returns></returns>
+        public static Transform? GetColorfulCardParent()
+        {
+            if (Board.Instance != null && !Board.Instance.isIZ)
+            {
+                return InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards/Page1");
+            }
+            else if (Board.Instance != null && Board.Instance.isIZ)
+            {
+                return IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards/Page1");
+            }
+            return null;
+        }
+
+        public static Transform? GetNormalCardParent()
+        {
+            if (Board.Instance != null && !Board.Instance.isIZ)
+            {
+                return InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages/Page1");
+            }
+            else if (Board.Instance != null && Board.Instance.isIZ)
+            {
+                return IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/Pages/Page1");
             }
             return null;
         }
