@@ -740,11 +740,11 @@ namespace CustomizeLib.BepInEx
         public static void RegisterSuperSkill([NotNull] int id, [NotNull] Func<Plant, int> cost,
             [NotNull] Action<Plant> skill) => SuperSkills.Add((PlantType)id, (cost, skill));
 
-        /// <summary>
+        /*/// <summary>
         /// 添加作者名，在局内显示
         /// </summary>
         /// <param name="name">作者名</param>
-        public static void AddAuthor(String name) => authors.Add(name);
+        public static void AddAuthor(String name) => authors.Add(name);*/
 
         public void LateInit()
         {
@@ -834,10 +834,10 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<PlantType, (Func<Plant, int>, Action<Plant>)> SuperSkills { get; set; } = [];
         public static Dictionary<ZombieType, (string, string)> ZombiesAlmanac { get; set; } = [];
 
-        /// <summary>
+        /*/// <summary>
         /// 作者名称列表
         /// </summary>
-        public static HashSet<String> authors = new HashSet<string>();
+        public static HashSet<String> authors = new HashSet<string>();*/
 
         /// <summary>
         /// 存卡片检查的列表，用于管理Packet显示，你不应该使用它

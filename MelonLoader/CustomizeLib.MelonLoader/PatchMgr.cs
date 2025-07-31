@@ -1093,7 +1093,7 @@ namespace CustomizeLib.MelonLoader
         }
     }
 
-    /// <summary>
+    /*/// <summary>
     /// 进入一局游戏，显示作者
     /// </summary>
     [HarmonyPatch(typeof(UIDifficulty), nameof(UIDifficulty.Start))]
@@ -1124,7 +1124,7 @@ namespace CustomizeLib.MelonLoader
                 author.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 50);
             }
         }
-    }
+    }*/
 
     /// <summary>
     /// 点击换肤

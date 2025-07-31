@@ -1037,45 +1037,45 @@ namespace CustomizeLib.BepInEx
         {
             SelectCustomPlants.InitCustomCards();
         }
+    }
 
-
-        /// <summary>
-        /// 进入一局游戏，显示作者
-        /// </summary>
-        [HarmonyPatch(typeof(UIDifficulty), nameof(UIDifficulty.Start))]
-        public static class ShowAuthor
+    /*/// <summary>
+    /// 进入一局游戏，显示作者
+    /// </summary>
+    [HarmonyPatch(typeof(UIDifficulty), nameof(UIDifficulty.Start))]
+    public static class ShowAuthor
+    {
+        [HarmonyPostfix]
+        private static void Postfix(UIDifficulty __instance)
         {
-            [HarmonyPostfix]
-            private static void Postfix(UIDifficulty __instance)
+            if (__instance.transform.FindChild("Author") == null && __instance.name == "Difficulty")
             {
-                if (__instance.transform.FindChild("Author") == null && __instance.name == "Difficulty")
+                GameObject author = new GameObject("Author");
+                TextMeshProUGUI text = author.AddComponent<TextMeshProUGUI>();
+                text.font = Resources.Load<TMP_FontAsset>("Fonts/ContinuumBold SDF");
+                text.color = Color.cyan;
+                StringBuilder showText = new StringBuilder("CustomizeLib作者:@MC屑鱼\n" +
+                    "原作者@Infinite75已停更\n" +
+                    "当前环境二创Mod作者:");
+                foreach (String str in CustomCore.authors)
                 {
-                    GameObject author = new GameObject("Author");
-                    TextMeshProUGUI text = author.AddComponent<TextMeshProUGUI>();
-                    text.font = Resources.Load<TMP_FontAsset>("Fonts/ContinuumBold SDF");
-                    text.color = Color.cyan;
-                    StringBuilder showText = new StringBuilder("CustomizeLib作者:MC屑鱼\n" +
-                        "原作者Infinite75已停更\n" +
-                        "当前环境二创Mod作者:");
-                    foreach (String str in CustomCore.authors)
-                    {
-                        showText.Append($"\n{str},");
-                    }
-                    int length = showText.ToString().Split('\n').Length;
-                    showText.Remove(showText.Length - 1, 1);
-                    text.text = showText.ToString();
-                    text.transform.SetParent(__instance.transform);
-                    text.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-                    author.transform.localPosition = new Vector3(60, 50 + (length - 2) * 15, 0);
-                    author.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 50);
+                    showText.Append($"\n@{str},");
                 }
+                int length = showText.ToString().Split('\n').Length;
+                showText.Remove(showText.Length - 1, 1);
+                text.text = showText.ToString();
+                text.transform.SetParent(__instance.transform);
+                text.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+                author.transform.localPosition = new Vector3(60, 50 + (length - 2) * 15, 0);
+                author.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 50);
             }
         }
+    }*/
 
-        /// <summary>
-        /// 点击换肤
-        /// </summary>
-        [HarmonyPatch(typeof(SkinButton), nameof(SkinButton.OnMouseUpAsButton))]
+    /// <summary>
+    /// 点击换肤
+    /// </summary>
+    [HarmonyPatch(typeof(SkinButton), nameof(SkinButton.OnMouseUpAsButton))]
     public static class SkinButton_OnMouseUpAsButton
     {
         [HarmonyPrefix]
