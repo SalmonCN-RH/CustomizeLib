@@ -740,6 +740,13 @@ namespace CustomizeLib.BepInEx
         public static void RegisterSuperSkill([NotNull] int id, [NotNull] Func<Plant, int> cost,
             [NotNull] Action<Plant> skill) => SuperSkills.Add((PlantType)id, (cost, skill));
 
+
+        /// <summary>
+        /// 添加自定义究极植物
+        /// </summary>
+        /// <param name="plantType">要设为究极植物的植物类型</param>
+        public static void AddUltimatePlant([NotNull] PlantType plantType) => CustomUltimatePlants.Add(plantType);
+
         /*/// <summary>
         /// 添加作者名，在局内显示
         /// </summary>
@@ -833,6 +840,11 @@ namespace CustomizeLib.BepInEx
         public static CoroutineRunner? ReplaceTextureRoutine { get; set; } = null;
         public static Dictionary<PlantType, (Func<Plant, int>, Action<Plant>)> SuperSkills { get; set; } = [];
         public static Dictionary<ZombieType, (string, string)> ZombiesAlmanac { get; set; } = [];
+
+        /// <summary>
+        /// 自定义究极植物列表
+        /// </summary>
+        public static List<PlantType> CustomUltimatePlants { get; set; } = [];
 
         /*/// <summary>
         /// 作者名称列表

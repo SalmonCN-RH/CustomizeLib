@@ -99,6 +99,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuffSuperSnowGatling_BepInE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoroCat", "MelonLoader\DoroCat\DoroCat\DoroCat.csproj", "{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarlicSuperGatling.BepInEx", "BepInEx\GarlicSuperGatling.BepInEx\GarlicSuperGatling.BepInEx.csproj", "{F9D6AE90-3CC7-405B-A1FA-FB8A94CBA73C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarlicSuperGatling", "MelonLoader\GarlicSuperGatling\GarlicSuperGatling\GarlicSuperGatling.csproj", "{BE17ABF1-540B-6508-EA53-34C7F962AB58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateWinterMelon", "MelonLoader\UltimateWinterMelon\UltimateWinterMelon\UltimateWinterMelon.csproj", "{C68F4E00-FC5C-0AFF-386D-278251812F78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateMachineChomper", "MelonLoader\UltimateMachineChomper\UltimateMachineChomper\UltimateMachineChomper.csproj", "{079B5FD4-C7F6-4E6F-3713-D4139C981180}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -281,6 +289,22 @@ Global
 		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3C33CCA-6CF9-0DB1-7778-A969C1970F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9D6AE90-3CC7-405B-A1FA-FB8A94CBA73C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9D6AE90-3CC7-405B-A1FA-FB8A94CBA73C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9D6AE90-3CC7-405B-A1FA-FB8A94CBA73C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9D6AE90-3CC7-405B-A1FA-FB8A94CBA73C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE17ABF1-540B-6508-EA53-34C7F962AB58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE17ABF1-540B-6508-EA53-34C7F962AB58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE17ABF1-540B-6508-EA53-34C7F962AB58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE17ABF1-540B-6508-EA53-34C7F962AB58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68F4E00-FC5C-0AFF-386D-278251812F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68F4E00-FC5C-0AFF-386D-278251812F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68F4E00-FC5C-0AFF-386D-278251812F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68F4E00-FC5C-0AFF-386D-278251812F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079B5FD4-C7F6-4E6F-3713-D4139C981180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079B5FD4-C7F6-4E6F-3713-D4139C981180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079B5FD4-C7F6-4E6F-3713-D4139C981180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079B5FD4-C7F6-4E6F-3713-D4139C981180}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

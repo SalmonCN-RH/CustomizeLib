@@ -479,14 +479,78 @@ namespace CustomizeLib.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(CreatePlant), "SetPlant")]
+    /// <summary>
+    /// 为二创植物附加植物特性
+    /// </summary>
+    [HarmonyPatch(typeof(CreatePlant))]
     public static class CreatePlantPatch
     {
-        public static void Postfix(ref GameObject __result)
+        [HarmonyPatch(nameof(CreatePlant.SetPlant))]
+        [HarmonyPostfix]
+        public static void Postfix(CreatePlant __instance, ref int newColumn, ref int newRow, ref GameObject __result)
         {
-            if (__result is not null && __result.TryGetComponent<Plant>(out var plant) && CustomCore.CustomPlantTypes.Contains(plant.thePlantType))
+            if (__result is not null && __result.TryGetComponent<Plant>(out var plant) &&
+                CustomCore.CustomPlantTypes.Contains(plant.thePlantType))
             {
                 TypeMgr.GetPlantTag(plant);
+            }
+        }
+
+        [HarmonyPatch(nameof(CreatePlant.LimTravel))]
+        [HarmonyPostfix]
+        public static void Postfix_LimTravel(CreatePlant __instance, ref PlantType theSeedType, ref bool __result)
+        {
+            bool isCanSet = false;
+            if (TravelMgr.Instance != null && TravelMgr.Instance.ulockTemp.Contains(theSeedType))
+                isCanSet = true;
+            if (__instance.board.boardTag.enableAllTravelPlant || __instance.board.boardTag.enableTravelPlant || __instance.board.boardTag.isTravel)
+                isCanSet = true;
+
+            if (CustomCore.CustomUltimatePlants.Contains(theSeedType) && !isCanSet)
+            {
+                __result = true;
+                InGameText.Instance.ShowText("该配方仅旅行生存系列或深渊可用", 3f, false);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Lawnf))]
+    public class LawnfPatch
+    {
+        [HarmonyPatch(nameof(Lawnf.GetUpgradedPlantCost))]
+        [HarmonyPrefix]
+        public static bool Prefix(ref PlantType thePlantType, ref int targetLevel, ref int __result)
+        {
+            if (CustomCore.CustomUltimatePlants.Contains(thePlantType))
+            {
+                __result = 1500 * (targetLevel) * (targetLevel + 1) / 2;
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(nameof(Lawnf.IsUltiPlant))]
+        [HarmonyPrefix]
+        public static bool Prefix(ref PlantType thePlantType, ref bool __result)
+        {
+            if (CustomCore.CustomPlantTypes.Contains(thePlantType))
+            {
+                __result = CustomCore.CustomUltimatePlants.Contains(thePlantType);
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(nameof(Lawnf.GetUltimatePlants))]
+        [HarmonyPostfix]
+        public static void Postfix(ref Il2CppSystem.Collections.Generic.List<PlantType> __result)
+        {
+            foreach (PlantType plantType in CustomCore.CustomUltimatePlants)
+            {
+                if (!__result.Contains(plantType))
+                {
+                    __result.Add(plantType);
+                }
             }
         }
     }
@@ -1223,6 +1287,11 @@ namespace CustomizeLib.BepInEx
                 bool[] newdeb = new bool[__instance.debuff.Count + CustomCore.CustomDebuffs.Count];
                 Array.Copy(__instance.debuff, newdeb, __instance.debuff.Length);
                 __instance.debuff = newdeb;
+            }
+
+            foreach (PlantType plantType in CustomCore.CustomUltimatePlants) // 注册强究植物
+            {
+                TravelMgr.allStrongUltimtePlant.Add(plantType);
             }
         }
 

@@ -1,11 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="garlicsupergatling" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="garlicsupergatling" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -118,6 +129,9 @@
     </Reference>
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.2D.Animation.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Tilemap.Extras">
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.2D.Tilemap.Extras.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst">
       <HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Burst.dll</HintPath>

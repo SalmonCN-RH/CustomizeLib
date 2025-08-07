@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltimateMachineChomper", "UltimateMachineChomper\UltimateMachineChomper.csproj", "{06577915-9A84-4E12-8653-B8BFA92328C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06577915-9A84-4E12-8653-B8BFA92328C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06577915-9A84-4E12-8653-B8BFA92328C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06577915-9A84-4E12-8653-B8BFA92328C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06577915-9A84-4E12-8653-B8BFA92328C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E37A6814-D90D-4D8B-A98A-8C9C2B352E7E}
+	EndGlobalSection
+EndGlobal

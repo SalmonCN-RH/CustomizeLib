@@ -714,6 +714,20 @@ namespace CustomizeLib.MelonLoader
         public static void RegisterSuperSkill([NotNull] int id, [NotNull] Func<Plant, int> cost,
             [NotNull] Action<Plant> skill) => SuperSkills.Add((PlantType)id, (cost, skill));
 
+        /// <summary>
+        /// 添加自定义究极植物
+        /// </summary>
+        /// <param name="plantType">要设为究极植物的植物类型</param>
+        public static void AddUltimatePlant([NotNull] PlantType plantType) => CustomUltimatePlants.Add(plantType);
+
+        /*/// <summary>
+        /// 注册自定义融合事件
+        /// </summary>
+        /// <param name="id">亲本植物（地上长的）</param>
+        /// <param name="setPlant">种植植物（后放的）</param>
+        /// <param name="action">执行的事件，参数为融合后的植物</param>
+        public static void RegisterCustomFusionEvent(PlantType id, PlantType setPlant, Action<Plant> action) => CustomFusionEvent.Add(id, (setPlant, action));*/
+
         /*
         /// <summary>
         /// 添加作者名，在局内显示
@@ -850,7 +864,17 @@ namespace CustomizeLib.MelonLoader
         public static Dictionary<PlantType, (Func<Plant, int>, Action<Plant>)> SuperSkills { get; set; } = [];
 
         /// <summary>
-        ///僵尸图鉴列表
+        /// 自定义究极植物列表
+        /// </summary>
+        public static List<PlantType> CustomUltimatePlants { get; set; } = [];
+
+        /*/// <summary>
+        /// 自定义融合事件列表
+        /// </summary>
+        public static Dictionary<PlantType, (PlantType, Action<Plant>)> CustomFusionEvent = new Dictionary<PlantType, (PlantType, Action<Plant>)>();*/
+
+        /// <summary>
+        /// 僵尸图鉴列表
         /// </summary>
         public static Dictionary<ZombieType, (string, string)> ZombiesAlmanac { get; set; } = [];
 

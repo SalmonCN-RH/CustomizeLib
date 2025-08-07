@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GarlicSuperGatling", "GarlicSuperGatling\GarlicSuperGatling.csproj", "{96F38391-860F-4AA9-A402-BB20999DDABC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96F38391-860F-4AA9-A402-BB20999DDABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F38391-860F-4AA9-A402-BB20999DDABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F38391-860F-4AA9-A402-BB20999DDABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F38391-860F-4AA9-A402-BB20999DDABC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {425CE0C6-0AE3-4406-8033-AAA07AD7D32C}
+	EndGlobalSection
+EndGlobal
