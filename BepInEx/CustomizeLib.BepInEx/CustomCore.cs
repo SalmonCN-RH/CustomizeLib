@@ -22,7 +22,7 @@ namespace CustomizeLib.BepInEx
         }
     }
 
-    [BepInPlugin("inf75.pvzcustomization", "PVZCustomization", "2.7")]
+    [BepInPlugin("inf75.pvzcustomization", "PVZCustomization", "2.8")]
     public class CustomCore : BasePlugin
     {
         public static class TypeMgrExtra
@@ -758,7 +758,7 @@ namespace CustomizeLib.BepInEx
             GameObject gameObject = new("TextureReplacer");
             ReplaceTextureRoutine = gameObject.AddComponent<CoroutineRunner>();
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
-            ReplaceTextureRoutine.StartCoroutine(TextureStore.ReplaceTexturesCoroutine());
+            // ReplaceTextureRoutine.StartCoroutine(TextureStore.ReplaceTexturesCoroutine());
         }
 
         public override void Load()
@@ -770,7 +770,7 @@ namespace CustomizeLib.BepInEx
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
             Instance = new(this);
-            TextureStore.Init();
+            // TextureStore.Init();
         }
 
         public override bool Unload()

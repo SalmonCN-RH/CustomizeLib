@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="solarspruce" />
 		<None Remove="superdiamondnut" />
-		<None Remove="supergarlicfume" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="supergarlicfume" />
+	  <EmbeddedResource Include="solarspruce" />
 	</ItemGroup>
 
 	<ItemGroup>

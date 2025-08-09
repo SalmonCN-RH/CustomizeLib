@@ -38,12 +38,16 @@ namespace SolarSpruce
             var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "ultimatesolarspruce");
             CustomCore.RegisterCustomBullet<Bullet_shulkLeaf_ultimate, Bullet_shulkSolarSpruce>((BulletType)Bullet_shulkSolarSpruce.BulletID, ab.GetAsset<GameObject>("SolarSpruceBulletPrefab"));
             CustomCore.RegisterCustomPlant<UltimateSpruce, SolarSpruce>(SolarSpruce.PlantID, ab.GetAsset<GameObject>("SolarSprucePrefab"),
-                ab.GetAsset<GameObject>("SolarSprucePreview"), [((int)PlantType.UltimateCabbage, (int)PlantType.SpruceShooter), ((int)PlantType.SpruceShooter, (int)PlantType.UltimateCabbage)], 1.5f, 0, 60, 300, 0f, 550);
+                ab.GetAsset<GameObject>("SolarSprucePreview"), new List<(int, int)>
+                {
+                    ((int)PlantType.UltimateCabbage, (int)PlantType.SpruceShooter), 
+                    ((int)PlantType.SpruceShooter, (int)PlantType.UltimateCabbage)
+                }, 1.5f, 0, 60, 300, 0f, 550);
             SolarSpruce.RegisterSuperSkill();
             CustomCore.TypeMgrExtra.IsIcePlant.Add((PlantType)SolarSpruce.PlantID);
             CustomCore.AddFusion((int)PlantType.UltimateCabbage, (int)PlantType.Cabbagepult, SolarSpruce.PlantID);
             CustomCore.AddFusion((int)PlantType.UltimateCabbage, SolarSpruce.PlantID, (int)PlantType.Cabbagepult);
-            CustomCore.AddPlantAlmanacStrings(SolarSpruce.PlantID, $"究极太阳神云杉({SolarSpruce.PlantID})", "冰与火之舞？或许吧。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>转换配方：</color><color=red>卷心菜投手←→云杉弓手</color>\n<color=#3D1400>伤害：</color><color=red>60/0.02s</color>\n<color=#3D1400>特点：</color><color=red>究极太阳神卷心菜亚种，免疫沉默和冻结，不会主动召唤太阳，每1.5秒发射1发子弹，该子弹每命中僵尸15次掉落5点阳光。每次攻击如果阳光大于15000，则消耗200阳光为这发子弹伤害变为原伤害的3倍。增伤时先计算伤害×3，再计算金光闪闪词条效果。</color>\n<color=#3D1400>词条1：</color><color=red>金光闪闪：每发子弹会消耗超过15000阳光部分0.3%的阳光，使该子弹增加（5x消耗阳光）的伤害。</color>\n<color=#3D1400>词条2：</color><color=red>人造太阳：子弹掉落阳光数增加至15。</color>\n<color=#3D1400>大招：</color><color=red>消耗1000金钱。如果场上不存在太阳，则生成一个持续时间30秒的太阳，如果存在太阳，则为太阳增加15秒持续时间。</color>\n\n<color=#3D1400>究极太阳神云杉曾被问道是如何控制体内的冰与火之力的，他是这么说的：“只要经常玩《冰与火之舞》，你也可以获得这种力量！”后来这期节目因为《冰与火之舞》不是甲方所以没有播出。</color>");
+            CustomCore.AddPlantAlmanacStrings(SolarSpruce.PlantID, $"究极太阳神云杉({SolarSpruce.PlantID})", "冰与火之舞？或许吧。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>转换配方：</color><color=red>卷心菜投手←→云杉弓手</color>\n<color=#3D1400>伤害：</color><color=red>60/0.02s</color>\n<color=#3D1400>特点：</color><color=red>究极太阳神卷心菜亚种。免疫沉默和冻结，不会自主召唤太阳。每1.5秒发射1发子弹，该子弹每命中15次掉落5点阳光。如果阳光大于15000，则下一次攻击消耗200阳光使该子弹伤害x3。</color>\n<color=#3D1400>词条1：</color><color=red>金光闪闪：每发子弹会消耗超过15000阳光部分0.3%的阳光，使该子弹增加（5x消耗阳光）的伤害。</color>\n<color=#3D1400>词条2：</color><color=red>人造太阳：子弹掉落阳光数增加至15。</color>\n<color=#3D1400>连携词条：</color><color=red>星神合一：究极杨桃大帝和究极太阳神卷心菜或究极太阳神云杉的数量均不小于10时：究极太阳神云杉子弹为范围伤害，太阳持续时间无限且伤害x5，固定每3秒召唤太阳神流星，伤害为（1800+1800x大帝数量）x（1+0.5x太阳神和太阳神云杉数量），并分裂180个400伤害的子弹，并掉落1250阳光。</color>\n<color=#3D1400>大招：</color><color=red>消耗1000金钱。如果场上不存在太阳，则生成一个持续时间30秒的太阳，如果存在太阳，则为太阳增加15秒持续时间。</color>\n\n<color=#3D1400>究极太阳神云杉曾被问道是如何控制体内的冰与火之力的，他是这么说的：“只要经常玩《冰与火之舞》，你也可以获得这种力量！”后来这期节目因为《冰与火之舞》不是甲方所以没有播出。</color>");
         }
     }
 
@@ -105,6 +109,7 @@ namespace SolarSpruce
 
         public void Start()
         {
+
             plant.shoot = plant.gameObject.transform.FindChild("body").FindChild("zi_dan").FindChild("Shoot");
             if (plant.energyText != null)
                 plant.energyText.gameObject.SetActive(false);
@@ -176,18 +181,32 @@ namespace SolarSpruce
         {
             if (__instance.theBulletType == (BulletType)Bullet_shulkSolarSpruce.BulletID)
             {
-                foreach (RaycastHit2D hit in Physics2D.RaycastAll(__instance.transform.position, Vector2.zero))
+                if (Lawnf.TravelAdvanced(45) &&
+                Lawnf.GetPlantCount(PlantType.UltimateStar, Board.Instance) + Lawnf.GetPlantCount(PlantType.UltimateBlover, Board.Instance) >= 10 &&
+                Lawnf.GetPlantCount(PlantType.UltimateCabbage, Board.Instance) >= 10)
                 {
-                    if (hit.collider.gameObject.TryGetComponent<Zombie>(out var z) && z != null && !z.IsDestroyed() && !TypeMgr.IsAirZombie(z.theZombieType) && z.theStatus != ZombieStatus.Miner_digging && !z.isMindControlled)
+                    foreach (RaycastHit2D hit in Physics2D.RaycastAll(__instance.transform.position, Vector2.zero))
                     {
-                        // 造成伤害
-                        z.TakeDamage(
-                            theDamageType: DmgType.Shieldless,
-                            theDamage: __instance.Damage,
-                            false
-                        );
-                        __instance.hitTimes++;
+                        if (hit.collider.gameObject.TryGetComponent<Zombie>(out var z) && z != null && !z.IsDestroyed() && !TypeMgr.IsAirZombie(z.theZombieType) && z.theStatus != ZombieStatus.Miner_digging && !z.isMindControlled)
+                        {
+                            // 造成伤害
+                            z.TakeDamage(
+                                theDamageType: DmgType.Shieldless,
+                                theDamage: __instance.Damage,
+                                false
+                            );
+                            __instance.hitTimes++;
+                        }
                     }
+                }
+                else
+                {
+                    zombie.TakeDamage(
+                        theDamageType: DmgType.Shieldless,
+                        theDamage: __instance.Damage,
+                        false
+                    );
+                    __instance.hitTimes++;
                 }
 
                 if (zombie != null)

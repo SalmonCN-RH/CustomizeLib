@@ -21,7 +21,7 @@ namespace MScardyShroom
             CustomCore.RegisterCustomPlant<ScaredyShroom, MScardyShroom>(MScardyShroom.PlantID, ab.GetAsset<GameObject>("MScaredyShroomPrefab"),
                 ab.GetAsset<GameObject>("MScaredyShroomPreview"), [], 1.5f, 0f, 100, 300, 15f, 250);
             CustomCore.AddPlantAlmanacStrings(MScardyShroom.PlantID, $"猫娘胆小菇({MScardyShroom.PlantID})",
-                "根据场上僵尸的数量，提高子弹伤害。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>100/1.5秒</color>\n<color=#3D1400>特点：</color><color=red>当场上每有1只僵尸时，增加10点伤害。</color>\n\n<color=#3D1400>“总所周知，红眼巨人十分脆弱，三两下就干倒了，真的太逊了。”猫娘胆小菇说。至于为什么不直接上场战</color>\n花费：<color=red>175</color>\n冷却时间：<color=red>15秒</color>\n<color=#3D1400>斗，“哎，你得先喂我亿点金坷垃在上场吧。”</color>\n\n\n\n\n\n\n\n\n\n花费：<color=red>175</color>\n冷却时间：<color=red>15秒</color>");
+                "根据场上僵尸的数量，提高子弹伤害。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>100/1.5秒</color>\n<color=#3D1400>特点：</color><color=red>当场上每有1只僵尸时，增加30点伤害。</color>\n\n<color=#3D1400>“总所周知，红眼巨人十分脆弱，三两下就干倒了，真的太逊了。”猫娘胆小菇说。至于为什么不直接上场战</color>\n花费：<color=red>250</color>\n冷却时间：<color=red>15秒</color>\n<color=#3D1400>斗，“哎，你得先喂我亿点金坷垃在上场吧。”</color>\n\n\n\n\n\n\n\n\n\n花费：<color=red>250</color>\n冷却时间：<color=red>15秒</color>");
             CustomCore.RegisterCustomCardToColorfulCards((PlantType)MScardyShroom.PlantID);
         }
     }

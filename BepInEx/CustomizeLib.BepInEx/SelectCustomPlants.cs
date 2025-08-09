@@ -200,7 +200,7 @@ namespace CustomizeLib.BepInEx
                 {
                     //如果不是融合版植物，就加载
                     if (!Enum.IsDefined(typeof(PlantType), plantType) &&
-                        PlantDataLoader.plantDatas[plantType] != null)
+                        PlantDataLoader.plantDatas.TryGetValue(plantType, out var plantData) && plantData != null)
                     {
                         plantTypes.Add(plantType);
                     }

@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>F:\PVZRH_Bep\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
@@ -38,9 +42,6 @@
     <Reference Include="Cpp2IL.Core">
       <HintPath>F:\PVZRH_Bep\BepInEx\core\Cpp2IL.Core.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="CustomizeLib.BepInEx">
-      <HintPath>..\..\..\..\..\PVZRH_Bep\BepInEx\plugins\CustomizeLib.BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Common">
       <HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
@@ -75,7 +76,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>F:\PVZRH_2.5\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
@@ -95,7 +96,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>F:\PVZRH_2.5\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">

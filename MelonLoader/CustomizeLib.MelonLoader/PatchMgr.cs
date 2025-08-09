@@ -631,6 +631,14 @@ namespace CustomizeLib.MelonLoader
     [HarmonyPatch(typeof(UIButton))]
     public static class HideCustomPlantCards
     {
+        [HarmonyPatch(nameof(UIButton.OnMouseUpAsButton))]
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            if (SelectCustomPlants.MyPageParent != null && SelectCustomPlants.MyPageParent.active)
+                SelectCustomPlants.MyPageParent.SetActive(false);
+        }
+
         [HarmonyPatch(nameof(UIButton.Start))]
         [HarmonyPostfix]
         public static void PostfixStart(UIButton __instance)
@@ -853,6 +861,8 @@ namespace CustomizeLib.MelonLoader
                         int rand = UnityEngine.Random.Range(3, 10);
                         if (i % 10 == 0)
                             rand = UnityEngine.Random.Range(8, 15);
+                        if (i <= 3)
+                            rand = UnityEngine.Random.Range(1, 5);
                         for (int j = 0; j < rand; j++)
                         {
                             int rand_index = UnityEngine.Random.Range(0, levelData.ZombieList().Count);
@@ -980,14 +990,14 @@ namespace CustomizeLib.MelonLoader
     [HarmonyPatch(typeof(SeedLibrary))]
     public static class SeedLibraryPatch
     {
-        [HarmonyPatch(nameof(SeedLibrary.Awake))]
+        /*[HarmonyPatch(nameof(SeedLibrary.Awake))]
         [HarmonyPostfix]
         public static void PostAwake(SeedLibrary __instance)
         {
             //为什么PostShowNormalCard会无限递归？？？
             //Grid
             __instance.transform.FindCardUIAndChangeSprite();
-        }
+        }*/
 
         [HarmonyPatch(nameof(SeedLibrary.Start))]
         [HarmonyPostfix]
@@ -1488,8 +1498,8 @@ namespace CustomizeLib.MelonLoader
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch("EliteZombie")]
+        /*[HarmonyPrefix]
+        [HarmonyPatch(nameof(TypeMgr.EliteZombie))]
         public static bool PreEliteZombie(ref ZombieType theZombieType, ref bool __result)
         {
             if (CustomCore.TypeMgrExtra.EliteZombie.Contains(theZombieType))
@@ -1499,7 +1509,7 @@ namespace CustomizeLib.MelonLoader
             }
 
             return true;
-        }
+        }*/
 
         [HarmonyPrefix]
         [HarmonyPatch("FlyingPlants")]

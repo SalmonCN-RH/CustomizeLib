@@ -8,7 +8,7 @@ using UnityEngine;
 ///Credit to likefengzi(https://github.com/likefengzi)(https://space.bilibili.com/237491236)
 ///
 
-[assembly: MelonInfo(typeof(CustomCore), "PVZRHCustomization", "2.6-2.6", "Infinite75,likefengzi", null)]
+[assembly: MelonInfo(typeof(CustomCore), "PVZRHCustomization", "2.8", "Infinite75,likefengzi", null)]
 [assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
 [assembly: MelonPlatformDomain(MelonPlatformDomainAttribute.CompatibleDomains.IL2CPP)]
 
@@ -742,12 +742,12 @@ namespace CustomizeLib.MelonLoader
 
         public override void OnInitializeMelon()
         {
-            TextureStore.Init();//获取所有替换的贴图
+            // TextureStore.Init();//获取所有替换的贴图
         }
 
         public override void OnLateInitializeMelon()
         {
-            ReplaceTextureRoutine = MelonCoroutines.Start(TextureStore.ReplaceTexturesCoroutine());//启动换贴图协程
+            // ReplaceTextureRoutine = MelonCoroutines.Start(TextureStore.ReplaceTexturesCoroutine());//启动换贴图协程
             GameObject ccore = new("CustomizeLib by Infinite75");
             ccore.AddComponent<CustomizeLib>().CustomCore = this;
             UnityEngine.Object.DontDestroyOnLoad(ccore);
