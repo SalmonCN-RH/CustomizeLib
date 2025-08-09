@@ -607,15 +607,9 @@ namespace CustomizeLib.BepInEx
     /// <summary>
     /// 点击其他Button，隐藏二创植物界面
     /// </summary>
-    [HarmonyPatch(typeof(UIButton), nameof(UIButton.OnMouseUpAsButton))]
+    [HarmonyPatch(typeof(UIButton))]
     public static class HideCustomPlantCards
     {
-        [HarmonyPostfix]
-        private static void Postfix()
-        {
-            SelectCustomPlants.CloseCustomPlantCards();
-        }
-
         [HarmonyPatch(nameof(UIButton.Start))]
         [HarmonyPostfix]
         public static void PostfixStart(UIButton __instance)
@@ -822,15 +816,29 @@ namespace CustomizeLib.BepInEx
     [HarmonyPatch(typeof(InitZombieList))]
     public static class InitZombieListPatch
     {
-        [HarmonyPatch(nameof(InitZombieList.InitList))]
+        [HarmonyPatch(nameof(InitZombieList.InitZombie))]
         [HarmonyPostfix]
-        public static void PostInitList()
+        public static void PostInitZombie()
         {
-            if (GameAPP.theBoardType is (LevelType)66)
+            if (Utils.IsCustomLevel(out var levelData))
             {
-                foreach (var z in CustomCore.CustomLevels[GameAPP.theBoardLevel].ZombieList())
+                foreach (var z in levelData.ZombieList())
                 {
                     InitZombieList.zombieTypeList.Add(z);
+                    InitZombieList.allow[(int)z] = true;
+                    for (int i = 0; i < InitZombieList.zombieList.Cast<Il2CppSystem.Collections.Generic.List<ZombieType>>().Count; i++)
+                    {
+                        Il2CppSystem.Collections.Generic.List<ZombieType> zombieList = InitZombieList.zombieList.Cast<Il2CppSystem.Collections.Generic.List<Il2CppSystem.Collections.Generic.List<ZombieType>>>()[i];
+                        InitZombieList.zombieList.Cast<Il2CppSystem.Collections.Generic.List<Il2CppSystem.Collections.Generic.List<ZombieType>>>()[i].Clear();
+                        int rand = UnityEngine.Random.Range(3, 10);
+                        if (i % 10 == 0)
+                            rand = UnityEngine.Random.Range(8, 15);
+                        for (int j = 0; j < rand; j++)
+                        {
+                            int rand_index = UnityEngine.Random.Range(0, levelData.ZombieList().Count);
+                            zombieList.Add(levelData.ZombieList()[rand_index]);
+                        }
+                    }
                 }
             }
         }

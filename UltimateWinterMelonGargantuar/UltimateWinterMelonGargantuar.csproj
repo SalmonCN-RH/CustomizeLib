@@ -1,28 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<RootNamespace>UltimateWinterMelon</RootNamespace>
+		<RootNamespace>UltimateWinterMelonGargantuar</RootNamespace>
 		<LangVersion>default</LangVersion>
 		<IsPackable>false</IsPackable>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>UltimateWinterMelon</AssemblyName>
+		<AssemblyName>UltimateWinterMelonGargantuar</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="ultimatewintermelon" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="Assembly-CSharp">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
-		</Reference>
-		<Reference Include="CustomizeLib.MelonLoader">
-		  <HintPath>F:\PVZRH_Melon\Mods\CustomizeLib.MelonLoader.dll</HintPath>
 		</Reference>
 		<Reference Include="Il2CppMono.Security">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Il2CppMono.Security.dll</HintPath>
@@ -313,10 +307,6 @@
 
 	<ItemGroup>
 		<Compile Include="Core.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="ultimatewintermelon" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

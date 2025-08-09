@@ -14,13 +14,25 @@ namespace CustomizeLib.MelonLoader
         /// <summary>
         /// 隐藏二创植物界面
         /// </summary>
-        public static void CloseCustomPlantCards()
+        public void CloseCustomPlantCards()
         {
             if (MyPageParent != null)
             {
                 MyPageParent.SetActive(false);
                 // Destroy(MyPageParent);
                 // MyPageParent = null;
+            }
+            if (Board.Instance != null && !Board.Instance.isIZ)
+            {
+                InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages").gameObject.SetActive(pageShow[0]);
+                InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards").gameObject.SetActive(pageShow[1]);
+                InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/TowerCard").gameObject.SetActive(pageShow[2]);
+            }
+            else if (Board.Instance != null && Board.Instance.isIZ)
+            {
+                IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/Pages").gameObject.SetActive(pageShow[0]);
+                IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards").gameObject.SetActive(pageShow[1]);
+                IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards_1").gameObject.SetActive(pageShow[2]);
             }
         }
 
@@ -37,6 +49,7 @@ namespace CustomizeLib.MelonLoader
                 MyShowCustomPlantsButton = Instantiate(
                     Resources.Load<GameObject>("ui/prefabs/InGameUI").transform.FindChild("Bottom/SeedLibrary/ShowNormal")
                         .gameObject, InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary"));
+                MyShowCustomPlantsButton.name = "ShowCustom";
                 //设置位置
                 MyShowCustomPlantsButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(580, -230);
                 MyShowCustomPlantsButton.GetComponent<RectTransform>().position = new Vector3(
@@ -76,6 +89,7 @@ namespace CustomizeLib.MelonLoader
                 MyShowCustomPlantsButton = Instantiate(
                     IZBottomMenu.Instance.zombieLibary.transform.FindChild("LastPage").gameObject,
                     IZBottomMenu.Instance.plantLibrary.transform);
+                MyShowCustomPlantsButton.name = "ShowCustom";
                 //设置位置
                 MyShowCustomPlantsButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, 240);
                 MyShowCustomPlantsButton.GetComponent<RectTransform>().position = new Vector3(
@@ -110,13 +124,21 @@ namespace CustomizeLib.MelonLoader
             //基础植物和彩色植物界面隐藏
             if (Board.Instance != null && !Board.Instance.isIZ)
             {
+                pageShow[0] = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages").gameObject.active;
+                pageShow[1] = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards").gameObject.active;
+                pageShow[2] = InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/TowerCard").gameObject.active; 
                 InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages").gameObject
                     .SetActive(false);
                 InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/ColorfulCards").gameObject
                     .SetActive(false);
+                InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/TowerCard").gameObject
+                    .SetActive(false);
             }
             else if (Board.Instance != null && Board.Instance.isIZ)
             {
+                pageShow[0] = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/Pages").gameObject.active;
+                pageShow[1] = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards").gameObject.active;
+                pageShow[2] = IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards_1").gameObject.active;
                 IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/Pages").gameObject.SetActive(false);
                 IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards").gameObject.SetActive(false);
                 IZBottomMenu.Instance.plantLibrary.transform.FindChild("Grid/ColorfulCards_1").gameObject.SetActive(false);
@@ -282,19 +304,31 @@ namespace CustomizeLib.MelonLoader
                 RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
 
                 //击中二创植物Button
-                if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton)
+                if (hit.collider != null && hit.collider.gameObject == MyShowCustomPlantsButton && hit.collider.gameObject.name == "ShowCustom")
                 {
-                    try
+                    if (MyPageParent != null)
                     {
-                        CloseCustomPlantCards();
+                        if (MyPageParent.active)
+                        {
+                            try
+                            {
+                                CloseCustomPlantCards();
+                            }
+                            catch (Exception e)
+                            {
+                                var a = e;
+                            }
+                        }
+                        else
+                        {
+                            OpenCustomPlantCards();
+                        }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        var a = e;
+                        //打开二创植物页面
+                        OpenCustomPlantCards();
                     }
-
-                    //打开二创植物页面
-                    OpenCustomPlantCards();
                 }
             }
 
@@ -425,5 +459,7 @@ namespace CustomizeLib.MelonLoader
         public static GameObject? MyShowCustomPlantsButton { get; set; }
 
         public int PageNum { get; set; } = 0;
+
+        public bool[] pageShow = new bool[3];
     }
 }

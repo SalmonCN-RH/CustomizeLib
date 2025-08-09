@@ -799,7 +799,11 @@ namespace CustomizeLib.BepInEx
 
         public static Transform? GetNormalCardParent()
         {
-            if (Board.Instance != null && !Board.Instance.isIZ)
+            if (Board.Instance != null && Board.Instance.boardTag.isTowerDefence)
+            {
+                return InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/TowerCard/Page1");
+            }
+            else if (Board.Instance != null && !Board.Instance.isIZ)
             {
                 return InGameUI.Instance.SeedBank.transform.parent.FindChild("Bottom/SeedLibrary/Grid/Pages/Page1");
             }

@@ -106,7 +106,7 @@ namespace CrazySqualour
         }
     }
 
-    [HarmonyPatch(typeof(InitZombieList), nameof(InitZombieList.InitList))]
+    /*[HarmonyPatch(typeof(InitZombieList), nameof(InitZombieList.InitList))]
     public class CreateZombiePatch
     {
         [HarmonyPostfix]
@@ -131,9 +131,9 @@ namespace CrazySqualour
                     if (type != ZombieType.Nothing)
                         MelonLogger.Msg(type);
                 }
-            }*/
+            }
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(Squash))]
     public class SqualourUpdatePatch

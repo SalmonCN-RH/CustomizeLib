@@ -1,34 +1,23 @@
-﻿using HarmonyLib;
-using Il2CppInterop.Runtime.Injection;
-using BepInEx;
+﻿using MelonLoader;
+using CustomizeLib;
 using UnityEngine;
-using BepInEx.Unity.IL2CPP;
-using System.Reflection;
-using CustomizeLib.BepInEx;
-using UnityEngine.Rendering;
-using System;
-using System.Collections.Generic;
+using Il2CppInterop.Runtime.Injection;
+using Il2Cpp;
+using CustomizeLib.MelonLoader;
 
-namespace IceDoomSniperPea.BepInEx
+[assembly: MelonInfo(typeof(IceDoomSniperPea.Core), "IceDoomSniperPea", "1.0.0", "Salmon", null)]
+[assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
+
+namespace IceDoomSniperPea
 {
-    [BepInPlugin("salmon.icedoomsniperpea", "IceDoomSniperPea", "1.0")]
-    public class Core : BasePlugin//304
+    public class Core : MelonMod
     {
-        public override void Load()
+        public override void OnInitializeMelon()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-            ClassInjector.RegisterTypeInIl2Cpp<IceDoomSniperPea>();
-
-            // 修复：改用标准列表初始化方式
-            List<ValueTuple<int, int>> list = new List<ValueTuple<int, int>>
-            {
-                new ValueTuple<int, int>(1109, 1040), // 狙击射手 + 寒冰毁灭菇
-                new ValueTuple<int, int>(1040, 1109)  // 寒冰毁灭菇 + 狙击射手
-            };
-            var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "icedoomsniperpea");
+            var ab = CustomCore.GetAssetBundle(MelonAssembly.Assembly, "icedoomsniperpea");
             CustomCore.RegisterCustomPlant<SniperPea, IceDoomSniperPea>(IceDoomSniperPea.PlantID, ab.GetAsset<GameObject>("IceDoomSniperPeaPrefab"),
-                ab.GetAsset<GameObject>("IceDoomSniperPeaPreview"), list, 6f, 0f, 600, 300, 0, 800);
+                ab.GetAsset<GameObject>("IceDoomSniperPeaPreview"), [((int)PlantType.SniperPea, (int)PlantType.IceDoom), ((int)PlantType.IceDoom, (int)PlantType.SniperPea)], 6f, 0f, 600, 300, 0, 800);
             CustomCore.AddPlantAlmanacStrings(IceDoomSniperPea.PlantID, "冰毁狙击豌豆(" + IceDoomSniperPea.PlantID + ")", "定期狙击僵尸，造成冰毁爆炸和高额伤害\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>600/6秒</color>\n<color=#3D1400>特点：</color><color=red>特点同狙击射手，每次攻击为目标僵尸累积75点冻结值、15秒减速以及5秒冻结，每2次狙击在目标僵尸的位置释放不留坑洞不冻结关卡的寒冰毁灭菇效果，每6次狙击对目标僵尸造成21亿普通伤害</color>\n<color=#3D1400>融合配方：</color><color=red>狙击射手+寒冰毁灭菇</color>\n<color=#3D1400>词条1：</color><color=red>瞬狙：冰毁狙击的狙击间隔缩短为4秒，每次攻击有概率连狙</color>\n<color=#3D1400>词条2：</color><color=red>狙狙爆：冰毁狙击每次狙击都释放一次寒冰毁灭菇效果</color><color=#3D1400>\n词条3：</color><color=red>背起了行囊：冰毁狙击每次狙击都造成21亿伤害，该词条需要解锁词条1和词条2后才可获得</color>\n\n<color=#3D1400>“嘿，离我远点儿！”他时刻提防着要靠近他的植物和僵尸，这股力量太过强大太过危险，连自己都无法完全掌控，为此他远离其他植物，或许英雄都是孤独的.....（不合群的他有一股热枕的心，被他救下的植物甚至没有见到他，只见到了那股力量，如同神明，如同死神）</color>");
             CustomCore.TypeMgrExtra.IsIcePlant.Add((PlantType)IceDoomSniperPea.PlantID);
             IceDoomSniperPea.buff1 = CustomCore.RegisterCustomBuff("瞬狙：冰毁狙击的狙击间隔缩短为4秒，每次攻击有概率连狙", BuffType.AdvancedBuff, () => Board.Instance.ObjectExist<IceDoomSniperPea>(), 5000, "#DA64FF", (PlantType)IceDoomSniperPea.PlantID);
@@ -40,6 +29,7 @@ namespace IceDoomSniperPea.BepInEx
         }
     }
 
+    [RegisterTypeInIl2Cpp]
     public class IceDoomSniperPea : MonoBehaviour
     {
         public static int PlantID = 1900;
@@ -51,19 +41,6 @@ namespace IceDoomSniperPea.BepInEx
 
         public IceDoomSniperPea(IntPtr i) : base(i)
         {
-        }
-
-        public void FixedUpdate()
-        {
-            try
-            {
-                if (plant.targetZombie != null)
-                {
-                    if (plant.targetZombie.isMindControlled)
-                        SearchZombie();
-                }
-            }
-            catch (Exception) { }
         }
 
         public void AttackZombie(Zombie zombie, int damage)
@@ -98,6 +75,7 @@ namespace IceDoomSniperPea.BepInEx
             // 获取父级变换组件
             Transform parentTransform = plant.board.transform;
 
+            // CreateItem.Instance.SetCoin(0, 0, 13, 0, plant.targetZombie.axis.transform.position, false); //13为小阳光类型
 
             CreateParticle.SetParticle(
                 theParticleType: 0x1C,
@@ -137,6 +115,18 @@ namespace IceDoomSniperPea.BepInEx
             return;
         }
 
+        public void FixedUpdate()
+        {
+            try
+            {
+                if (plant.targetZombie != null)
+                {
+                    if (plant.targetZombie.isMindControlled)
+                        SearchZombie();
+                }
+            }
+            catch (Exception) { }
+        }
 
         // 僵尸状态验证
         public bool SearchUniqueZombie(Zombie zombie)

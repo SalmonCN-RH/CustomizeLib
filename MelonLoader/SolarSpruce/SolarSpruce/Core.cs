@@ -1,14 +1,18 @@
-﻿using BepInEx;
-using BepInEx.Unity.IL2CPP;
-using CustomizeLib.BepInEx;
-using HarmonyLib;
+﻿using CustomizeLib.MelonLoader;
+using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
-using System.Reflection;
+using MelonLoader;
 using Unity.VisualScripting;
 using UnityEngine;
+using static MelonLoader.MelonLogger;
+
+[assembly: MelonInfo(typeof(SolarSpruce.Core), "SolarSpruce", "1.0", "Salmon", null)]
+[assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
+[assembly: MelonPlatformDomain(MelonPlatformDomainAttribute.CompatibleDomains.IL2CPP)]
 
 namespace SolarSpruce
 {
+    [RegisterTypeInIl2Cpp]
     public class Bullet_shulkSolarSpruce : MonoBehaviour
     {
         public static int BulletID = 1901;
@@ -25,17 +29,12 @@ namespace SolarSpruce
         public Bullet_shulkLeaf_ultimate bullet => gameObject.GetComponent<Bullet_shulkLeaf_ultimate>();
     }
 
-    [BepInPlugin("salmon.solarspruce", "SolarSpruce", "1.0")]
-    public class Core : BasePlugin
+    public class Core : MelonMod
     {
-        public override void Load()
+        public override void OnInitializeMelon()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-            ClassInjector.RegisterTypeInIl2Cpp<Bullet_shulkSolarSpruce>();
-            ClassInjector.RegisterTypeInIl2Cpp<SolarSpruce>();
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "ultimatesolarspruce");
+            var ab = CustomCore.GetAssetBundle(MelonAssembly.Assembly, "ultimatesolarspruce");
             CustomCore.RegisterCustomBullet<Bullet_shulkLeaf_ultimate, Bullet_shulkSolarSpruce>((BulletType)Bullet_shulkSolarSpruce.BulletID, ab.GetAsset<GameObject>("SolarSpruceBulletPrefab"));
             CustomCore.RegisterCustomPlant<UltimateSpruce, SolarSpruce>(SolarSpruce.PlantID, ab.GetAsset<GameObject>("SolarSprucePrefab"),
                 ab.GetAsset<GameObject>("SolarSprucePreview"), [((int)PlantType.UltimateCabbage, (int)PlantType.SpruceShooter), ((int)PlantType.SpruceShooter, (int)PlantType.UltimateCabbage)], 1.5f, 0, 60, 300, 0f, 550);
@@ -47,6 +46,7 @@ namespace SolarSpruce
         }
     }
 
+    [RegisterTypeInIl2Cpp]
     public class SolarSpruce : MonoBehaviour
     {
         public static int PlantID = 1904;
@@ -61,7 +61,7 @@ namespace SolarSpruce
         {
             Vector3 shootPos = plant.shoot.position;
             // 空值检查：确保plant、shoot和CreateBullet实例存在
-
+            
             // 创建特殊子弹
             Bullet bullet = CreateBullet.Instance.SetBullet(
                 x: shootPos.x + 0.1f,
@@ -227,4 +227,41 @@ namespace SolarSpruce
             }
         }
     }
+
+    /*[HarmonyLib.HarmonyPatch(typeof(Plant), nameof(Plant.SearchZombie))]
+    public class Plant_SearchZombie_Patch
+    {
+        public static bool Prefix(Plant __instance, ref GameObject __result)
+        {
+            if ((int)__instance.thePlantType == SolarSpruce.PlantID)
+            {
+                List<Zombie> zombies = __instance.board?.zombieArray.ToArray().ToList<Zombie>();
+                if (zombies == null) __result = null;
+
+                // 遍历所有僵尸
+                foreach (Zombie zombie in zombies)
+                {
+                    if (zombie == null) continue;
+
+                    // 获取僵尸位置
+                    Vector3 zombiePos = zombie.axis?.position ?? Vector3.zero;
+
+                    // 位置条件检查
+                    if (zombiePos.x < __instance.vision)
+                    {
+                        // 特殊僵尸类型检查
+                        if (__instance.SearchUniqueZombie(zombie))
+                        {
+                            __result = zombie.gameObject;
+                            return false;
+                        }
+                    }
+                }
+
+                __result = null;
+                return false;
+            }
+            return true;
+        }
+    }*/
 }

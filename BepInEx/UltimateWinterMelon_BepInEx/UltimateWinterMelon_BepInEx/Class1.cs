@@ -45,7 +45,7 @@ namespace UltimateWinterMelonBepInEx
                 );
                 CustomCore.TypeMgrExtra.IsIcePlant.Add((PlantType)UltimateWinterMelon.PlantID);
                 CustomCore.TypeMgrExtra.IsMagnetPlants.Add((PlantType)UltimateWinterMelon.PlantID);
-                UltimateWinterMelon.Buff1 = CustomCore.RegisterCustomBuff("凛冬将至：究极超时空西瓜对命中的僵尸附带1层极冻值。", BuffType.AdvancedBuff, () => true, 5000, "#DA64FF", (PlantType)UltimateWinterMelon.PlantID);
+                UltimateWinterMelon.Buff1 = CustomCore.RegisterCustomBuff("凛冬将至：究极超时空西瓜对命中的僵尸附带1层极冻值。", BuffType.AdvancedBuff, () => Board.Instance.ObjectExist<UltimateWinterMelon>(), 5000, "#DA64FF", (PlantType)UltimateWinterMelon.PlantID);
                 UltimateWinterMelon.Buff2 = CustomCore.RegisterCustomBuff("白洞：开大时有10%概率让本行所有僵尸移到本行最右侧，大招的子弹伤害×2。", BuffType.AdvancedBuff, () => Lawnf.TravelAdvanced(UltimateWinterMelon.Buff1), 5000, "#DA64FF", (PlantType)UltimateWinterMelon.PlantID);
             }
             catch (Exception) { }

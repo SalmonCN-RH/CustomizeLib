@@ -25,19 +25,31 @@ namespace UltimateMachineChomper
                 {
                     ((int)PlantType.SuperMachineNut, (int)PlantType.SuperChomper),
                     ((int)PlantType.SuperChomper, (int)PlantType.SuperMachineNut)
-                }, 2f, 0f, 1000, 16000, 0f, 0);
+                }, 2f, 0f, 1000, 16000, 0f, 350);
             // prefab.AddComponent<SuperMachineNut>();
             CustomCore.TypeMgrExtra.IsTallNut.Add((PlantType)UltimateMachineChomper.PlantID);
             CustomCore.TypeMgrExtra.IsNut.Add((PlantType)UltimateMachineChomper.PlantID);
-            CustomCore.TypeMgrExtra.IsMagnetPlants.Add((PlantType)UltimateMachineChomper.PlantID);
             foreach (BucketType bucketType in Enum.GetValues(typeof(BucketType)))
                 CustomCore.RegisterCustomUseItemOnPlantEvent((PlantType)UltimateMachineChomper.PlantID, bucketType, (plant) =>
                 {
-                    plant.Recover(PlantDataLoader.plantData[UltimateMachineChomper.PlantID].field_Public_Int32_0 * 0.6f);
+                    plant.Recover(PlantDataLoader.plantData[UltimateMachineChomper.PlantID].field_Public_Int32_0 * 0.2f);
                 });
             CustomCore.AddUltimatePlant((PlantType)UltimateMachineChomper.PlantID);
             CustomCore.AddPlantAlmanacStrings(UltimateMachineChomper.PlantID, $"究极机械战神({UltimateMachineChomper.PlantID})",
-                "非常可靠的前排\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>融合配方：</color><color=red>超级大嘴花+超级机械坚果</color>\n<color=#3D1400>特点：</color><color=red>AAA</color>\n<color=#3D1400>词条1：</color><color=red>极速吞噬：吞噬条件减少为1倍韧性。</color>\n<color=#3D1400>词条2：</color><color=red>嗜血如命：回血量x3。</color>\n\n<color=#3D1400>BBB</color>");
+                "机鱼公司的终极产品。\n\n" +
+                "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
+                "<color=#3D1400>动画作者：@林秋-AutumnLin</color>\n" +
+                "<color=#3D1400>融合配方：</color><color=red>超级大嘴花+超级机械坚果</color>\n" +
+                "<color=#3D1400>韧性：</color><color=red>16000，初始限伤16000</color>\n" +
+                "<color=#3D1400>伤害：</color><color=red>1000/1.75秒</color>\n" +
+                "<color=#3D1400>特点：</color><color=red>①高大植物，免疫碾压并击退，血量可超过韧性，出场时血量为20倍韧性，基础减伤为10%。\n" +
+                "②为3x3范围的植物承伤。消耗铁器回复0.2倍韧性的血量。场上铁器消失时，回复（0.2/全场超级机械坚果+究极机械战神的数量）倍韧性的血量。\n" +
+                "③攻击会对范围内每只僵尸造成啃咬，再吐出爆炸机械子弹。啃咬附加自身血量1%的伤害，并回复0.4倍伤害的血量。\n" +
+                "④每40秒一次，或者累计受伤2倍韧性，啃咬可以吞噬非领袖僵尸并回复1倍韧性等血量，同时减少200限伤和增加1%减伤，限伤和减伤上限为200和90%。\n" +
+                "⑤不死机制：受到致命伤害后，5秒内血量最低1，然后冷却10秒，出场时进入冷却。</color>\n" +
+                "<color=#3D1400>词条1：</color><color=red>嗜血如命：回血量x3。</color>\n" +
+                "<color=#3D1400>词条2：</color><color=red>极速吞噬：吞噬消化时间降为15秒，瞬间完成吞噬条件降至累计受伤1倍韧性。</color>\n\n" +
+                "<color=#3D1400>咕咕咕。</color>");
         }
     }
 
@@ -63,7 +75,6 @@ namespace UltimateMachineChomper
         public float health = 320000; // 不用动
         public int totalDamage = 0;
         public bool isInit = false; // 抽象bug之游戏开始前Awake、Start都不会调用
-        public static int addValueConst = 1000_00;
         public TextMeshPro extraText;
         public TextMeshPro extraTextShadow;
         public List<GameObject> sprites = new List<GameObject>();
@@ -80,7 +91,8 @@ namespace UltimateMachineChomper
                 health = plant.thePlantHealth;
                 if (plant.attributeCount != 0)
                     maxDamage = plant.attributeCount;
-                damageTimes = 1f - (16200 - maxDamage) / 100 * 0.05f;
+                maxDamage = Mathf.Max(4000, maxDamage);
+                damageTimes = 1f - (17500 - maxDamage) / 150 * 0.01f; // = 1 - (13500 - 4000) / 150 * 0.01f = 0.9
                 damageTimes = Mathf.Max(0.1f, damageTimes);
                 damageTimes = (float)Math.Round(damageTimes, 2);
                 plant.jigsawType.Add(JigsawType.Instead);
@@ -322,7 +334,7 @@ namespace UltimateMachineChomper
                 if (Lawnf.TravelAdvanced(62))
                     dynamicDamage *= 1.5f;
 
-                __instance.Recover(0.6f * dynamicDamage);
+                __instance.Recover(0.4f * dynamicDamage);
 
                 // 播放咬噬音效
                 GameAPP.PlaySound(49, 0.5f, 1.0f);
@@ -342,10 +354,10 @@ namespace UltimateMachineChomper
                 bool flag = component != null && component.totalDamage >= value;
                 if (flag)
                 {
-                    component.maxDamage -= 100;
-                    component.maxDamage = Mathf.Max(200, component.maxDamage);
+                    component.maxDamage -= 150;
+                    component.maxDamage = Mathf.Max(4000, component.maxDamage);
                     __instance.attributeCount = component.maxDamage;
-                    component.damageTimes -= 0.05f;
+                    component.damageTimes -= 0.01f;
                     component.damageTimes = Mathf.Max(0.1f, component.damageTimes);
                     component.damageTimes = (float)Math.Round(component.damageTimes, 2);
                     // __instance.theLilyType = (PlantType)((component.damageTimes * 100) + UltimateMachineChomper.addValueConst);
@@ -353,8 +365,7 @@ namespace UltimateMachineChomper
                     MelonLogger.Msg(component.damageTimes);*/
                     component.totalDamage = 0;
                     __instance.attributeCountdown = 0f;
-
-                    __instance.Recover(2f * __instance.thePlantMaxHealth);
+                    __instance.UpdateText();
                 }
                 if ((__instance.attributeCountdown == 0f) && !TypeMgr.IsBossZombie(zombie.theZombieType))
                 {
@@ -369,6 +380,7 @@ namespace UltimateMachineChomper
                     // 进入无敌状态
                     __instance.undead = true;
                     __instance.undeadTimer = 0f;
+                    __instance.Recover((float)__instance.thePlantMaxHealth);
 
                     // 播放音效并返回
                     GameAPP.PlaySound(49, 0.5f, 1.0f);
@@ -650,7 +662,7 @@ namespace UltimateMachineChomper
                     for (int i = 0; i < plants.Count; i++)
                     {
                         Plant p = plants[i];
-                        p?.Recover((PlantDataLoader.plantData[UltimateMachineChomper.PlantID].field_Public_Int32_0 * 0.6f) / num);
+                        p?.Recover((PlantDataLoader.plantData[UltimateMachineChomper.PlantID].field_Public_Int32_0 * 0.2f) / num);
                     }
                 }
             }

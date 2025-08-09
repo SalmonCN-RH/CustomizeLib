@@ -15,75 +15,79 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>F:\BepInExDep\0Harmony.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>F:\PVZRH_2.6\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Core">
-      <HintPath>F:\BepInExDep\BepInEx.Core.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Core.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Unity.Common">
-      <HintPath>F:\BepInExDep\BepInEx.Unity.Common.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Unity.Common.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Unity.IL2CPP">
-      <HintPath>F:\BepInExDep\BepInEx.Unity.IL2CPP.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     </Reference>
     <Reference Include="Cpp2IL.Core">
-      <HintPath>F:\BepInExDep\Cpp2IL.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CustomizeLib.BepInEx">
-      <HintPath>F:\PVZRH_2.6\BepInEx\plugins\CustomizeLib.BepInEx.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\Cpp2IL.Core.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Generator">
-      <HintPath>F:\BepInExDep\Il2CppInterop.Generator.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>F:\BepInExDep\Il2CppInterop.Runtime.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>F:\BepInExDep\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppSystem">
-      <HintPath>F:\BepInExDep\Il2CppSystem.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppSystem.Core">
-      <HintPath>F:\BepInExDep\Il2CppSystem.Core.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>F:\BepInExDep\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>F:\BepInExDep\Unity.VisualScripting.Core.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.VisualScripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>F:\BepInExDep\UnityEngine.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>F:\BepInExDep\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>F:\BepInExDep\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>F:\BepInExDep\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>F:\BepInExDep\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>F:\BepInExDep\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>F:\BepInExDep\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>F:\BepInExDep\UnityEngine.UI.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>F:\BepInExDep\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\PVZRH_Bep\BepInEx\plugins\&quot;" />
+	</Target>
 
 </Project>

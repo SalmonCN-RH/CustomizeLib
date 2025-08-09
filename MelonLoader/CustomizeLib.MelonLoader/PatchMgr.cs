@@ -631,13 +631,6 @@ namespace CustomizeLib.MelonLoader
     [HarmonyPatch(typeof(UIButton))]
     public static class HideCustomPlantCards
     {
-        [HarmonyPatch(nameof(UIButton.OnMouseUpAsButton))]
-        [HarmonyPostfix]
-        private static void Postfix()
-        {
-            SelectCustomPlants.CloseCustomPlantCards();
-        }
-
         [HarmonyPatch(nameof(UIButton.Start))]
         [HarmonyPostfix]
         public static void PostfixStart(UIButton __instance)
@@ -843,15 +836,29 @@ namespace CustomizeLib.MelonLoader
     [HarmonyPatch(typeof(InitZombieList))]
     public static class InitZombieListPatch
     {
-        [HarmonyPatch(nameof(InitZombieList.InitList))]
+        [HarmonyPatch(nameof(InitZombieList.InitZombie))]
         [HarmonyPostfix]
-        public static void PostInitList()
+        public static void PostInitZombie()
         {
             if (Utils.IsCustomLevel(out var levelData))
             {
                 foreach (var z in levelData.ZombieList())
                 {
                     InitZombieList.zombieTypeList.Add(z);
+                    InitZombieList.allow[(int)z] = true;
+                    for (int i = 0; i < InitZombieList.zombieList.Count; i++)
+                    {
+                        Il2CppSystem.Collections.Generic.List<ZombieType> zombieList = InitZombieList.zombieList[i];
+                        InitZombieList.zombieList[i].Clear();
+                        int rand = UnityEngine.Random.Range(3, 10);
+                        if (i % 10 == 0)
+                            rand = UnityEngine.Random.Range(8, 15);
+                        for (int j = 0; j < rand; j++)
+                        {
+                            int rand_index = UnityEngine.Random.Range(0, levelData.ZombieList().Count);
+                            zombieList.Add(levelData.ZombieList()[rand_index]);
+                        }
+                    }
                 }
             }
         }
