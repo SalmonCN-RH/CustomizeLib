@@ -1,24 +1,27 @@
-﻿using CustomizeLib.MelonLoader;
+﻿using BepInEx.Unity.IL2CPP;
+using BepInEx;
 using HarmonyLib;
-using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
-using Il2CppTMPro;
-using MelonLoader;
-using Unity.VisualScripting;
 using UnityEngine;
-using static MelonLoader.MelonLogger;
+using System.Reflection;
+using CustomizeLib.BepInEx;
+using TMPro;
+using Unity.VisualScripting;
 
-[assembly: MelonInfo(typeof(UltimateMachineChomper.Core), "UltimateMachineChomper", "1.0.0", "Salmon", null)]
-[assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
-
-namespace UltimateMachineChomper
+namespace UltimateMachineChomper.BepInEx
 {
-    public class Core : MelonMod
+    [BepInPlugin("salmon.ultimatemachinechomper", "UltimateMachineChomper", "1.0")]
+    public class Core : BasePlugin
     {
-        public override void OnInitializeMelon()
+        public override void Load()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            var ab = CustomCore.GetAssetBundle(MelonAssembly.Assembly, "ultimatemachinechomper");
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+            ClassInjector.RegisterTypeInIl2Cpp<Bullet_machineCherry>();
+            ClassInjector.RegisterTypeInIl2Cpp<UltimateMachineChomper>();
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "ultimatemachinechomper");
             CustomCore.RegisterCustomBullet<Bullet_superCherry, Bullet_machineCherry>((BulletType)Bullet_machineCherry.BulletID, ab.GetAsset<GameObject>("Bullet_machineCherry"));
             CustomCore.RegisterCustomPlant<UltimateChomper, UltimateMachineChomper>(UltimateMachineChomper.PlantID, ab.GetAsset<GameObject>("UltimateMachineChomperPrefab"),
                 ab.GetAsset<GameObject>("UltimateMachineChomperPreview"),
@@ -37,25 +40,24 @@ namespace UltimateMachineChomper
                 });
             CustomCore.AddUltimatePlant((PlantType)UltimateMachineChomper.PlantID);
             CustomCore.AddPlantAlmanacStrings(UltimateMachineChomper.PlantID, $"究极机械战神({UltimateMachineChomper.PlantID})",
-                "机鱼公司的终极产品。\n\n" +
-                "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
-                "<color=#3D1400>融合配方：</color><color=red>超级大嘴花+超级机械坚果</color>\n" +
-                "<color=#3D1400>韧性：</color><color=red>16000，限伤16000</color>\n" +
-                "<color=#3D1400>伤害：</color><color=red>1000/1.75秒</color>\n" +
-                "<color=#3D1400>特性：</color><color=red>铁植物，高大</color>\n" +
-                "<color=#3D1400>特点：</color><color=red>①免疫碾压并击退，血量可以超过韧性，出场时血量为20倍韧性，基础减伤为10%。\n" +
-                "②为3x3范围的植物承伤。消耗铁器回复0.2倍韧性的血量。场上铁器消失时，回复（0.2/全场超级机械坚果+究极机械战神的数量）倍韧性的血量。\n" +
-                "③攻击会对范围内每只僵尸造成啃咬，再吐出爆炸机械子弹。啃咬附加自身血量1%的伤害，并回复0.4倍伤害的血量。\n" +
-                "④每40秒一次，啃咬可吞食非领袖僵尸并回复1倍韧性的血量。\n" +
-                "⑤累计受伤2倍韧性后，下一次啃咬可吞食非领袖僵尸并刷新吞噬cd，同时这次啃咬可减少150限伤和增加1%减伤，限伤和减伤上限为4000和90%。\n" +
-                "⑥不死机制：受到致命伤害后，5秒内血量最低1，随后冷却10秒，出场时进入冷却。</color>\n" +
-                "<color=#3D1400>词条1：</color><color=red>嗜血如命：回血量x3。</color>\n" +
-                "<color=#3D1400>词条2：</color><color=red>极速吞噬：吞噬消化时间降为15秒，瞬间完成吞噬条件降至累计受伤1倍韧性。</color>\n\n" +
-                "<color=#3D1400>“我到底是机械，还是植物”究极机械战神反问自己，他不清楚自己的力量是属于身上的机械，还是属于自己的植物部分。但是在他挡在其他植物身前时，在他努力保护其他植物时，所有人知道，他的力量来自于他的内心，他善良的内心。</color>");
+               "机鱼公司的终极产品。\n\n" +
+               "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
+               "<color=#3D1400>融合配方：</color><color=red>超级大嘴花+超级机械坚果</color>\n" +
+               "<color=#3D1400>韧性：</color><color=red>16000，限伤16000</color>\n" +
+               "<color=#3D1400>伤害：</color><color=red>1000/1.75秒</color>\n" +
+               "<color=#3D1400>特性：</color><color=red>铁植物，高大</color>\n" +
+               "<color=#3D1400>特点：</color><color=red>①免疫碾压并击退，血量可以超过韧性，出场时血量为20倍韧性，基础减伤为10%。\n" +
+               "②为3x3范围的植物承伤。消耗铁器回复0.2倍韧性的血量。场上铁器消失时，回复（0.2/全场超级机械坚果+究极机械战神的数量）倍韧性的血量。\n" +
+               "③攻击会对范围内每只僵尸造成啃咬，再吐出爆炸机械子弹。啃咬附加自身血量1%的伤害，并回复0.4倍伤害的血量。\n" +
+               "④每40秒一次，啃咬可吞食非领袖僵尸并回复1倍韧性的血量。\n" +
+               "⑤累计受伤2倍韧性后，下一次啃咬可吞食非领袖僵尸并刷新吞噬cd，同时这次啃咬可减少150限伤和增加1%减伤，限伤和减伤上限为4000和90%。\n" +
+               "⑥不死机制：受到致命伤害后，5秒内血量最低1，随后冷却10秒，出场时进入冷却。</color>\n" +
+               "<color=#3D1400>词条1：</color><color=red>嗜血如命：回血量x3。</color>\n" +
+               "<color=#3D1400>词条2：</color><color=red>极速吞噬：吞噬消化时间降为15秒，瞬间完成吞噬条件降至累计受伤1倍韧性。</color>\n\n" +
+               "<color=#3D1400>“我到底是机械，还是植物”究极机械战神反问自己，他不清楚自己的力量是属于身上的机械，还是属于自己的植物部分。但是在他挡在其他植物身前时，在他努力保护其他植物时，所有人知道，他的力量来自于他的内心，他善良的内心。</color>");
         }
     }
 
-    [RegisterTypeInIl2Cpp]
     public class Bullet_machineCherry : MonoBehaviour
     {
         public static int BulletID = 1907;
@@ -69,7 +71,6 @@ namespace UltimateMachineChomper
         public Bullet_pea bullet => gameObject.GetComponent<Bullet_pea>();
     }
 
-    [RegisterTypeInIl2Cpp]
     public class UltimateMachineChomper : MonoBehaviour
     {
         public int maxDamage = 16000; // attributeCount
@@ -128,10 +129,17 @@ namespace UltimateMachineChomper
             {
                 if (plant.targetZombie == null && GameAPP.theGameStatus == GameStatus.InGame)
                     plant.ChomperSearchZombie();
-                int value = Lawnf.TravelUltimate(1) ? plant.thePlantMaxHealth : plant.thePlantMaxHealth * 2;
-                bool flag = totalDamage >= value;
-                if (flag)
-                    plant.attributeCountdown = 0f;
+                if (!isInit) Start();
+                if (plant != null && GameAPP.theGameStatus == GameStatus.InGame)
+                {
+                    if (plant.targetZombie == null && GameAPP.theGameStatus == GameStatus.InGame)
+                        plant.ChomperSearchZombie();
+                    int value = Lawnf.TravelUltimate(1) ? plant.thePlantMaxHealth : plant.thePlantMaxHealth * 2;
+                    bool flag = totalDamage >= value;
+                    if (flag)
+                        plant.attributeCountdown = 0f;
+                    UpdateText();
+                }
                 UpdateText();
             }
         }
@@ -147,7 +155,7 @@ namespace UltimateMachineChomper
                 extraTextGO.transform.SetParent(plant.textHead.transform);
                 extraTextGO.transform.localPosition = new Vector3(0f, -0.5f, 0);
                 extraText.font = GameAPP.font;
-                String status = ""; 
+                String status = "";
                 if (plant.undeadTimer > 0)
                     status = "不死:" + ((Mathf.FloorToInt(plant.undeadTimer) + 1) + "秒");
                 else if (plant.undeadCD > 0)
@@ -244,7 +252,7 @@ namespace UltimateMachineChomper
                 }
             }
         }
-        
+
         /*public void Summon()
         {
             plant.Recover(plant.thePlantMaxHealth);
@@ -390,6 +398,7 @@ namespace UltimateMachineChomper
                     GameAPP.PlaySound(49, 0.5f, 1.0f);
                     return false;
                 }
+
 
                 // 计算动态伤害
                 float dynamicDamage = 1000 + __instance.thePlantHealth * 0.01f;

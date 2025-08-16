@@ -14,6 +14,61 @@ using static UnityEngine.Object;
 namespace CustomizeLib.BepInEx
 {
     /// <summary>
+    /// 注册融合洋芋配方
+    /// </summary>
+    [HarmonyPatch(typeof(MixBomb), nameof(MixBomb.AttributeEvent))]
+    public class MixBombPatch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(MixBomb __instance)
+        {
+            bool success = false;
+            if (__instance is not null)
+            {
+                List<Plant> plants = Lawnf.Get1x1Plants(__instance.thePlantColumn, __instance.thePlantRow).ToArray().ToList();
+                if (plants is null)
+                    return true;
+                foreach (Plant plant in plants)
+                {
+                    if (plant is not null && CustomCore.CustomMixBombFusions.Keys.Any(k => k.Item2 == plant.thePlantType))
+                    {
+                        List<(PlantType, PlantType, PlantType)> mixBombFusions = CustomCore.CustomMixBombFusions
+                            .Where(kvp => kvp.Key.Item2 == plant.thePlantType)
+                            .Select(kvp => kvp.Key)
+                            .ToList();
+                        List<Plant> leftPlant = Lawnf.Get1x1Plants(__instance.thePlantColumn - 1, __instance.thePlantRow).ToArray().ToList();
+                        List<Plant> rightPlant = Lawnf.Get1x1Plants(__instance.thePlantColumn + 1, __instance.thePlantRow).ToArray().ToList();
+                        foreach ((PlantType, PlantType, PlantType) fusion in mixBombFusions)
+                        {
+                            Plant? firstLeftPlant = leftPlant.FirstOrDefault(p => p.thePlantType == fusion.Item1);
+                            Plant? firstRightPlant = rightPlant.FirstOrDefault(p => p.thePlantType == fusion.Item3);
+                            if (firstLeftPlant == null || firstRightPlant == null)
+                            {
+                                CustomCore.CustomMixBombFusions[fusion].Item2[UnityEngine.Random.Range(0, CustomCore.CustomMixBombFusions[fusion].Item2.Count)](firstLeftPlant, plant, firstRightPlant);
+                                continue;
+                            }
+                            if (leftPlant.Any(p => p.thePlantType == fusion.Item1) && rightPlant.Any(p => p.thePlantType == fusion.Item3))
+                            {
+                                CustomCore.CustomMixBombFusions[fusion].Item1[UnityEngine.Random.Range(0, CustomCore.CustomMixBombFusions[fusion].Item1.Count)](firstLeftPlant, plant, firstRightPlant);
+                                success = true;
+                            }
+                            else
+                            {
+                                CustomCore.CustomMixBombFusions[fusion].Item2[UnityEngine.Random.Range(0, CustomCore.CustomMixBombFusions[fusion].Item2.Count)](firstLeftPlant, plant, firstRightPlant);
+                            }
+                        }
+                    }
+                }
+            }
+            if (__instance is not null && success)
+                __instance.Die();
+            if (success)
+                return false;
+            return true;
+        }
+    }
+
+    /// <summary>
     /// 注册肥料使用事件
     /// </summary>
     [HarmonyPatch(typeof(Fertilize))]
@@ -487,7 +542,7 @@ namespace CustomizeLib.BepInEx
     {
         [HarmonyPatch(nameof(CreatePlant.SetPlant))]
         [HarmonyPostfix]
-        public static void Postfix(CreatePlant __instance, ref int newColumn, ref int newRow, ref GameObject __result)
+        public static void Postfix_SetPlant(CreatePlant __instance, ref int newColumn, ref int newRow, ref GameObject __result)
         {
             if (__result is not null && __result.TryGetComponent<Plant>(out var plant) &&
                 CustomCore.CustomPlantTypes.Contains(plant.thePlantType))
@@ -511,6 +566,23 @@ namespace CustomizeLib.BepInEx
                 __result = true;
                 InGameText.Instance.ShowText("该配方仅旅行生存系列或深渊可用", 3f, false);
             }
+        }
+
+        [HarmonyPatch(nameof(CreatePlant.MixBombCheck))]
+        [HarmonyPrefix]
+        public static bool Prefix_MixBombCheck(CreatePlant __instance, ref int theBoxColumn, ref int theBoxRow, ref bool __result)
+        {
+            List<Plant> plants = Lawnf.Get1x1Plants(theBoxColumn, theBoxRow).ToArray().ToList();
+            foreach (var plant in plants)
+            {
+                if (plant == null) continue;
+                if (CustomCore.CustomMixBombFusions.Any(kvp => kvp.Key.Item2 == plant.thePlantType))
+                {
+                    __result = true;
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

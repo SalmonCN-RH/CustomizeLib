@@ -1,20 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<RootNamespace>UltimateMachineChomper</RootNamespace>
+		<RootNamespace>FireSuperThreeGatling</RootNamespace>
 		<LangVersion>default</LangVersion>
 		<IsPackable>false</IsPackable>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>UltimateMachineChomper</AssemblyName>
+		<AssemblyName>FireSuperThreeGatling</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="ultimatemachinechomper" />
+	  <None Remove="firesuperthreegatling" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,6 +44,12 @@
 		</Reference>
 		<Reference Include="Unity.2D.Animation.Runtime">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Animation.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.2D.Common.Runtime">
+			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Common.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.2D.SpriteShape.Runtime">
+			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.2D.Tilemap.Extras">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Tilemap.Extras.dll</HintPath>
@@ -313,11 +319,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="ultimatemachinechomper" />
+	  <EmbeddedResource Include="firesuperthreegatling" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\CustomizeLib.MelonLoader\CustomizeLib.MelonLoader.csproj" />
+	  <ProjectReference Include="..\CustomizeLib.MelonLoader\CustomizeLib.MelonLoader.csproj" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

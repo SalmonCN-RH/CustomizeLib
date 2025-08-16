@@ -720,20 +720,105 @@ namespace CustomizeLib.MelonLoader
         /// <param name="plantType">要设为究极植物的植物类型</param>
         public static void AddUltimatePlant([NotNull] PlantType plantType) => CustomUltimatePlants.Add(plantType);
 
-        /*/// <summary>
-        /// 注册自定义融合事件
-        /// </summary>
-        /// <param name="id">亲本植物（地上长的）</param>
-        /// <param name="setPlant">种植植物（后放的）</param>
-        /// <param name="action">执行的事件，参数为融合后的植物</param>
-        public static void RegisterCustomFusionEvent(PlantType id, PlantType setPlant, Action<Plant> action) => CustomFusionEvent.Add(id, (setPlant, action));*/
-
-        /*
         /// <summary>
-        /// 添加作者名，在局内显示
+        /// 注册自定义融合洋芋配方
         /// </summary>
-        /// <param name="name">作者名</param>
-        public static void AddAuthor(String name) => authors.Add(name);*/
+        /// <param name="left">左植物</param>
+        /// <param name="center">中间植物</param>
+        /// <param name="right">右植物</param>
+        /// <param name="action">融合成功执行事件</param>
+        /// <param name="failAction">融合失败执行事件</param>
+        public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
+            [NotNull] List<Action<Plant, Plant, Plant>> actions, [NotNull] List<Action<Plant, Plant, Plant>> failActions)
+        {
+            if (CustomMixBombFusions.ContainsKey((left, center, right)))
+            {
+                foreach (var success in actions) CustomMixBombFusions[(left, center, right)].Item1.Add(success);
+                foreach (var fail in failActions) CustomMixBombFusions[(left, center, right)].Item2.Add(fail);
+            }
+            else
+                CustomMixBombFusions.Add((left, center, right), (actions, failActions));
+        }
+
+        /// <summary>
+        /// 注册自定义融合洋芋配方
+        /// </summary>
+        /// <param name="left">左植物</param>
+        /// <param name="center">中间植物</param>
+        /// <param name="right">右植物</param>
+        /// <param name="action">融合成功执行事件</param>
+        /// <param name="failAction">融合失败执行事件</param>
+        public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
+            [NotNull] Action<Plant, Plant, Plant> action, [NotNull] Action<Plant, Plant, Plant> failAction)
+        {
+            if (CustomMixBombFusions.ContainsKey((left, center, right)))
+            {
+                CustomMixBombFusions[(left, center, right)].Item1.Add(action);
+                CustomMixBombFusions[(left, center, right)].Item2.Add(failAction);
+            }
+            else
+                CustomMixBombFusions.Add((left, center, right), 
+                    new()
+                    {
+                        Item1 = new() { action },
+                        Item2 = new() { failAction }
+                    });
+        }
+
+        /// <summary>
+        /// 注册自定义融合洋芋配方
+        /// </summary>
+        /// <param name="left">左植物</param>
+        /// <param name="center">中间植物</param>
+        /// <param name="right">右植物</param>
+        /// <param name="action">融合成功执行事件</param>
+        /// <param name="failMessage">融合失败显示消息</param>
+        public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
+            [NotNull] Action<Plant, Plant, Plant> action, [NotNull] String failMessage = "") => RegisterCustomMixBombFusion(left, center, right, action, (p1, p2, p3) =>
+            {
+                if (failMessage != "" && InGameText.Instance is not null)
+                    InGameText.Instance.ShowText(failMessage, 5f);
+            });
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left">左植物</param>
+        /// <param name="center">中间植物</param>
+        /// <param name="right">右植物</param>
+        /// <param name="target">生成卡片类型</param>
+        /// <param name="failMessage">融合失败显示消息</param>
+        public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
+            [NotNull] PlantType target, [NotNull] String failMessage = "") => RegisterCustomMixBombFusion(left, center, right, (p1, p2, p3) =>
+            {
+                Lawnf.SetDroppedCard(p2.axis.transform.position, target);
+                p1.Die();
+                p2.Die();
+                p3.Die();
+                GameAPP.PlaySound(125, 0.5f, 1f);
+            }, (p1, p2, p3) =>
+            {
+                if (failMessage != "" && InGameText.Instance is not null)
+                    InGameText.Instance.ShowText(failMessage, 5f);
+            });
+
+        /// <summary>
+        /// 注册自定义融合洋芋配方
+        /// </summary>
+        /// <param name="left">左植物</param>
+        /// <param name="center">中间植物</param>
+        /// <param name="right">右植物</param>
+        /// <param name="target">生成卡片类型</param>
+        /// <param name="failAction">融合失败执行事件</param>
+        public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
+            [NotNull] PlantType target, [NotNull] Action<Plant, Plant, Plant> failAction) => RegisterCustomMixBombFusion(left, center, right, (p1, p2, p3) =>
+            {
+                Lawnf.SetDroppedCard(p2.axis.transform.position, target);
+                p1.Die();
+                p2.Die();
+                p3.Die();
+                GameAPP.PlaySound(125, 0.5f, 1f);
+            }, failAction);
 
         public override void OnDeinitializeMelon()
         {
@@ -879,14 +964,14 @@ namespace CustomizeLib.MelonLoader
         public static Dictionary<ZombieType, (string, string)> ZombiesAlmanac { get; set; } = [];
 
         /// <summary>
+        /// 自定义融合洋芋配方
+        /// </summary>
+        public static Dictionary<(PlantType, PlantType, PlantType), (List<Action<Plant?, Plant?, Plant?>>, List<Action<Plant?, Plant?, Plant?>>)> CustomMixBombFusions { get; set; } = []; // (左植物, 中植物, 右植物), (成功事件, 失败事件)
+
+        /// <summary>
         /// 换贴图协程对象
         /// </summary>
         public object? ReplaceTextureRoutine { get; set; } = null;
-
-        /*/// <summary>
-        /// 作者名称列表
-        /// </summary>
-        public static HashSet<String> authors = new HashSet<string>();*/
 
         /// <summary>
         /// 存卡片检查的列表，用于管理Packet显示，你不应该使用它

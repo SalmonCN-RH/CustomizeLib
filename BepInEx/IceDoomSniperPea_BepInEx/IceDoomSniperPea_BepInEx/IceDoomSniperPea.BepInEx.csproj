@@ -4,7 +4,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <BaseOutputPath>F:\PVZRH_Bep\BepInEx\plugins</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

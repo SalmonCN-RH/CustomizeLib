@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="firesuperthreegatling" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="firesuperthreegatling" />
+  </ItemGroup>
+<ItemGroup>
+    <ProjectReference Include="..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="0Harmony">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\0Harmony.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="BepInEx.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="BepInEx.Unity.IL2CPP">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Cpp2IL.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Cpp2IL.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Il2CppInterop.Runtime">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Il2Cppmscorlib">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Il2CppSystem">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Il2CppSystem.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Unity.VisualScripting.Core.dll">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.VisualScripting.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\PVZRH_Bep\BepInEx\plugins&quot;" />
+	</Target>
+</Project>

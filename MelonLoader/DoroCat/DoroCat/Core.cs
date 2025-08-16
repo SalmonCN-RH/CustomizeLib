@@ -22,7 +22,7 @@ namespace DoroCat
             CustomCore.RegisterCustomBullet<Bullet_cactus, Bullet_doroCat>((BulletType)Bullet_doroCat.BulletID, ab.GetAsset<GameObject>("DoroCatBullet"));
             CustomCore.RegisterCustomPlant<CattailPlant, DoroCat>(DoroCat.PlantID, ab.GetAsset<GameObject>("DoroCatPrefab"),
                 ab.GetAsset<GameObject>("DoroCatPreview"), [], 1.5f, 0, 150, 300, 30f, 325);
-            CustomCore.AddPlantAlmanacStrings(DoroCat.PlantID, $"Doro({DoroCat.PlantID})", "来自异界的奇妙植物，能发射让僵尸回头的子弹。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>150x2/1.5秒</color>\n<color=#3D1400>特点：</color><color=red>子弹有概率触发驱逐，使僵尸往回走，对于无法驱逐的僵尸造成8倍伤害。</color>\n\n<color=#3D1400>哦润吉汁水丰富，气味芬香，便宜，也十分好保存。Doro曾想把哦润吉分享给僵尸们，最终都以僵尸快速远离而收尾。或许那群食脑者都不明白哦润吉的美味？</color>\n花费：<color=red>325</color>\n冷却时间：<color=red>30秒</color>");
+            CustomCore.AddPlantAlmanacStrings(DoroCat.PlantID, $"Doro({DoroCat.PlantID})", "来自异界的奇妙植物，能发射让僵尸回头的子弹。\n\n<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n<color=#3D1400>伤害：</color><color=red>150x2/1.5秒</color>\n<color=#3D1400>特点：</color><color=red>子弹有概率触发驱逐，使僵尸往回走，对于无法驱逐的僵尸造成8倍伤害。</color>\n\n<color=#3D1400>哦润吉汁水丰富，气味芬香，便宜，也十分好保存。Doro曾想把哦润吉</color>\n花费：<color=red>325</color>\n冷却时间：<color=red>30秒</color>\n<color=#3D1400>分享给僵尸们，最终都以僵尸快速远离而收尾。或许那群食脑者都不明白哦润吉的美味？</color>\n\n\n\n\n\n\n\n\n花费：<color=red>325</color>\n冷却时间：<color=red>30秒</color>");
             CustomCore.RegisterCustomCardToColorfulCards((PlantType)DoroCat.PlantID);
             CreateWhiteListZombieFile();
         }

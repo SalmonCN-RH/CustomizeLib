@@ -1,0 +1,376 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="mscaredyshroom" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="mscaredyshroom" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="0Harmony">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="AsmResolver">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AsmResolver.dll</HintPath>
+		</Reference>
+		<Reference Include="AsmResolver.DotNet">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AsmResolver.DotNet.dll</HintPath>
+		</Reference>
+		<Reference Include="AsmResolver.PE">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AsmResolver.PE.dll</HintPath>
+		</Reference>
+		<Reference Include="AsmResolver.PE.File">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AsmResolver.PE.File.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="AssetRipper.CIL">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AssetRipper.CIL.dll</HintPath>
+		</Reference>
+		<Reference Include="AssetRipper.Primitives">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AssetRipper.Primitives.dll</HintPath>
+		</Reference>
+		<Reference Include="AssetRipper.VersionUtilities">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\AssetRipper.VersionUtilities.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx.Preloader.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Preloader.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx.Unity.Common">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Unity.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="BepInEx.Unity.IL2CPP">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
+		</Reference>
+		<Reference Include="Cpp2IL.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Cpp2IL.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Disarm">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Disarm.dll</HintPath>
+		</Reference>
+		<Reference Include="Gee.External.Capstone">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Gee.External.Capstone.dll</HintPath>
+		</Reference>
+		<Reference Include="Iced">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Iced.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.Common">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.Generator">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.HarmonySupport">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.HarmonySupport.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppInterop.Runtime">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppMono.Security">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppMono.Security.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2Cppmscorlib">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Configuration">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.Configuration.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Il2CppSystem.Xml">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Il2CppSystem.Xml.dll</HintPath>
+		</Reference>
+		<Reference Include="LibCpp2IL">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\LibCpp2IL.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Cecil">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Mono.Cecil.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Cecil.Mdb">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Mono.Cecil.Mdb.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Cecil.Pdb">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Mono.Cecil.Pdb.dll</HintPath>
+		</Reference>
+		<Reference Include="Mono.Cecil.Rocks">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\Mono.Cecil.Rocks.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.RuntimeDetour">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\MonoMod.RuntimeDetour.dll</HintPath>
+		</Reference>
+		<Reference Include="MonoMod.Utils">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\MonoMod.Utils.dll</HintPath>
+		</Reference>
+		<Reference Include="SemanticVersioning">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\SemanticVersioning.dll</HintPath>
+		</Reference>
+		<Reference Include="StableNameDotNet">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\StableNameDotNet.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.2D.Animation.Runtime">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.2D.Animation.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Burst.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Burst.Unsafe">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Burst.Unsafe.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Collections.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Collections.LowLevel.ILSupport">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.InternalAPIEngineBridge.001">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.InternalAPIEngineBridge.001.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.Mathematics">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.Mathematics.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.Runtime">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Universal.Runtime">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.TextMeshPro">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
+		</Reference>
+		<Reference Include="Unity.VisualScripting.Core">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\Unity.VisualScripting.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AccessibilityModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AccessibilityModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AIModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AndroidJNIModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AndroidJNIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.AudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClothModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ClothModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterInputModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ClusterInputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterRendererModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ClusterRendererModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ContentLoadModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ContentLoadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CrashReportingModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.CrashReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DirectorModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.DirectorModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.DSPGraphModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.DSPGraphModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GameCenterModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.GameCenterModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GIModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.GIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.GridModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.GridModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.HotReloadModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.HotReloadModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ImageConversionModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.IMGUIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.InputModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.InputModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.JSONSerializeModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.JSONSerializeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.LocalizationModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.LocalizationModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ParticleSystemModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PerformanceReportingModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.PerformanceReportingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.Physics2DModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.Physics2DModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ProfilerModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ProfilerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PropertiesModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.PropertiesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ScreenCaptureModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.ScreenCaptureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SharedInternalsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.SharedInternalsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteMaskModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.SpriteMaskModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteShapeModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.SpriteShapeModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.StreamingModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.StreamingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubstanceModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.SubstanceModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.SubsystemsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.SubsystemsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TerrainModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainPhysicsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreFontEngineModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreTextEngineModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TilemapModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TilemapModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.TLSModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.TLSModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UIElementsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UIModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UmbraModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UmbraModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsCommonModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityConnectModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityConnectModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityCurlModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityCurlModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityTestProtocolModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAudioModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityWebRequestModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestTextureModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestWWWModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VehiclesModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.VehiclesModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VFXModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.VFXModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VideoModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.VideoModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VirtualTexturingModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.VirtualTexturingModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.VRModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.VRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.WindModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.WindModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.XRModule">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\UnityEngine.XRModule.dll</HintPath>
+		</Reference>
+		<Reference Include="WasmDisassembler">
+			<HintPath>F:\PVZRH_Bep\BepInEx\core\WasmDisassembler.dll</HintPath>
+		</Reference>
+		<Reference Include="__Generated">
+			<HintPath>F:\PVZRH_Bep\BepInEx\interop\__Generated.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\PVZRH_Bep\BepInEx\plugins&quot;" />
+	</Target>
+</Project>

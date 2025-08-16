@@ -1,20 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<RootNamespace>UltimateMachineChomper</RootNamespace>
+		<RootNamespace>GoldenSalmon</RootNamespace>
 		<LangVersion>default</LangVersion>
 		<IsPackable>false</IsPackable>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>UltimateMachineChomper</AssemblyName>
+		<AssemblyName>GoldenSalmon</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="ultimatemachinechomper" />
+	  <None Remove="goldensalmon" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -313,7 +313,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="ultimatemachinechomper" />
+	  <EmbeddedResource Include="goldensalmon" />
 	</ItemGroup>
 
 	<ItemGroup>
