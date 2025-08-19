@@ -847,14 +847,6 @@ namespace CustomizeLib.BepInEx
                 GameAPP.PlaySound(125, 0.5f, 1f);
             }, failAction);
 
-        public void LateInit()
-        {
-            GameObject gameObject = new("TextureReplacer");
-            ReplaceTextureRoutine = gameObject.AddComponent<CoroutineRunner>();
-            UnityEngine.Object.DontDestroyOnLoad(gameObject);
-            // ReplaceTextureRoutine.StartCoroutine(TextureStore.ReplaceTexturesCoroutine());
-        }
-
         public override void Load()
         {
             ClassInjector.RegisterTypeInIl2Cpp<CoroutineRunner>();
@@ -869,7 +861,6 @@ namespace CustomizeLib.BepInEx
 
         public override bool Unload()
         {
-            ReplaceTextureRoutine!.StopAllCoroutines();
             return true;
         }
 

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppTMPro;
 using MelonLoader;
@@ -552,7 +553,7 @@ namespace CustomizeLib.MelonLoader
     {
         [HarmonyPatch(nameof(CreatePlant.SetPlant))]
         [HarmonyPostfix]
-        public static void Postfix_SetPlant(CreatePlant __instance, ref int newColumn, ref int newRow, ref GameObject __result)
+        public static void Postfix_SetPlant(CreatePlant __instance, ref GameObject __result)
         {
             if (__result is not null && __result.TryGetComponent<Plant>(out var plant) &&
                 CustomCore.CustomPlantTypes.Contains(plant.thePlantType))
@@ -640,13 +641,39 @@ namespace CustomizeLib.MelonLoader
     /// <summary>
     /// 资源加载
     /// </summary>
-    [HarmonyPatch(typeof(GameAPP))]
-    public static class GameAPPPatch
+    [HarmonyPatch(typeof(NoticeMenu), nameof(NoticeMenu.Start))]
+    public static class NoticeMenuPatch
     {
         [HarmonyPostfix]
-        [HarmonyPatch("LoadResources")]
-        public static void LoadResources()
+        public static void Postfix(NoticeMenu __instance)
         {
+            // 扩容plantData
+            if (CustomCore.CustomPlants.Count > 0)
+            {
+                long size_plantData = (int)CustomCore.CustomPlants.Keys.Max() < PlantDataLoader.plantData.Length ? PlantDataLoader.plantData.Length : (int)CustomCore.CustomPlants.Keys.Max();
+                PlantDataLoader.PlantData_[] plantData = new PlantDataLoader.PlantData_[size_plantData + 1];
+                Array.Copy(PlantDataLoader.plantData, plantData, PlantDataLoader.plantData.Length);
+                PlantDataLoader.plantData = plantData;
+            }
+
+            // 扩容particlePrefab
+            if (CustomCore.CustomParticles.Count > 0)
+            {
+                long size_particlePrefab = (int)CustomCore.CustomParticles.Keys.Max() < GameAPP.particlePrefab.Length ? GameAPP.particlePrefab.Length : (int)CustomCore.CustomParticles.Keys.Max();
+                GameObject[] particlePrefab = new GameObject[size_particlePrefab + 1];
+                Array.Copy(GameAPP.particlePrefab, particlePrefab, GameAPP.particlePrefab.Length);
+                GameAPP.particlePrefab = particlePrefab;
+            }
+
+            // 扩容spritePrefab
+            if (CustomCore.CustomSprites.Count > 0)
+            {
+                long size_spritePrefab = CustomCore.CustomSprites.Keys.Max() < GameAPP.spritePrefab.Length ? GameAPP.spritePrefab.Length : CustomCore.CustomSprites.Keys.Max();
+                Sprite[] spritePrefab = new Sprite[size_spritePrefab + 1];
+                Array.Copy(GameAPP.spritePrefab, spritePrefab, GameAPP.spritePrefab.Length);
+                GameAPP.spritePrefab = spritePrefab;
+            }
+
             foreach (var plant in CustomCore.CustomPlants)//二创植物
             {
                 GameAPP.resourcesManager.plantPrefabs[plant.Key] = plant.Value.Prefab;//注册预制体

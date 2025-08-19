@@ -627,55 +627,6 @@ namespace CustomizeLib.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(GameAPP))]
-    public static class GameAPPPatch
-    {
-        [HarmonyPostfix]
-        [HarmonyPatch("LoadResources")]
-        public static void LoadResources()
-        {
-            foreach (var plant in CustomCore.CustomPlants)
-            {
-                GameAPP.resourcesManager.plantPrefabs[plant.Key] = plant.Value.Prefab;
-                GameAPP.resourcesManager.plantPrefabs[plant.Key].tag = "Plant";
-                if (!GameAPP.resourcesManager.allPlants.Contains(plant.Key)) GameAPP.resourcesManager.allPlants.Add(plant.Key);
-                if (plant.Value.PlantData is not null)
-                {
-                    PlantDataLoader.plantData[(int)plant.Key] = plant.Value.PlantData;//注册植物数据
-                    PlantDataLoader.plantDatas.Add(plant.Key, plant.Value.PlantData);
-                }
-                GameAPP.resourcesManager.plantPreviews[plant.Key] = plant.Value.Preview;
-                GameAPP.resourcesManager.plantPreviews[plant.Key].tag = "Preview";
-            }
-            Il2CppSystem.Array array = MixData.data.Cast<Il2CppSystem.Array>();
-            foreach (var f in CustomCore.CustomFusions)
-            {
-                array.SetValue(f.Item1, f.Item2, f.Item3);
-            }
-            foreach (var z in CustomCore.CustomZombies)
-            {
-                if (!GameAPP.resourcesManager.allZombieTypes.Contains(z.Key)) GameAPP.resourcesManager.allZombieTypes.Add(z.Key);
-                GameAPP.resourcesManager.zombiePrefabs[z.Key] = z.Value.Item1;
-                GameAPP.resourcesManager.zombiePrefabs[z.Key].tag = "Zombie";
-            }
-            foreach (var bullet in CustomCore.CustomBullets)
-            {
-                GameAPP.resourcesManager.bulletPrefabs[bullet.Key] = bullet.Value;
-                if (!GameAPP.resourcesManager.allBullets.Contains(bullet.Key)) GameAPP.resourcesManager.allBullets.Add(bullet.Key);
-            }
-            foreach (var par in CustomCore.CustomParticles)
-            {
-                GameAPP.particlePrefab[(int)par.Key] = par.Value;
-                GameAPP.resourcesManager.particlePrefabs[par.Key] = par.Value;
-                if (!GameAPP.resourcesManager.allParticles.Contains(par.Key)) GameAPP.resourcesManager.allParticles.Add(par.Key);
-            }
-            foreach (var spr in CustomCore.CustomSprites)
-            {
-                GameAPP.spritePrefab[spr.Key] = spr.Value;
-            }
-        }
-    }
-
     /// <summary>
     /// 点击其他Button，隐藏二创植物界面
     /// </summary>
@@ -988,10 +939,87 @@ namespace CustomizeLib.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(NoticeMenu), "Awake")]
+    [HarmonyPatch(typeof(NoticeMenu), nameof(NoticeMenu.Start))]
     public static class NoticeMenuPatch
     {
-        public static void Postfix() => CustomCore.Instance.Value.LateInit();
+        [HarmonyPostfix]
+        public static void Postfix()
+        {
+            // 扩容plantData
+            if (CustomCore.CustomPlants.Count > 0)
+            {
+                long size_plantData = (int)CustomCore.CustomPlants.Keys.Max() < PlantDataLoader.plantData.Length ? PlantDataLoader.plantData.Length : (int)CustomCore.CustomPlants.Keys.Max();
+                PlantDataLoader.PlantData_[] plantData = new PlantDataLoader.PlantData_[size_plantData + 1];
+                Array.Copy(PlantDataLoader.plantData, plantData, PlantDataLoader.plantData.Length);
+                PlantDataLoader.plantData = plantData;
+            }
+
+            // 扩容particlePrefab
+            if (CustomCore.CustomParticles.Count > 0)
+            {
+                long size_particlePrefab = (int)CustomCore.CustomParticles.Keys.Max() < GameAPP.particlePrefab.Length ? GameAPP.particlePrefab.Length : (int)CustomCore.CustomParticles.Keys.Max();
+                GameObject[] particlePrefab = new GameObject[size_particlePrefab + 1];
+                Array.Copy(GameAPP.particlePrefab, particlePrefab, GameAPP.particlePrefab.Length);
+                GameAPP.particlePrefab = particlePrefab;
+            }
+
+            // 扩容spritePrefab
+            if (CustomCore.CustomSprites.Count > 0)
+            {
+                long size_spritePrefab = CustomCore.CustomSprites.Keys.Max() < GameAPP.spritePrefab.Length ? GameAPP.spritePrefab.Length : CustomCore.CustomSprites.Keys.Max();
+                Sprite[] spritePrefab = new Sprite[size_spritePrefab + 1];
+                Array.Copy(GameAPP.spritePrefab, spritePrefab, GameAPP.spritePrefab.Length);
+                GameAPP.spritePrefab = spritePrefab;
+            }
+
+            foreach (var plant in CustomCore.CustomPlants)//二创植物
+            {
+                GameAPP.resourcesManager.plantPrefabs[plant.Key] = plant.Value.Prefab;//注册预制体
+                GameAPP.resourcesManager.plantPrefabs[plant.Key].tag = "Plant";//必须打tag
+                if (!GameAPP.resourcesManager.allPlants.Contains(plant.Key))
+                    GameAPP.resourcesManager.allPlants.Add(plant.Key);//注册植物类型
+                if (plant.Value.PlantData is not null)
+                {
+                    PlantDataLoader.plantData[(int)plant.Key] = plant.Value.PlantData;//注册植物数据
+                    PlantDataLoader.plantDatas.Add(plant.Key, plant.Value.PlantData);
+                }
+                GameAPP.resourcesManager.plantPreviews[plant.Key] = plant.Value.Preview;//注册植物预览
+                GameAPP.resourcesManager.plantPreviews[plant.Key].tag = "Preview";//必修打tag
+            }
+            Il2CppSystem.Array array = MixData.data.Cast<Il2CppSystem.Array>();//注册融合配方
+            foreach (var f in CustomCore.CustomFusions)
+            {
+                array.SetValue(f.Item1, f.Item2, f.Item3);
+            }
+
+            foreach (var z in CustomCore.CustomZombies)//注册二创僵尸
+            {
+                if (!GameAPP.resourcesManager.allZombieTypes.Contains(z.Key))
+                    GameAPP.resourcesManager.allZombieTypes.Add(z.Key);//注册僵尸类型
+                GameAPP.resourcesManager.zombiePrefabs[z.Key] = z.Value.Item1;//注册僵尸预制体
+                GameAPP.resourcesManager.zombiePrefabs[z.Key].tag = "Zombie";//必修打tag
+            }
+
+            foreach (var bullet in CustomCore.CustomBullets)//注册二创子弹
+            {
+                GameAPP.resourcesManager.bulletPrefabs[bullet.Key] = bullet.Value;//注册子弹预制体
+                if (!GameAPP.resourcesManager.allBullets.Contains(bullet.Key))
+                    GameAPP.resourcesManager.allBullets.Add(bullet.Key);//注册子弹类型
+            }
+
+            foreach (var par in CustomCore.CustomParticles)//注册粒子效果
+            {
+                GameAPP.particlePrefab[(int)par.Key] = par.Value;
+                GameAPP.resourcesManager.particlePrefabs[par.Key] = par.Value;//注册粒子效果预制体
+                if (!GameAPP.resourcesManager.allParticles.Contains(par.Key))
+                    GameAPP.resourcesManager.allParticles.Add(par.Key);//注册粒子效果类型
+            }
+
+            foreach (var spr in CustomCore.CustomSprites)//注册自定义精灵贴图
+            {
+                GameAPP.spritePrefab[spr.Key] = spr.Value;
+            }
+        }
     }
 
     [HarmonyPatch(typeof(Plant))]

@@ -820,19 +820,8 @@ namespace CustomizeLib.MelonLoader
                 GameAPP.PlaySound(125, 0.5f, 1f);
             }, failAction);
 
-        public override void OnDeinitializeMelon()
-        {
-            MelonCoroutines.Stop(ReplaceTextureRoutine);//停止换贴图协程
-        }
-
-        public override void OnInitializeMelon()
-        {
-            // TextureStore.Init();//获取所有替换的贴图
-        }
-
         public override void OnLateInitializeMelon()
         {
-            // ReplaceTextureRoutine = MelonCoroutines.Start(TextureStore.ReplaceTexturesCoroutine());//启动换贴图协程
             GameObject ccore = new("CustomizeLib by Infinite75");
             ccore.AddComponent<CustomizeLib>().CustomCore = this;
             UnityEngine.Object.DontDestroyOnLoad(ccore);

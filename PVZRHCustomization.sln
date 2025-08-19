@@ -139,6 +139,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireSuperThreeGatling.BepIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IceSuperThreeGatling.BepInEx", "BepInEx\IceSuperThreeGatling.BepInEx\IceSuperThreeGatling.BepInEx.csproj", "{965DE189-37EF-418B-94AC-25FB8B09A02E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuffHypnoSuperGatling.MelonLoader", "MelonLoader\PuffHypnoSuperGatling.MelonLoader\PuffHypnoSuperGatling.MelonLoader.csproj", "{A2EC1FA1-6B93-4C5F-B23C-55F069B433FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -401,6 +403,10 @@ Global
 		{965DE189-37EF-418B-94AC-25FB8B09A02E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{965DE189-37EF-418B-94AC-25FB8B09A02E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{965DE189-37EF-418B-94AC-25FB8B09A02E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2EC1FA1-6B93-4C5F-B23C-55F069B433FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2EC1FA1-6B93-4C5F-B23C-55F069B433FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2EC1FA1-6B93-4C5F-B23C-55F069B433FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2EC1FA1-6B93-4C5F-B23C-55F069B433FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
