@@ -3,18 +3,18 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<RootNamespace>PuffHypnoSuperGatling.MelonLoader</RootNamespace>
+		<RootNamespace>PuffSuperSnowGatling</RootNamespace>
 		<LangVersion>default</LangVersion>
 		<IsPackable>false</IsPackable>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>PuffHypnoSuperGatling.MelonLoader</AssemblyName>
+		<AssemblyName>PuffSuperSnowGatling</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="puffhypnosupergatling" />
+	  <None Remove="puffsupersnowgatling" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,12 +44,6 @@
 		</Reference>
 		<Reference Include="Unity.2D.Animation.Runtime">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Animation.Runtime.dll</HintPath>
-		</Reference>
-		<Reference Include="Unity.2D.Common.Runtime">
-			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Common.Runtime.dll</HintPath>
-		</Reference>
-		<Reference Include="Unity.2D.SpriteShape.Runtime">
-			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.2D.Tilemap.Extras">
 			<HintPath>F:\PVZRH_Melon\MelonLoader\Il2CppAssemblies\Unity.2D.Tilemap.Extras.dll</HintPath>
@@ -319,11 +313,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="puffhypnosupergatling" />
+	  <EmbeddedResource Include="puffsupersnowgatling" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CustomizeLib.MelonLoader\CustomizeLib.MelonLoader.csproj" />
+	  <ProjectReference Include="..\..\CustomizeLib.MelonLoader\CustomizeLib.MelonLoader.csproj" />
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

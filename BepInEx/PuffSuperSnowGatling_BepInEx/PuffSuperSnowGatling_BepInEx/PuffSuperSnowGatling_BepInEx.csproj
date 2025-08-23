@@ -86,7 +86,7 @@
     </Reference>
   </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\PVZRH_Bep\Mods&quot;" />
+		<Exec Command="COPY &quot;$(TargetPath)&quot; &quot;F:\PVZRH_Bep\BepInEx\plugins&quot;" />
 	</Target>
 
 </Project>

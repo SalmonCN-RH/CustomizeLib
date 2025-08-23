@@ -19,8 +19,8 @@ namespace PuffSuperSnowGatlingBepInEx
             var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "puffsupersnowgatling");
             CustomCore.RegisterCustomPlant<SuperGatling, PuffSuperGatling>(
                 PuffSuperGatling.PlantID,
-                ab.GetAsset<GameObject>("PuffSupeSnowrGatlingPrefab"),
-                ab.GetAsset<GameObject>("PuffSupeSnowrGatlingPreview"),
+                ab.GetAsset<GameObject>("PuffSuperSnowGatlingPrefab"),
+                ab.GetAsset<GameObject>("PuffSuperSnowGatlingPreview"),
                 new List<(int, int)>
                 {
                     ((int)PlantType.SmallPuff, (int)PlantType.SuperSnowGatling),

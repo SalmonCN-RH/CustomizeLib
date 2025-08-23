@@ -3,18 +3,19 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<RootNamespace>PuffHypnoSuperGatling.MelonLoader</RootNamespace>
+		<RootNamespace>UltimateFireThreeGatling.MelonLoader</RootNamespace>
 		<LangVersion>default</LangVersion>
 		<IsPackable>false</IsPackable>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
 		<FileVersion>1.0.0.0</FileVersion>
 		<NeutralLanguage>en-US</NeutralLanguage>
-		<AssemblyName>PuffHypnoSuperGatling.MelonLoader</AssemblyName>
+		<AssemblyName>UltimateFireThreeGatling.MelonLoader</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="puffhypnosupergatling" />
+	  <None Remove="ashthreegaling" />
+	  <None Remove="ultimatefiresupergatling" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -319,7 +320,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="puffhypnosupergatling" />
+	  <EmbeddedResource Include="ashthreegaling" />
+	  <EmbeddedResource Include="ultimatefiresupergatling" />
 	</ItemGroup>
 
 	<ItemGroup>

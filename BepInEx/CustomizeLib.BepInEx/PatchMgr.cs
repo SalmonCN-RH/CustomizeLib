@@ -110,7 +110,7 @@ namespace CustomizeLib.BepInEx
         [HarmonyPostfix]
         public static void PostAwake(AlmanacMenu __instance)
         {
-            __instance.transform.FindChild("AlmanacPlant2").FindChild("Cards").GetComponent<GridManager>().maxY = 75;
+            __instance.transform.FindChild("AlmanacPlant2").FindChild("Cards").GetComponent<GridManager>().maxY = GameAPP.resourcesManager.allPlants.Count / 9 * 1.5f;
         }
     }
 
@@ -1042,15 +1042,6 @@ namespace CustomizeLib.BepInEx
     [HarmonyPatch(typeof(SeedLibrary))]
     public static class SeedLibraryPatch
     {
-        /*[HarmonyPatch(nameof(SeedLibrary.Awake))]
-        [HarmonyPostfix]
-        public static void PostAwake(SeedLibrary __instance)
-        {
-            //为什么PostShowNormalCard会无限递归？？？
-            //Grid
-            // __instance.transform.FindCardUIAndChangeSprite();
-        }*/
-
         [HarmonyPatch(nameof(SeedLibrary.Start))]
         [HarmonyPostfix]
         public static void PostStart(SeedLibrary __instance)
@@ -1220,39 +1211,6 @@ namespace CustomizeLib.BepInEx
             SelectCustomPlants.InitCustomCards();
         }
     }
-
-    /*/// <summary>
-    /// 进入一局游戏，显示作者
-    /// </summary>
-    [HarmonyPatch(typeof(UIDifficulty), nameof(UIDifficulty.Start))]
-    public static class ShowAuthor
-    {
-        [HarmonyPostfix]
-        private static void Postfix(UIDifficulty __instance)
-        {
-            if (__instance.transform.FindChild("Author") == null && __instance.name == "Difficulty")
-            {
-                GameObject author = new GameObject("Author");
-                TextMeshProUGUI text = author.AddComponent<TextMeshProUGUI>();
-                text.font = Resources.Load<TMP_FontAsset>("Fonts/ContinuumBold SDF");
-                text.color = Color.cyan;
-                StringBuilder showText = new StringBuilder("CustomizeLib作者:@MC屑鱼\n" +
-                    "原作者@Infinite75已停更\n" +
-                    "当前环境二创Mod作者:");
-                foreach (String str in CustomCore.authors)
-                {
-                    showText.Append($"\n@{str},");
-                }
-                int length = showText.ToString().Split('\n').Length;
-                showText.Remove(showText.Length - 1, 1);
-                text.text = showText.ToString();
-                text.transform.SetParent(__instance.transform);
-                text.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-                author.transform.localPosition = new Vector3(60, 50 + (length - 2) * 15, 0);
-                author.GetComponent<RectTransform>().sizeDelta = new Vector2(800, 50);
-            }
-        }
-    }*/
 
     /// <summary>
     /// 点击换肤
