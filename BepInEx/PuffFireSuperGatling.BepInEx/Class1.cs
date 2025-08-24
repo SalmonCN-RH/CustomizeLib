@@ -1,20 +1,22 @@
-﻿using CustomizeLib.MelonLoader;
-using HarmonyLib;
-using Il2Cpp;
-using MelonLoader;
+﻿using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
+using BepInEx;
 using UnityEngine;
+using BepInEx.Unity.IL2CPP;
+using System.Reflection;
+using CustomizeLib.BepInEx;
 
-[assembly: MelonInfo(typeof(PuffFireSuperGatling.MelonLoader.Core), "PuffFireSuperGatling", "1.0.0", "Salmon", null)]
-[assembly: MelonGame("LanPiaoPiao", "PlantsVsZombiesRH")]
-
-namespace PuffFireSuperGatling.MelonLoader
+namespace PuffSuperFireGatling.BepInEx
 {
-    public class Core : MelonMod
+    [BepInPlugin("salmon.puffsuperfiregatling", "PuffSuperFireGatling", "1.0")]
+    public class Core : BasePlugin//304
     {
-        public override void OnInitializeMelon()
+        public override void Load()
         {
+            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+            ClassInjector.RegisterTypeInIl2Cpp<PuffFireSuperGatling>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            var ab = CustomCore.GetAssetBundle(MelonAssembly.Assembly, "pufffiresupergatling");
+            var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "pufffiresupergatling");
             CustomCore.RegisterCustomPlant<SuperGatling, PuffFireSuperGatling>(
                 PuffFireSuperGatling.PlantID,
                 ab.GetAsset<GameObject>("PuffFireSuperGatlingPrefab"),
@@ -35,7 +37,6 @@ namespace PuffFireSuperGatling.MelonLoader
         }
     }
 
-    [RegisterTypeInIl2Cpp]
     public class PuffFireSuperGatling : MonoBehaviour
     {
         public static int PlantID = 1926;

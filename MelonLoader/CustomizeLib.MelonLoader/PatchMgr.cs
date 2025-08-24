@@ -647,6 +647,7 @@ namespace CustomizeLib.MelonLoader
         [HarmonyPostfix]
         public static void Postfix(NoticeMenu __instance)
         {
+            #if false
             // 扩容plantData
             if (CustomCore.CustomPlants.Count > 0)
             {
@@ -673,7 +674,7 @@ namespace CustomizeLib.MelonLoader
                 Array.Copy(GameAPP.spritePrefab, spritePrefab, GameAPP.spritePrefab.Length);
                 GameAPP.spritePrefab = spritePrefab;
             }
-
+            #endif
             foreach (var plant in CustomCore.CustomPlants)//二创植物
             {
                 GameAPP.resourcesManager.plantPrefabs[plant.Key] = plant.Value.Prefab;//注册预制体

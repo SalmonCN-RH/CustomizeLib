@@ -146,10 +146,10 @@ namespace UltimateFireThreeGatling.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(Plant), nameof(Plant.Die))]
-    public class Plant_Die
+    [HarmonyPatch(typeof(Plant), nameof(Plant.OnDestroy))]
+    public class Plant_OnDestroy
     {
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         public static void Prefix(Plant __instance)
         {
             if (__instance != null && (int)__instance.thePlantType == UltimateFireThreeGatling.PlantID)
