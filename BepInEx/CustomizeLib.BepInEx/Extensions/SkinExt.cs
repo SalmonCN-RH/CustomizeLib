@@ -1,0 +1,527 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CustomizeLib.BepInEx
+{
+    public static class SkinExtensions
+    {
+        public static void AddValueToTypeMgrExtraSkinBackup(this CustomTypeMgrExtraSkin typeMgrExtraSkinFromJson, PlantType plantType)
+        {
+            CustomCore.TypeMgrExtraSkinBackup.BigNut.Add(plantType, typeMgrExtraSkinFromJson.BigNut);
+            //CustomCore.TypeMgrExtraSkinBackup.BigZombie.Add(plantType, typeMgrExtraSkinFromJson.BigZombie);
+            CustomCore.TypeMgrExtraSkinBackup.DoubleBoxPlants.Add(plantType, typeMgrExtraSkinFromJson.DoubleBoxPlants);
+            //CustomCore.TypeMgrExtraSkinBackup.EliteZombie.Add(plantType, typeMgrExtraSkinFromJson.EliteZombie);
+            CustomCore.TypeMgrExtraSkinBackup.FlyingPlants.Add(plantType, typeMgrExtraSkinFromJson.FlyingPlants);
+            //CustomCore.TypeMgrExtraSkinBackup.IsAirZombie.Add(plantType, typeMgrExtraSkinFromJson.IsAirZombie);
+            CustomCore.TypeMgrExtraSkinBackup.IsCaltrop.Add(plantType, typeMgrExtraSkinFromJson.IsCaltrop);
+            CustomCore.TypeMgrExtraSkinBackup.IsCustomPlant.Add(plantType, typeMgrExtraSkinFromJson.IsCustomPlant);
+            CustomCore.TypeMgrExtraSkinBackup.IsFirePlant.Add(plantType, typeMgrExtraSkinFromJson.IsFirePlant);
+            CustomCore.TypeMgrExtraSkinBackup.IsIcePlant.Add(plantType, typeMgrExtraSkinFromJson.IsIcePlant);
+            CustomCore.TypeMgrExtraSkinBackup.IsMagnetPlants.Add(plantType, typeMgrExtraSkinFromJson.IsMagnetPlants);
+            CustomCore.TypeMgrExtraSkinBackup.IsNut.Add(plantType, typeMgrExtraSkinFromJson.IsNut);
+            CustomCore.TypeMgrExtraSkinBackup.IsPlantern.Add(plantType, typeMgrExtraSkinFromJson.IsPlantern);
+            CustomCore.TypeMgrExtraSkinBackup.IsPot.Add(plantType, typeMgrExtraSkinFromJson.IsPot);
+            CustomCore.TypeMgrExtraSkinBackup.IsPotatoMine.Add(plantType, typeMgrExtraSkinFromJson.IsPotatoMine);
+            CustomCore.TypeMgrExtraSkinBackup.IsPuff.Add(plantType, typeMgrExtraSkinFromJson.IsPuff);
+            CustomCore.TypeMgrExtraSkinBackup.IsPumpkin.Add(plantType, typeMgrExtraSkinFromJson.IsPumpkin);
+            CustomCore.TypeMgrExtraSkinBackup.IsSmallRangeLantern.Add(plantType, typeMgrExtraSkinFromJson.IsSmallRangeLantern);
+            CustomCore.TypeMgrExtraSkinBackup.IsSpecialPlant.Add(plantType, typeMgrExtraSkinFromJson.IsSpecialPlant);
+            CustomCore.TypeMgrExtraSkinBackup.IsSpickRock.Add(plantType, typeMgrExtraSkinFromJson.IsSpickRock);
+            CustomCore.TypeMgrExtraSkinBackup.IsTallNut.Add(plantType, typeMgrExtraSkinFromJson.IsTallNut);
+            CustomCore.TypeMgrExtraSkinBackup.IsTangkelp.Add(plantType, typeMgrExtraSkinFromJson.IsTangkelp);
+            CustomCore.TypeMgrExtraSkinBackup.IsWaterPlant.Add(plantType, typeMgrExtraSkinFromJson.IsWaterPlant);
+            //CustomCore.TypeMgrExtraSkinBackup.NotRandomBungiZombie.Add(plantType,typeMgrExtraSkinFromJson.NotRandomBungiZombie);
+            //CustomCore.TypeMgrExtraSkinBackup.NotRandomZombie.Add(plantType, typeMgrExtraSkinFromJson.NotRandomZombie);
+            //CustomCore.TypeMgrExtraSkinBackup.UltimateZombie.Add(plantType, typeMgrExtraSkinFromJson.UltimateZombie);
+            CustomCore.TypeMgrExtraSkinBackup.UmbrellaPlants.Add(plantType, typeMgrExtraSkinFromJson.UmbrellaPlants);
+            //CustomCore.TypeMgrExtraSkinBackup.UselessHypnoZombie.Add(plantType, typeMgrExtraSkinFromJson.UselessHypnoZombie);
+            //CustomCore.TypeMgrExtraSkinBackup.WaterZombie.Add(plantType, typeMgrExtraSkinFromJson.WaterZombie);
+        }
+
+        public static void SwapTypeMgrExtraSkinAndBackup(PlantType plantType)
+        {
+            // BigNut
+            if (CustomCore.TypeMgrExtraSkin.BigNut.TryGetValue(plantType, out int value1))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.BigNut.TryAdd(plantType, value1))
+                {
+                    CustomCore.TypeMgrExtraSkin.BigNut.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.BigNut.TryGetValue(plantType, out int value2))
+            {
+                if (CustomCore.TypeMgrExtraSkin.BigNut.TryAdd(plantType, value2))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.BigNut.Remove(plantType);
+                }
+            }
+
+            // // BigZombie
+            // if (CustomCore.TypeMgrExtraSkin.BigZombie.TryGetValue(plantType, out int value3))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.BigZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.BigZombie[plantType] = value3;
+            //         CustomCore.TypeMgrExtraSkin.BigZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.BigZombie.TryGetValue(plantType, out int value4))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.BigZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.BigZombie[plantType] = value4;
+            //         CustomCore.TypeMgrExtraSkinBackup.BigZombie.Remove(plantType);
+            //     }
+            // }
+
+            // DoubleBoxPlants
+            if (CustomCore.TypeMgrExtraSkin.DoubleBoxPlants.TryGetValue(plantType, out int value5))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.DoubleBoxPlants.TryAdd(plantType, value5))
+                {
+                    CustomCore.TypeMgrExtraSkin.DoubleBoxPlants.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.DoubleBoxPlants.TryGetValue(plantType, out int value6))
+            {
+                if (CustomCore.TypeMgrExtraSkin.DoubleBoxPlants.TryAdd(plantType, value6))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.DoubleBoxPlants.Remove(plantType);
+                }
+            }
+
+            // // EliteZombie
+            // if (CustomCore.TypeMgrExtraSkin.EliteZombie.TryGetValue(plantType, out int value7))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.EliteZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.EliteZombie[plantType] = value7;
+            //         CustomCore.TypeMgrExtraSkin.EliteZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.EliteZombie.TryGetValue(plantType, out int value8))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.EliteZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.EliteZombie[plantType] = value8;
+            //         CustomCore.TypeMgrExtraSkinBackup.EliteZombie.Remove(plantType);
+            //     }
+            // }
+
+            // FlyingPlants
+            if (CustomCore.TypeMgrExtraSkin.FlyingPlants.TryGetValue(plantType, out int value9))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.FlyingPlants.TryAdd(plantType, value9))
+                {
+                    CustomCore.TypeMgrExtraSkin.FlyingPlants.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.FlyingPlants.TryGetValue(plantType, out int value10))
+            {
+                if (CustomCore.TypeMgrExtraSkin.FlyingPlants.TryAdd(plantType, value10))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.FlyingPlants.Remove(plantType);
+                }
+            }
+
+            // // IsAirZombie
+            // if (CustomCore.TypeMgrExtraSkin.IsAirZombie.TryGetValue(plantType, out int value11))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.IsAirZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.IsAirZombie[plantType] = value11;
+            //         CustomCore.TypeMgrExtraSkin.IsAirZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.IsAirZombie.TryGetValue(plantType, out int value12))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.IsAirZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.IsAirZombie[plantType] = value12;
+            //         CustomCore.TypeMgrExtraSkinBackup.IsAirZombie.Remove(plantType);
+            //     }
+            // }
+
+            // IsCaltrop
+            if (CustomCore.TypeMgrExtraSkin.IsCaltrop.TryGetValue(plantType, out int value13))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsCaltrop.TryAdd(plantType, value13))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsCaltrop.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsCaltrop.TryGetValue(plantType, out int value14))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsCaltrop.TryAdd(plantType, value14))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsCaltrop.Remove(plantType);
+                }
+            }
+
+            // IsCustomPlant
+            if (CustomCore.TypeMgrExtraSkin.IsCustomPlant.TryGetValue(plantType, out int value15))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsCustomPlant.TryAdd(plantType, value15))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsCustomPlant.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsCustomPlant.TryGetValue(plantType, out int value16))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsCustomPlant.TryAdd(plantType, value16))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsCustomPlant.Remove(plantType);
+                }
+            }
+
+            // IsFirePlant
+            if (CustomCore.TypeMgrExtraSkin.IsFirePlant.TryGetValue(plantType, out int value17))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsFirePlant.TryAdd(plantType, value17))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsFirePlant.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsFirePlant.TryGetValue(plantType, out int value18))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsFirePlant.TryAdd(plantType, value18))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsFirePlant.Remove(plantType);
+                }
+            }
+
+            // IsIcePlant
+            if (CustomCore.TypeMgrExtraSkin.IsIcePlant.TryGetValue(plantType, out int value19))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsIcePlant.TryAdd(plantType, value19))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsIcePlant.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsIcePlant.TryGetValue(plantType, out int value20))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsIcePlant.TryAdd(plantType, value20))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsIcePlant.Remove(plantType);
+                }
+            }
+
+            // IsMagnetPlants
+            if (CustomCore.TypeMgrExtraSkin.IsMagnetPlants.TryGetValue(plantType, out int value21))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsMagnetPlants.TryAdd(plantType, value21))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsMagnetPlants.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsMagnetPlants.TryGetValue(plantType, out int value22))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsMagnetPlants.TryAdd(plantType, value22))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsMagnetPlants.Remove(plantType);
+                }
+            }
+
+            // IsNut
+            if (CustomCore.TypeMgrExtraSkin.IsNut.TryGetValue(plantType, out int value23))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsNut.TryAdd(plantType, value23))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsNut.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsNut.TryGetValue(plantType, out int value24))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsNut.TryAdd(plantType, value24))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsNut.Remove(plantType);
+                }
+            }
+
+            // IsPlantern
+            if (CustomCore.TypeMgrExtraSkin.IsPlantern.TryGetValue(plantType, out int value25))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsPlantern.TryAdd(plantType, value25))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsPlantern.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsPlantern.TryGetValue(plantType, out int value26))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsPlantern.TryAdd(plantType, value26))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsPlantern.Remove(plantType);
+                }
+            }
+
+            // IsPot
+            if (CustomCore.TypeMgrExtraSkin.IsPot.TryGetValue(plantType, out int value27))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsPot.TryAdd(plantType, value27))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsPot.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsPot.TryGetValue(plantType, out int value28))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsPot.TryAdd(plantType, value28))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsPot.Remove(plantType);
+                }
+            }
+
+            // IsPotatoMine
+            if (CustomCore.TypeMgrExtraSkin.IsPotatoMine.TryGetValue(plantType, out int value29))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsPotatoMine.TryAdd(plantType, value29))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsPotatoMine.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsPotatoMine.TryGetValue(plantType, out int value30))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsPotatoMine.TryAdd(plantType, value30))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsPotatoMine.Remove(plantType);
+                }
+            }
+
+            // IsPuff
+            if (CustomCore.TypeMgrExtraSkin.IsPuff.TryGetValue(plantType, out int value31))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsPuff.TryAdd(plantType, value31))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsPuff.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsPuff.TryGetValue(plantType, out int value32))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsPuff.TryAdd(plantType, value32))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsPuff.Remove(plantType);
+                }
+            }
+
+            // IsPumpkin
+            if (CustomCore.TypeMgrExtraSkin.IsPumpkin.TryGetValue(plantType, out int value33))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsPumpkin.TryAdd(plantType, value33))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsPumpkin.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsPumpkin.TryGetValue(plantType, out int value34))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsPumpkin.TryAdd(plantType, value34))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsPumpkin.Remove(plantType);
+                }
+            }
+
+            // IsSmallRangeLantern
+            if (CustomCore.TypeMgrExtraSkin.IsSmallRangeLantern.TryGetValue(plantType, out int value35))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsSmallRangeLantern.TryAdd(plantType, value35))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsSmallRangeLantern.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsSmallRangeLantern.TryGetValue(plantType, out int value36))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsSmallRangeLantern.TryAdd(plantType, value36))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsSmallRangeLantern.Remove(plantType);
+                }
+            }
+
+            // IsSpecialPlant
+            if (CustomCore.TypeMgrExtraSkin.IsSpecialPlant.TryGetValue(plantType, out int value37))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsSpecialPlant.TryAdd(plantType, value37))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsSpecialPlant.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsSpecialPlant.TryGetValue(plantType, out int value38))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsSpecialPlant.TryAdd(plantType, value38))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsSpecialPlant.Remove(plantType);
+                }
+            }
+
+            // IsSpickRock
+            if (CustomCore.TypeMgrExtraSkin.IsSpickRock.TryGetValue(plantType, out int value39))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsSpickRock.TryAdd(plantType, value39))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsSpickRock.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsSpickRock.TryGetValue(plantType, out int value40))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsSpickRock.TryAdd(plantType, value40))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsSpickRock.Remove(plantType);
+                }
+            }
+
+            // IsTallNut
+            if (CustomCore.TypeMgrExtraSkin.IsTallNut.TryGetValue(plantType, out int value41))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsTallNut.TryAdd(plantType, value41))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsTallNut.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsTallNut.TryGetValue(plantType, out int value42))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsTallNut.TryAdd(plantType, value42))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsTallNut.Remove(plantType);
+                }
+            }
+
+            // IsTangkelp
+            if (CustomCore.TypeMgrExtraSkin.IsTangkelp.TryGetValue(plantType, out int value43))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsTangkelp.TryAdd(plantType, value43))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsTangkelp.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsTangkelp.TryGetValue(plantType, out int value44))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsTangkelp.TryAdd(plantType, value44))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsTangkelp.Remove(plantType);
+                }
+            }
+
+            // IsWaterPlant
+            if (CustomCore.TypeMgrExtraSkin.IsWaterPlant.TryGetValue(plantType, out int value45))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.IsWaterPlant.TryAdd(plantType, value45))
+                {
+                    CustomCore.TypeMgrExtraSkin.IsWaterPlant.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.IsWaterPlant.TryGetValue(plantType, out int value46))
+            {
+                if (CustomCore.TypeMgrExtraSkin.IsWaterPlant.TryAdd(plantType, value46))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.IsWaterPlant.Remove(plantType);
+                }
+            }
+
+            // // NotRandomBungiZombie
+            // if (CustomCore.TypeMgrExtraSkin.NotRandomBungiZombie.TryGetValue(plantType, out int value47))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.NotRandomBungiZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.NotRandomBungiZombie[plantType] = value47;
+            //         CustomCore.TypeMgrExtraSkin.NotRandomBungiZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.NotRandomBungiZombie.TryGetValue(plantType, out int value48))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.NotRandomBungiZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.NotRandomBungiZombie[plantType] = value48;
+            //         CustomCore.TypeMgrExtraSkinBackup.NotRandomBungiZombie.Remove(plantType);
+            //     }
+            // }
+
+            // // NotRandomZombie
+            // if (CustomCore.TypeMgrExtraSkin.NotRandomZombie.TryGetValue(plantType, out int value49))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.NotRandomZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.NotRandomZombie[plantType] = value49;
+            //         CustomCore.TypeMgrExtraSkin.NotRandomZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.NotRandomZombie.TryGetValue(plantType, out int value50))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.NotRandomZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.NotRandomZombie[plantType] = value50;
+            //         CustomCore.TypeMgrExtraSkinBackup.NotRandomZombie.Remove(plantType);
+            //     }
+            // }
+
+            // // UltimateZombie
+            // if (CustomCore.TypeMgrExtraSkin.UltimateZombie.TryGetValue(plantType, out int value51))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.UltimateZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.UltimateZombie[plantType] = value51;
+            //         CustomCore.TypeMgrExtraSkin.UltimateZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.UltimateZombie.TryGetValue(plantType, out int value52))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.UltimateZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.UltimateZombie[plantType] = value52;
+            //         CustomCore.TypeMgrExtraSkinBackup.UltimateZombie.Remove(plantType);
+            //     }
+            // }
+
+            // UmbrellaPlants
+            if (CustomCore.TypeMgrExtraSkin.UmbrellaPlants.TryGetValue(plantType, out int value53))
+            {
+                if (CustomCore.TypeMgrExtraSkinBackup.UmbrellaPlants.TryAdd(plantType, value53))
+                {
+                    CustomCore.TypeMgrExtraSkin.UmbrellaPlants.Remove(plantType);
+                }
+            }
+            else if (CustomCore.TypeMgrExtraSkinBackup.UmbrellaPlants.TryGetValue(plantType, out int value54))
+            {
+                if (CustomCore.TypeMgrExtraSkin.UmbrellaPlants.TryAdd(plantType, value54))
+                {
+                    CustomCore.TypeMgrExtraSkinBackup.UmbrellaPlants.Remove(plantType);
+                }
+            }
+
+            // // UselessHypnoZombie
+            // if (CustomCore.TypeMgrExtraSkin.UselessHypnoZombie.TryGetValue(plantType, out int value55))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.UselessHypnoZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.UselessHypnoZombie[plantType] = value55;
+            //         CustomCore.TypeMgrExtraSkin.UselessHypnoZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.UselessHypnoZombie.TryGetValue(plantType, out int value56))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.UselessHypnoZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.UselessHypnoZombie[plantType] = value56;
+            //         CustomCore.TypeMgrExtraSkinBackup.UselessHypnoZombie.Remove(plantType);
+            //     }
+            // }
+
+            // // WaterZombie
+            // if (CustomCore.TypeMgrExtraSkin.WaterZombie.TryGetValue(plantType, out int value57))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkinBackup.WaterZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkinBackup.WaterZombie[plantType] = value57;
+            //         CustomCore.TypeMgrExtraSkin.WaterZombie.Remove(plantType);
+            //     }
+            // }
+            // else if (CustomCore.TypeMgrExtraSkinBackup.WaterZombie.TryGetValue(plantType, out int value58))
+            // {
+            //     if (!CustomCore.TypeMgrExtraSkin.WaterZombie.ContainsKey(plantType))
+            //     {
+            //         CustomCore.TypeMgrExtraSkin.WaterZombie[plantType] = value58;
+            //         CustomCore.TypeMgrExtraSkinBackup.WaterZombie.Remove(plantType);
+            //     }
+            // }
+        }
+    }
+}

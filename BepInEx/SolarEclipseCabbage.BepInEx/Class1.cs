@@ -28,10 +28,10 @@ namespace SolarEclipseCabbage.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<SolarEclipseStar>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "solareclipsecabbage");
-            CustomCore.RegisterCustomPlant<SolarCabbage, SolarEclipseCabbage>((int)SolarEclipseCabbage.PlantID, ab.GetAsset<GameObject>("SolarEclipseCabbagePrefab"),
-                ab.GetAsset<GameObject>("SolarEclipseCabbagePreview"), [], 2f, 0f, 300, 300, 90f, 850);
-            CustomCore.RegisterCustomPlantSkin<SolarCabbage, SolarEclipseCabbage>((int)SolarEclipseCabbage.PlantID, ab.GetAsset<GameObject>("SolarEclipseCabbagePrefabSkin"),
-                ab.GetAsset<GameObject>("SolarEclipseCabbagePreviewSkin"), [], 2f, 0f, 300, 300, 90f, 850);
+            CustomCore.RegisterCustomPlant<SolarCabbage, SolarEclipseCabbage>((int)SolarEclipseCabbage.PlantID, ab.GetAsset<GameObject>("SolarEclipseCabbagePrefab").SetSaveMaterial(),
+                ab.GetAsset<GameObject>("SolarEclipseCabbagePreview").SetSaveMaterial(), [], 2f, 0f, 300, 300, 90f, 850);
+            CustomCore.RegisterCustomPlantSkin<SolarCabbage, SolarEclipseCabbage>((int)SolarEclipseCabbage.PlantID, ab.GetAsset<GameObject>("SolarEclipseCabbagePrefabSkin").SetSaveMaterial(),
+                ab.GetAsset<GameObject>("SolarEclipseCabbagePreviewSkin").SetSaveMaterial(), [], 2f, 0f, 300, 300, 90f, 850);
             CustomCore.AddPlantAlmanacStrings((int)SolarEclipseCabbage.PlantID, $"究级蚀日神卷心菜",
                 "昼临异象，墨噬金轮。日食下，灼射的植物将迎来异象强化。\n" +
                 "<color=#0000FF>究级太阳神卷心菜的限定形态</color>\n\n" +

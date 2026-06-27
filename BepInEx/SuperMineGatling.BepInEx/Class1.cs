@@ -19,7 +19,7 @@ namespace SuperMineGatling.BepInEx
                 {
                     (PlantType.PotatoMine, PlantType.SuperGatling),
                     (PlantType.SuperGatling, PlantType.PotatoMine)
-                }, 1.5f, 0f, 40, 300, 7.5f, 625);
+                }.ToIntegerList(), 1.5f, 0f, 40, 300, 7.5f, 625);
             CustomCore.AddPlantAlmanacStrings(SuperMineGatling.PlantID, $"土豆超级机枪射手",
                 "一次发射六颗土豆豌豆，有一定概率散射具有爆炸的土豆豌豆。\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
@@ -30,8 +30,9 @@ namespace SuperMineGatling.BepInEx
                 "②普通攻击下，每发子弹有2%概率开大，5秒内，每0.02秒散射3发土豆豌豆，命中时造成一次10倍攻击力的范围爆炸伤害\n" +
                 "③接触僵尸时，造成7200的范围爆炸伤害并入土，随后等待15秒后重新出土</color>\n" +
                 "<color=#3D1400>融合配方：</color><color=red>超级机枪射手+土豆雷</color>\n\n" +
-                "<color=#3D1400>土豆超级机枪射手直播无果后，受到了土豆地雷的邀请，加入了土豆爆破小队。情绪本就不稳定的他，在某天情绪激动，在基地到处炸，这一段连续又持久的爆炸声把基地炸的满目疮痍，有土豆从爆炸中跑出来了？是三线土豆地雷！。</color>");
+                "<color=#3D1400>土豆超级机枪射手直播无果后，受到了土豆地雷的邀请，加入了土豆爆破小队。情绪本就不稳定的他，在某天情绪激动，在基地到处炸，这一段连续又持久的爆炸声把基地炸的满目疮痍，有土豆从爆炸中跑出来了？是三线土豆地雷！</color>");
             CustomCore.AddUltimatePlant(SuperMineGatling.PlantID);
+            CustomCore.TypeMgrExtra.IsPotatoMine.Add(SuperMineGatling.PlantID);
         }
     }
 
@@ -48,6 +49,7 @@ namespace SuperMineGatling.BepInEx
         {
             plant.shoot = transform.FindChild("PotatoMine_light1").FindChild("Shoot");
             plant.attributeCountdown = 15f * 2;
+            plant.isShort = true;
         }
 
         public void Update()

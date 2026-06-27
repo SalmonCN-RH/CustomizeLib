@@ -294,29 +294,29 @@ namespace ZombieImitater.BepInEx
         }
     }
 
-    //[HarmonyPatch(typeof(ZombieBoss))]
-    //public static class ZombieBossStartPatch
-    //{
-    //    [HarmonyPatch(nameof(ZombieBoss.Start))]
-    //    [HarmonyPostfix]
-    //    public static void Postfix(ZombieBoss __instance)
-    //    {
-    //        {
-    //            var position = __instance.axis.transform.position;
-    //            position.y -= Lawnf.GetAllZombies().ToSystemList().Where(z => z.theZombieType == ZombieType.ZombieBoss || z.theZombieType == ZombieType.ZombieBoss2)
-    //                .ToList().Count * 0.4f;
-    //            __instance.healthText.transform.position = position;
-    //        }
-    //    }
+    [HarmonyPatch(typeof(ZombieBoss))]
+    public static class ZombieBossStartPatch
+    {
+        [HarmonyPatch(nameof(ZombieBoss.Start))]
+        [HarmonyPostfix]
+        public static void Postfix(ZombieBoss __instance)
+        {
+            {
+                var position = __instance.axis.transform.position;
+                position.y -= Lawnf.GetAllZombies().ToSystemList().Where(z => z.theZombieType == ZombieType.ZombieBoss || z.theZombieType == ZombieType.ZombieBoss2)
+                    .ToList().Count * 0.4f;
+                __instance.healthText.transform.position = position;
+            }
+        }
 
-    //    [HarmonyPatch(nameof(ZombieBoss.GetDamage))]
-    //    [HarmonyPostfix]
-    //    public static void PostGetDamage(ZombieBoss __instance, ref int __result)
-    //    {
-    //        if (__instance.GetData<bool>("ZombieImitater_SpawnByZombie"))
-    //        {
-    //            __result = Mathf.Min(__result, 5000);
-    //        }
-    //    }
-    //}
+        //[HarmonyPatch(nameof(ZombieBoss.GetDamage))]
+        //[HarmonyPostfix]
+        //public static void PostGetDamage(ZombieBoss __instance, ref int __result)
+        //{
+        //    if (__instance.GetData<bool>("ZombieImitater_SpawnByZombie"))
+        //    {
+        //        __result = Mathf.Min(__result, 5000);
+        //    }
+        //}
+    }
 }

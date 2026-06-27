@@ -7,4 +7,14 @@
 	<BepResPath>F:\vsrepos\Customizelib\res\BepInEx</BepResPath>
 	<MelonResPath>F:\vsrepos\Customizelib\res\MelonLoader</MelonResPath>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- 移除所有DLL引用（保留ProjectReference） -->
+    <Reference Remove="@(Reference)" />
+    
+    <!-- 添加全局BepInEx引用 -->
+    <Reference Include="..\..\lib\BepInEx\libs\*.dll" 
+               Exclude="..\..\lib\BepInEx\libs\dobby.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
 </Project>

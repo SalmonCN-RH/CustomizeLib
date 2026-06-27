@@ -24,6 +24,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Core;
 using static UnityEngine.Object;
+using GameLevel;
 
 ///
 ///Credit to likefengzi(https://github.com/likefengzi)(https://space.bilibili.com/237491236)
@@ -402,6 +403,11 @@ namespace CustomizeLib.BepInEx
             foreach (var item in CustomCore.ZombiesAlmanac)
             {
                 if (AlmanacDataLoader.zombieDatas.ContainsKey(item.Key)) continue;
+                if (item.Value.Item3 != null)
+                {
+                    AlmanacDataLoader.zombieDatas.Add(item.Key, item.Value.Item3);
+                    continue;
+                }
                 var data = new ZombieInfo();
                 var newName = Regex.Replace(item.Value.Item1, @"\([^()]*\)", "");
                 data.name = newName;
@@ -593,7 +599,7 @@ namespace CustomizeLib.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(Core.InGameText), nameof(Core.InGameText.ShowText))]
+    [HarmonyPatch(typeof(InGameText), nameof(InGameText.ShowText))]
     public static class InGameTextPatch
     {
         public static bool disable = false;
@@ -1462,7 +1468,9 @@ namespace CustomizeLib.BepInEx
                 if (!GameAPP.resourcesManager.allZombieTypes.Contains(z.Key))
                     GameAPP.resourcesManager.allZombieTypes.Add(z.Key);//注册僵尸类型
                 GameAPP.resourcesManager.zombiePrefabs[z.Key] = z.Value.Item1;//注册僵尸预制体
+                GameAPP.resourcesManager.zombiePrefabs[z.Key].layer = LayerMask.NameToLayer("Zombie"); // 改层级
                 GameAPP.resourcesManager.zombiePrefabs[z.Key].tag = "Zombie";//必修打tag
+                InitZombieList.allowAllzombies.Add(z.Key);
                 if (z.Value.Item2 != null)
                     GameAPP.resourcesManager.zombieSprites[z.Key] = z.Value.Item2;
             }
@@ -3108,6 +3116,8 @@ namespace CustomizeLib.BepInEx
                     UnityEngine.Object.Destroy(pageSample);
                     UnityEngine.Object.Destroy(levelSample);
                 }
+                //foreach (var item in CustomCore.CustomLevels)
+                //    LevelManager.registry.RegisterPredefinedLevel(item.LevelData);
             }
         }
 
@@ -3155,9 +3165,9 @@ namespace CustomizeLib.BepInEx
             board.seedPool = levelData.SeedRainPlantTypes().ToIl2CppList();
             levelData.PostBoard(board);
             // 加载并实例化地图
-            MapData_cs.GetMap(levelData.SceneType, board);
+            var map = MapData_cs.GetMap(levelData.SceneType, board);
 
-            InitZombieList.InitZombie((LevelType)levelType, levelNumber);
+            InitZombieList.InitZombie(levelType, levelNumber);
 
             // 播放音乐并开始游戏
             GameAPP.Instance.PlayMusic(MusicType.SelectCard);
@@ -3170,6 +3180,23 @@ namespace CustomizeLib.BepInEx
             foreach (var p in levelData.PrePlants())
             {
                 CreatePlant.Instance.SetPlant(p.Item1, p.Item2, p.Item3);
+            }
+
+            for (int i = 0; i < board.rowNum; i++)
+            {
+                var floor = map.transform.FindChild($"floor{i}");
+                board.plane.Add(floor);
+                if (board.boardTag.isRoof)
+                {
+                    var floor_roof = new GameObject("floor_roof");
+                    floor_roof.transform.SetParent(floor);
+                    floor_roof.transform.localPosition = new Vector3(0f, 0f, 0f);
+                }
+                var iceRoad = Instantiate(GamePrefabs.IceRoad, new Vector3(19.7f, 0.8f, 0f), Quaternion.identity, floor).GetComponent<IceRoad>();
+                iceRoad.theRow = i;
+                iceRoad.roadStartX = iceRoad.x = 19.7f;
+                iceRoad.transform.localPosition = new Vector3(19.7f, 0.8f, 0f);
+                board.iceRoads.Add(iceRoad);
             }
             return false;
         }
@@ -3297,6 +3324,57 @@ namespace CustomizeLib.BepInEx
             if (!Lawnf.IsTravelLevel(levelType, levelNumber))
                 return;
             SaveInfo.Instance.SetData("endlessID", id);
+        }
+    }
+
+    [HarmonyPatch(typeof(AlmanacZombieMenu))]
+    public class AlmanacZombieMenuPatch
+    {
+        [HarmonyPatch(nameof(AlmanacZombieMenu.Start))]
+        [HarmonyPostfix]
+        public static void Postfix(AlmanacZombieMenu __instance)
+        {
+            if (__instance.transform.Find("LoolAll_Other") == null)
+            {
+                var customButton = Instantiate(__instance.transform.Find("LookAll_1").gameObject, __instance.transform);
+                customButton.transform.localPosition = new Vector2(10, 0);
+                customButton.name = "LoolAll_Other";
+                customButton.transform.localPosition = new Vector2(440, -499);
+                // 修改按钮文本
+                foreach (var text in customButton.GetComponentsInChildren<TextMeshProUGUI>())
+                {
+                    if (text != null)
+                        text.text = "二创僵尸";
+                }
+
+                var uiButton = customButton.GetComponent<UIButton>();
+                UnityEvent unityEvent = new UnityEvent();
+                Action action = () =>
+                {
+                    Func<ZombieType, bool> func = (zt) => !Enum.IsDefined<ZombieType>(zt);
+                    __instance.ShowZombieCards(func);
+                };
+                unityEvent.AddListener(action);
+                customButton.GetComponent<UIButton>().clickEvent = unityEvent;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Entity))]
+    public static class EntityPatch
+    {
+        [HarmonyPatch(nameof(Entity.GetSpriteRenderers))]
+        [HarmonyPrefix]
+        public static bool PreGetSpriteRenderers(Entity __instance)
+        {
+            if (__instance.TryGetComponent<SaveMaterial>(out var _))
+            {
+                foreach (var child in Core.Lawnf.GetChilds(__instance.transform))
+                    if (child.TryGetComponent<SpriteRenderer>(out var renderer) && child.name != "axis")
+                        __instance.spriteRenderers.Add(renderer);
+                return false;
+            }
+            return true;
         }
     }
 
@@ -3641,6 +3719,11 @@ namespace CustomizeLib.BepInEx
                             var plantType = (PlantType)id;
                             if (CustomCore.CustomPlantsSkinActive.ContainsKey(plantType) && CustomCore.CustomPlantsSkinActive[plantType]) continue;
                             var ab = AssetBundle.LoadFromFile(path);
+
+                            var json = new SkinConfig();
+                            if (ab.TryGetAsset<TextAsset>("config", out var text))
+                                json = JsonSerializer.Deserialize<SkinConfig>(text.text);
+
                             CustomCore.LoadedSkinAssetBundle.Add(ab);
                             GameObject? prefab = null;
                             GameObject? preview = null;
@@ -3657,6 +3740,13 @@ namespace CustomizeLib.BepInEx
                                 preview.tag = "Preview";
                             }
                             catch { continue; }
+
+                            if (json.SaveMaterial)
+                            {
+                                prefab.SetSaveMaterial();
+                                preview.SetSaveMaterial();
+                            }
+
                             try
                             {
                                 var bulletRegex = new Regex(@"Bullet_(\d+)");

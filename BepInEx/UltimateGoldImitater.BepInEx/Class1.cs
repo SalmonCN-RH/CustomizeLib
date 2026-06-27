@@ -19,7 +19,7 @@ namespace UltimateGoldImitater.BepInEx
         {
             var ab = CustomCore.GetAssetBundle(Tools.GetAssembly(), "ultimategoldimitater");
             CustomCore.RegisterCustomPlant<Imitater, UltimateGoldImitater>(UltimateGoldImitater.PlantID, ab.GetAsset<GameObject>("UltimateGoldImitaterPrefab"),
-                ab.GetAsset<GameObject>("UltimateGoldImitaterPreview"), [], 0f, 0f, 0, 300, 15f, 50);
+                ab.GetAsset<GameObject>("UltimateGoldImitaterPreview"), new List<(PlantType, PlantType)> { }.ToIntegerList(), 0f, 0f, 0, 300, 15f, 50);
             CustomCore.AddPlantAlmanacStrings(UltimateGoldImitater.PlantID, $"究极黄金模仿者",
                 $"孤注一掷，遍历死地而后生！\n" +
                 $"<color=blue>黄金模仿者的限定形态</color>\n\n" +
@@ -639,31 +639,31 @@ namespace UltimateGoldImitater.BepInEx
         }
     }
 
-    //[HarmonyPatch(typeof(ZombieBoss))]
-    //public static class ZombieBossStartPatch
-    //{
-    //    [HarmonyPatch(nameof(ZombieBoss.Start))]
-    //    [HarmonyPostfix]
-    //    public static void Postfix(ZombieBoss __instance)
-    //    {
-    //        {
-    //            var position = __instance.axis.transform.position;
-    //            position.y -= Lawnf.GetAllZombies().ToSystemList().Where(z => z.theZombieType == ZombieType.ZombieBoss || z.theZombieType == ZombieType.ZombieBoss2)
-    //                .ToList().Count * 0.4f;
-    //            __instance.healthText.transform.position = position;
-    //        }
-    //    }
+    [HarmonyPatch(typeof(ZombieBoss))]
+    public static class ZombieBossStartPatch
+    {
+        [HarmonyPatch(nameof(ZombieBoss.Start))]
+        [HarmonyPostfix]
+        public static void Postfix(ZombieBoss __instance)
+        {
+            {
+                var position = __instance.axis.transform.position;
+                position.y -= Lawnf.GetAllZombies().ToSystemList().Where(z => z.theZombieType == ZombieType.ZombieBoss || z.theZombieType == ZombieType.ZombieBoss2)
+                    .ToList().Count * 0.4f;
+                __instance.healthText.transform.position = position;
+            }
+        }
 
-    //    [HarmonyPatch(nameof(ZombieBoss.GetDamage))]
-    //    [HarmonyPostfix]
-    //    public static void PostGetDamage(ZombieBoss __instance, ref int __result)
-    //    {
-    //        if (__instance.GetData<bool>("UltimateGoldImitater_SpawnByGold"))
-    //        {
-    //            __result = Mathf.Min(__result, 5000);
-    //        }
-    //    }
-    //}
+        //[HarmonyPatch(nameof(ZombieBoss.GetDamage))]
+        //[HarmonyPostfix]
+        //public static void PostGetDamage(ZombieBoss __instance, ref int __result)
+        //{
+        //    if (__instance.GetData<bool>("UltimateGoldImitater_SpawnByGold"))
+        //    {
+        //        __result = Mathf.Min(__result, 5000);
+        //    }
+        //}
+    }
 
     public class ClearCold : MonoBehaviour
     {

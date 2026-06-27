@@ -31,8 +31,8 @@ namespace GarlicSuperGatling.BepInEx
                     ((int)PlantType.SuperGatling, (int)PlantType.Garlic),
                     ((int)PlantType.GarlicSniper, (int)PlantType.Peashooter)
                 }, 1.5f, 0f, 30, 300, 7.5f, 650);
-            CustomCore.AddPlantAlmanacStrings(GarlicSuperGatling.PlantID, $"超级蒜机枪射手({GarlicSuperGatling.PlantID})",
-                "一次发射六颗蒜豌豆，有概率一次性发射大量蒜豌豆。\n\n" +
+            CustomCore.AddPlantAlmanacStrings(GarlicSuperGatling.PlantID, $"超级病毒机枪射手({GarlicSuperGatling.PlantID})",
+                "一次发射六颗病毒豌豆，有概率一次性发射大量病毒豌豆。\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
                 "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
                 "<color=#3D1400>伤害：</color><color=red>30x6/1.5秒</color>\n" +
@@ -54,6 +54,7 @@ namespace GarlicSuperGatling.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<PoisonMiasma>();
             PoisonMiasma.MiasmaObj = ab.GetAsset<GameObject>("PoisonMiasma");
             PoisonMiasma.MiasmaObj.AddComponent<PoisonMiasma>();
+            PoisonMiasma.MiasmaObj.transform.SetLayer("fog");
         }
     }
 

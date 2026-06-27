@@ -97,7 +97,7 @@ namespace MegaSuperGatling.BepInEx
             {
                 if (Lawnf.TravelAdvanced(Core.BuffID) && UnityEngine.Random.Range(0, 1) == 0)
                 {
-                    for (int i = 0; i < UnityEngine.Random.Range(3, 10); i++)
+                    for (int i = 0; i < UnityEngine.Random.Range(1, 3); i++)
                     {
                         var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x, __instance.shoot.position.y, __instance.thePlantRow,
                             Core.SuperGatlingBullet[UnityEngine.Random.Range(0, Core.SuperGatlingBullet.Count)], BulletMoveWay.Free);
@@ -125,7 +125,7 @@ namespace MegaSuperGatling.BepInEx
             while (count > 0)
             {
                 if (plant == null) yield break;
-                for (int i = 0; i < UnityEngine.Random.Range(2, 5); i++)
+                for (int i = 0; i < UnityEngine.Random.Range(3, 10); i++)
                 {
                     if (count <= 0) break;
                     var bullet = CreateBullet.Instance.SetBullet(plant.shoot.position.x, plant.shoot.position.y, plant.thePlantRow,

@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using CustomizeLib.BepInEx;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
 
-namespace DoomGatlingBlover.BepInEx
+namespace PuffUltimateGatling.BepInEx
 {
     [BepInPlugin("salmon.puffultimategatling", "PuffUltimateGatling", "1.0")]
     public class Core : CorePlugin

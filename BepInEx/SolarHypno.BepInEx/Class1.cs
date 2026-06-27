@@ -18,14 +18,14 @@ namespace SolarHypno.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<UltimateJumpSun>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "solarhypno");
-            CustomCore.RegisterCustomPlant<SolarCabbage, SolarHypno>((int)SolarHypno.PlantID, ab.GetAsset<GameObject>("SolarHypnoPrefab"),
-                ab.GetAsset<GameObject>("SolarHypnoPreview"), new List<(int, int)>
+            CustomCore.RegisterCustomPlant<SolarCabbage, SolarHypno>((int)SolarHypno.PlantID, ab.GetAsset<GameObject>("SolarHypnoPrefab").SetSaveMaterial(),
+                ab.GetAsset<GameObject>("SolarHypnoPreview").SetSaveMaterial(), new List<(int, int)>
                 {
                     ((int)PlantType.UltimateCabbage, (int)PlantType.HypnoShroom),
                     ((int)PlantType.HypnoShroom, (int)PlantType.UltimateCabbage)
                 }, 2f, 0f, 100, 300, 7.5f, 450);
-            CustomCore.RegisterCustomPlantSkin<SolarCabbage, SolarHypno>((int)SolarHypno.PlantID, ab.GetAsset<GameObject>("SolarHypnoSkinPrefab"),
-                ab.GetAsset<GameObject>("SolarHypnoSkinPreview"), new List<(int, int)>
+            CustomCore.RegisterCustomPlantSkin<SolarCabbage, SolarHypno>((int)SolarHypno.PlantID, ab.GetAsset<GameObject>("SolarHypnoSkinPrefab").SetSaveMaterial(),
+                ab.GetAsset<GameObject>("SolarHypnoSkinPreview").SetSaveMaterial(), new List<(int, int)>
                 {
                     ((int)PlantType.UltimateCabbage, (int)PlantType.HypnoShroom),
                     ((int)PlantType.HypnoShroom, (int)PlantType.UltimateCabbage)

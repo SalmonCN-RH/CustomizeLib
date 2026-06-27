@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -16,474 +16,123 @@
     <ProjectReference Include="..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\lib\Bepinex\core\0Harmony.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AsmResolver">
-      <HintPath>..\..\lib\Bepinex\core\AsmResolver.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AsmResolver.DotNet">
-      <HintPath>..\..\lib\Bepinex\core\AsmResolver.DotNet.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AsmResolver.PE">
-      <HintPath>..\..\lib\Bepinex\core\AsmResolver.PE.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AsmResolver.PE.File">
-      <HintPath>..\..\lib\Bepinex\core\AsmResolver.PE.File.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\lib\Bepinex\interop\Assembly-CSharp.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AssetRipper.CIL">
-      <HintPath>..\..\lib\Bepinex\core\AssetRipper.CIL.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AssetRipper.Primitives">
-      <HintPath>..\..\lib\Bepinex\core\AssetRipper.Primitives.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="AssetRipper.VersionUtilities">
-      <HintPath>..\..\lib\Bepinex\core\AssetRipper.VersionUtilities.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Core">
-      <HintPath>..\..\lib\Bepinex\core\BepInEx.Core.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Preloader.Core">
-      <HintPath>..\..\lib\Bepinex\core\BepInEx.Preloader.Core.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Unity.Common">
-      <HintPath>..\..\lib\Bepinex\core\BepInEx.Unity.Common.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Unity.IL2CPP">
-      <HintPath>..\..\lib\Bepinex\core\BepInEx.Unity.IL2CPP.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Cpp2IL.Core">
-      <HintPath>..\..\lib\Bepinex\core\Cpp2IL.Core.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Disarm">
-      <HintPath>..\..\lib\Bepinex\core\Disarm.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Gee.External.Capstone">
-      <HintPath>..\..\lib\Bepinex\core\Gee.External.Capstone.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Iced">
-      <HintPath>..\..\lib\Bepinex\core\Iced.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.Common">
-      <HintPath>..\..\lib\Bepinex\core\Il2CppInterop.Common.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.Generator">
-      <HintPath>..\..\lib\Bepinex\core\Il2CppInterop.Generator.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.HarmonySupport">
-      <HintPath>..\..\lib\Bepinex\core\Il2CppInterop.HarmonySupport.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>..\..\lib\Bepinex\core\Il2CppInterop.Runtime.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppMono.Security">
-      <HintPath>..\..\lib\Bepinex\interop\Il2CppMono.Security.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\..\lib\Bepinex\interop\Il2Cppmscorlib.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem">
-      <HintPath>..\..\lib\Bepinex\interop\Il2CppSystem.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem.Configuration">
-      <HintPath>..\..\lib\Bepinex\interop\Il2CppSystem.Configuration.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem.Core">
-      <HintPath>..\..\lib\Bepinex\interop\Il2CppSystem.Core.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem.Xml">
-      <HintPath>..\..\lib\Bepinex\interop\Il2CppSystem.Xml.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="LibCpp2IL">
-      <HintPath>..\..\lib\Bepinex\core\LibCpp2IL.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\lib\Bepinex\core\Mono.Cecil.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\..\lib\Bepinex\core\Mono.Cecil.Mdb.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\..\lib\Bepinex\core\Mono.Cecil.Pdb.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\..\lib\Bepinex\core\Mono.Cecil.Rocks.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>..\..\lib\Bepinex\core\MonoMod.RuntimeDetour.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="MonoMod.Utils">
-      <HintPath>..\..\lib\Bepinex\core\MonoMod.Utils.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="SemanticVersioning">
-      <HintPath>..\..\lib\Bepinex\core\SemanticVersioning.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="StableNameDotNet">
-      <HintPath>..\..\lib\Bepinex\core\StableNameDotNet.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.2D.Animation.Runtime">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.2D.Animation.Runtime.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.Burst.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.Burst.Unsafe">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.Burst.Unsafe.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.Collections">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.Collections.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.InternalAPIEngineBridge.001">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.InternalAPIEngineBridge.001.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.Mathematics.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.TextMeshPro.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>..\..\lib\Bepinex\interop\Unity.VisualScripting.Core.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AccessibilityModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AccessibilityModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AIModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AIModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AndroidJNIModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AndroidJNIModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AnimationModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AssetBundleModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.AudioModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ClothModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ClothModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ClusterInputModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ClusterInputModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ClusterRendererModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ClusterRendererModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ContentLoadModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ContentLoadModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.CoreModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.CrashReportingModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.CrashReportingModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.DirectorModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.DirectorModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.DSPGraphModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.DSPGraphModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.GameCenterModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.GameCenterModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.GIModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.GIModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.GridModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.GridModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.HotReloadModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.HotReloadModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ImageConversionModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.IMGUIModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.InputLegacyModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.InputModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.InputModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.JSONSerializeModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.LocalizationModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.LocalizationModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ParticleSystemModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.PerformanceReportingModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.PerformanceReportingModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.Physics2DModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.PhysicsModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ProfilerModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ProfilerModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.PropertiesModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.PropertiesModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ScreenCaptureModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.ScreenCaptureModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.SharedInternalsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.SharedInternalsModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.SpriteMaskModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.SpriteMaskModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.SpriteShapeModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.SpriteShapeModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.StreamingModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.StreamingModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.SubstanceModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.SubstanceModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.SubsystemsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.SubsystemsModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TerrainModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TerrainModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TerrainPhysicsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TerrainPhysicsModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TextCoreFontEngineModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TextCoreFontEngineModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TextCoreTextEngineModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TextCoreTextEngineModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TextRenderingModule.dll</HintPath>
-    
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TilemapModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TilemapModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.TLSModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.TLSModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UI.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UIElementsModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UIModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UmbraModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UmbraModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityAnalyticsCommonModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityAnalyticsCommonModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityAnalyticsModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityAnalyticsModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityConnectModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityConnectModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityCurlModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityCurlModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityTestProtocolModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityTestProtocolModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityWebRequestModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.VehiclesModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.VehiclesModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.VFXModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.VFXModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.VideoModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.VideoModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.VirtualTexturingModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.VirtualTexturingModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.VRModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.VRModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.WindModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.WindModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.XRModule">
-      <HintPath>..\..\lib\Bepinex\interop\UnityEngine.XRModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="WasmDisassembler">
-      <HintPath>..\..\lib\Bepinex\core\WasmDisassembler.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="__Generated">
-      <HintPath>..\..\lib\Bepinex\interop\__Generated.dll</HintPath>
     
-  <Private>False</Private></Reference>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />

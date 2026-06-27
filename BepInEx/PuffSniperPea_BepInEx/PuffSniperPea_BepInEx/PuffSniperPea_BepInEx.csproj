@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -15,94 +15,28 @@
     <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\lib\BepInEx\core\0Harmony.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\lib\BepInEx\interop\Assembly-CSharp.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Core">
-      <HintPath>..\..\..\lib\BepInEx\core\BepInEx.Core.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Unity.Common">
-      <HintPath>..\..\..\lib\BepInEx\core\BepInEx.Unity.Common.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="BepInEx.Unity.IL2CPP">
-      <HintPath>..\..\..\lib\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Cpp2IL.Core">
-      <HintPath>..\..\..\lib\BepInEx\core\Cpp2IL.Core.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.Generator">
-      <HintPath>..\..\..\lib\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>..\..\..\lib\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\..\..\lib\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem">
-      <HintPath>..\..\..\lib\BepInEx\interop\Il2CppSystem.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Il2CppSystem.Core">
-      <HintPath>..\..\..\lib\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>..\..\..\lib\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.AnimationModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.AudioModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.ParticleSystemModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.Physics2DModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.UI.dll</HintPath>
     
-  <Private>False</Private></Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\..\lib\BepInEx\interop\UnityEngine.UIModule.dll</HintPath>
     
-  <Private>False</Private></Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />

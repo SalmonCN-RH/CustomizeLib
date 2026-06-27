@@ -148,7 +148,7 @@ namespace UltimatePortalSpring.BepInEx
             plant.timer = 0f;
 
             plant.targetZombie = null;
-            Extension.StartCoroutine(this, ResetCharge());
+            Extensions.StartCoroutine(this, ResetCharge());
 
             GameAPP.PlaySound(UnityEngine.Random.Range(3, 5), 0.5f, 1.0f);
         }
@@ -182,7 +182,7 @@ namespace UltimatePortalSpring.BepInEx
             plant.timer = 0f;
             bullet.Damage = plant.attackDamage;
             bullet.Damage *= 2;
-            Extension.StartCoroutine(this, ResetCharge());
+            Extensions.StartCoroutine(this, ResetCharge());
         }
 
         public void SetShootTarget(Vector2 position)

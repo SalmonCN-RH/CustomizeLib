@@ -18,7 +18,7 @@ namespace SuperSniperGatling.BepInEx
                 {
                     (PlantType.SuperGatling, PlantType.SniperPea),
                     (PlantType.SniperPea, PlantType.SuperGatling)
-                }, 1.5f, 0f, 300, 300, 7.5f, 1000);
+                }.ToIntegerList(), 1.5f, 0f, 300, 300, 7.5f, 1000);
             CustomCore.AddPlantAlmanacStrings(SuperSniperGatling.PlantID, $"超级狙击射手",
                 "介绍\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +

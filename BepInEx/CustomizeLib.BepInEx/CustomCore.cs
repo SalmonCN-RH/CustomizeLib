@@ -14,15 +14,17 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Core;
+using AlmanacData;
 
 ///
 ///Credit to likefengzi(https://github.com/likefengzi)(https://space.bilibili.com/237491236)
 ///
 namespace CustomizeLib.BepInEx
 {
-    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.6")]
+    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.7")]
     public class CustomCore : BasePlugin
     {
+        #region TypeMgrExtra
         public static class TypeMgrExtra
         {
             public static List<PlantType> BigNut { get; set; } = [];
@@ -130,22 +132,7 @@ namespace CustomizeLib.BepInEx
             public static Dictionary<ZombieType, int> UselessHypnoZombie { get; set; } = [];
             public static Dictionary<ZombieType, int> WaterZombie { get; set; } = [];
         }
-
-        /// <summary>
-        /// 添加融合配方
-        /// </summary>
-        /// <param name="target">目标植物</param>
-        /// <param name="item1">亲本（地上长的）</param>
-        /// <param name="item2">亲本（后融合上去的）</param>
-        public static void AddFusion(int target, int item1, int item2) => CustomFusions.Add((target, item1, item2));
-
-        /// <summary>
-        /// 添加融合配方
-        /// </summary>
-        /// <param name="target">目标植物</param>
-        /// <param name="item1">亲本（地上长的）</param>
-        /// <param name="item2">亲本（后融合上去的）</param>
-        public static void AddFusion(PlantType target, PlantType item1, PlantType item2) => CustomFusions.Add(((int)target, (int)item1, (int)item2));
+        #endregion
 
         /// <summary>
         /// 添加植物图鉴
@@ -204,8 +191,23 @@ namespace CustomizeLib.BepInEx
             String iName = name;
             if (!Regex.Match(name, @"\(\d+\)$").Success)
                 iName = $"{name}({id})";
-            ZombiesAlmanac.Add((ZombieType)id, (iName, description));
+            ZombiesAlmanac.Add((ZombieType)id, (iName, description, null));
             var str = Regex.Replace(name, @"[\(（].*[\)）]", "");
+            CustomZombieNames.Add((ZombieType)id, str);
+        }
+
+        /// <summary>
+        /// 添加僵尸图鉴
+        /// </summary>
+        /// <param name="id">僵尸id</param>
+        /// <param name="name">僵尸名称</param>
+        /// <param name="description">僵尸介绍</param>
+        public static void AddZombieAlmanacStrings(int id, ZombieInfo info)
+        {
+            if (!Regex.Match(info.name, @"\(\d+\)$").Success)
+                info.name = $"{info.name}({id})";
+            ZombiesAlmanac.Add((ZombieType)id, (null, null, info));
+            var str = Regex.Replace(info.name, @"[\(（].*[\)）]", "");
             CustomZombieNames.Add((ZombieType)id, str);
         }
 
@@ -242,7 +244,22 @@ namespace CustomizeLib.BepInEx
             }
         }
 
-        public static AssetBundle GetAssetBundleFromPath(String path, String name)
+        /// <summary>
+        /// 获取嵌入dll(调用方)里的ab包
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <returns>ab包</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static AssetBundle GetAssetBundle(string name) => GetAssetBundle(Assembly.GetCallingAssembly(), name);
+
+        /// <summary>
+        /// 获取存储在路径下的ab包
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static AssetBundle GetAssetBundleFromPath(string path, string name)
         {
             try
             {
@@ -261,6 +278,12 @@ namespace CustomizeLib.BepInEx
                 throw new ArgumentException($"Failed to load {name} \n{e}");
             }
         }
+
+        /// <summary>
+        /// 播放音效
+        /// </summary>
+        /// <param name="audio">音效</param>
+        /// <param name="volume">ID</param>
         public static void PlaySound(AudioClip audio, float volume = 1.0f)
         {
             GameObject soundObj = new("SoundPlayer");
@@ -287,6 +310,7 @@ namespace CustomizeLib.BepInEx
                 Instance.Value.Log.LogError($"Duplicate sound id {soundID}");
         }
 
+        #region 注册词条相关
         /// <summary>
         /// 注册自定义词条
         /// </summary>
@@ -294,7 +318,6 @@ namespace CustomizeLib.BepInEx
         /// <param name="buffType">词条类型</param>
         /// <param name="canUnlock">解锁条件</param>
         /// <param name="cost">价格</param>
-        /// <param name="color">颜色</param>
         /// <param name="plantType">显示的植物类型</param>
         /// <param name="level">最大等级</param>
         /// <param name="bg">背景</param>
@@ -310,7 +333,6 @@ namespace CustomizeLib.BepInEx
         /// <param name="buffType">词条类型</param>
         /// <param name="canUnlock">解锁条件</param>
         /// <param name="cost">价格</param>
-        /// <param name="color">颜色</param>
         /// <param name="plantType">显示的植物类型</param>
         /// <param name="level">最大等级</param>
         /// <param name="bg">背景</param>
@@ -339,7 +361,6 @@ namespace CustomizeLib.BepInEx
         /// <param name="buffType">词条类型(普通，强究，僵尸)</param>
         /// <param name="canUnlock">解锁条件</param>
         /// <param name="cost">词条商店花费积分</param>
-        /// <param name="color">词条颜色</param>
         /// <param name="icon">选词条时展示植物的类型</param>
         /// <param name="level">词条最高等级</param>
         /// <param name="bgType">词条背景类型</param>
@@ -432,6 +453,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="icon">图标</param>
         public static void SetCustomBuffAlmanacType(BuffType buffType, int id, AlmanacBuffType type, ZombieType icon) =>
             CustomAlmanacBuffType.Add((buffType, id), (type, (PlantType)(-1), icon));
+        #endregion
 
         /// <summary>
         /// 注册自定义子弹
@@ -470,6 +492,11 @@ namespace CustomizeLib.BepInEx
                 Instance.Value.Log.LogError($"Duplicate Bullet ID: {id}");
         }
 
+        /// <summary>
+        /// 注册自定义关卡
+        /// </summary>
+        /// <param name="ldata">自定义关卡数据</param>
+        /// <returns>关卡ID</returns>
         public static int RegisterCustomLevel(CustomLevelData ldata)
         {
             int id = CustomLevels.Count;
@@ -486,27 +513,7 @@ namespace CustomizeLib.BepInEx
         public static void RegisterCustomParticle(ParticleType id, GameObject particle) =>
             CustomParticles.Add(id, particle);
 
-        /// <summary>
-        /// 注册自定义植物
-        /// </summary>
-        /// <typeparam name="TBase">植物基类</typeparam>
-        /// <typeparam name="TClass">植物自定义对象类</typeparam>
-        /// <param name="id">植物id</param>
-        /// <param name="prefab">植物预制体</param>
-        /// <param name="preview">植物预览预制体</param>
-        /// <param name="fusions">植物融合配方</param>
-        /// <param name="attackInterval">攻击间隔</param>
-        /// <param name="produceInterval">生产间隔</param>
-        /// <param name="attackDamage">攻击伤害</param>
-        /// <param name="maxHealth">血量</param>
-        /// <param name="cd">卡槽cd</param>
-        /// <param name="sun">阳光</param>
-        public static void RegisterCustomPlant<TBase, TClass>([NotNull] int id, [NotNull] GameObject prefab,
-            [NotNull] GameObject preview,
-            List<(PlantType, PlantType)> fusions, float attackInterval, float produceInterval, int attackDamage, int maxHealth,
-            float cd, int sun)
-            where TBase : Plant where TClass : MonoBehaviour => RegisterCustomPlant<TBase, TClass>(id, prefab, preview, fusions.ToIntegerList(), attackInterval, produceInterval, attackDamage, maxHealth, cd, sun);
-
+        #region 注册植物&皮肤
         /// <summary>
         /// 注册自定义植物
         /// </summary>
@@ -576,26 +583,6 @@ namespace CustomizeLib.BepInEx
         /// <param name="sun">阳光</param>
         public static void RegisterCustomPlant<TBase>([NotNull] int id, [NotNull] GameObject prefab,
             [NotNull] GameObject preview,
-            List<(PlantType, PlantType)> fusions, float attackInterval, float produceInterval, int attackDamage, int maxHealth,
-            float cd, int sun)
-            where TBase : Plant => RegisterCustomPlant<TBase>(id, prefab, prefab, fusions.ToIntegerList(), attackInterval, produceInterval, attackDamage, maxHealth, cd, sun);
-
-        /// <summary>
-        /// 注册自定义植物
-        /// </summary>
-        /// <typeparam name="TBase">植物基类</typeparam>
-        /// <param name="id">植物id</param>
-        /// <param name="prefab">植物预制体</param>
-        /// <param name="preview">植物预览预制体</param>
-        /// <param name="fusions">植物融合配方</param>
-        /// <param name="attackInterval">攻击间隔</param>
-        /// <param name="produceInterval">生产间隔</param>
-        /// <param name="attackDamage">攻击伤害</param>
-        /// <param name="maxHealth">血量</param>
-        /// <param name="cd">卡槽cd</param>
-        /// <param name="sun">阳光</param>
-        public static void RegisterCustomPlant<TBase>([NotNull] int id, [NotNull] GameObject prefab,
-            [NotNull] GameObject preview,
             List<(int, int)> fusions, float attackInterval, float produceInterval, int attackDamage, int maxHealth,
             float cd, int sun)
             where TBase : Plant
@@ -630,14 +617,6 @@ namespace CustomizeLib.BepInEx
                 Instance.Value.Log.LogError($"Duplicate Plant ID: {id}");
             }
         }
-
-        /// <summary>
-        /// 注册自定义点击植物事件
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="action"></param>
-        public static void RegisterCustomPlantClickEvent([NotNull] int id, [NotNull] Action<Plant> action) =>
-            CustomPlantClicks.Add((PlantType)id, action);
 
         /// <summary>
         /// 注册自定义植物皮肤
@@ -992,6 +971,7 @@ namespace CustomizeLib.BepInEx
                 );
             }
         }
+        #endregion
 
         /// <summary>
         /// 注册皮肤子弹(内部使用)
@@ -1045,7 +1025,8 @@ namespace CustomizeLib.BepInEx
         /// </summary>
         /// <param name="id">目标植物id</param>
         /// <param name="callback">事件</param>
-        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) => CustomUseFertilize.Add(id, callback);
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) => 
+            CustomUseFertilize.Add(id, callback);
 
         /// <summary>
         /// 注册肥料融合配方
@@ -1059,6 +1040,7 @@ namespace CustomizeLib.BepInEx
                 CreatePlant.Instance.SetPlant(p.thePlantColumn, p.thePlantRow, newPlant);
             });
 
+        #region 注册卡牌
         /// <summary>
         /// 注册自定义卡牌
         /// </summary>
@@ -1127,7 +1109,9 @@ namespace CustomizeLib.BepInEx
                 CustomNormalCards[thePlantType].Item1.Add(
                     () => Utils.GetNormalCardParent());
         }
+        #endregion
 
+        #region 僵尸注册
         /// <summary>
         /// 注册自定义僵尸
         /// </summary>
@@ -1161,6 +1145,85 @@ namespace CustomizeLib.BepInEx
             else
                 Instance.Value.Log.LogError($"Duplicate ZombieType: {id}");
         }
+
+        /// <summary>
+        /// 注册自定义僵尸
+        /// </summary>
+        /// <typeparam name="TBase">僵尸基类</typeparam>
+        /// <typeparam name="TClass">僵尸自定义对象类</typeparam>
+        /// <param name="id">僵尸id</param>
+        /// <param name="zombie">僵尸预制体</param>
+        /// <param name="spriteId">僵尸头贴图id</param>
+        /// <param name="theAttackDamage">攻击伤害</param>
+        /// <param name="theMaxHealth">本体血量</param>
+        /// <param name="theFirstArmorMaxHealth">一类防具血量</param>
+        /// <param name="theSecondArmorMaxHealth">二类防具血量</param>
+        public static void RegisterCustomZombie<TBase>(ZombieType id, GameObject zombie, Sprite preview,
+            int theAttackDamage, int theMaxHealth, int theFirstArmorMaxHealth, int theSecondArmorMaxHealth)
+            where TBase : Zombie
+        {
+            zombie.AddComponent<TBase>().theZombieType = id;
+
+            if (!CustomZombieTypes.Contains(id))
+            {
+                CustomZombieTypes.Add(id);
+                CustomZombies.Add(id, (zombie, preview, new()
+                {
+                    theAttackDamage = theAttackDamage,
+                    theFirstArmorMaxHealth = theFirstArmorMaxHealth,
+                    theMaxHealth = theMaxHealth,
+                    theSecondArmorMaxHealth = theSecondArmorMaxHealth
+                }));
+            }
+            else
+                Instance.Value.Log.LogError($"Duplicate ZombieType: {id}");
+        }
+
+        /// <summary>
+        /// 注册自定义僵尸
+        /// </summary>
+        /// <typeparam name="TBase">僵尸基类</typeparam>
+        /// <typeparam name="TClass">僵尸自定义对象类</typeparam>
+        /// <param name="id">僵尸id</param>
+        /// <param name="zombie">僵尸预制体</param>
+        /// <param name="data">僵尸数据</param>
+        public static void RegisterCustomZombie<TBase, TClass>(ZombieType id, GameObject zombie, Sprite preview, ZombieDataManager.ZombieData data)
+            where TBase : Zombie where TClass : MonoBehaviour
+        {
+            zombie.AddComponent<TBase>().theZombieType = id;
+            zombie.AddComponent<TClass>();
+
+            if (!CustomZombieTypes.Contains(id))
+            {
+                CustomZombieTypes.Add(id);
+                CustomZombies.Add(id, (zombie, preview, data));
+            }
+            else
+                Instance.Value.Log.LogError($"Duplicate ZombieType: {id}");
+        }
+
+        /// <summary>
+        /// 注册自定义僵尸
+        /// </summary>
+        /// <typeparam name="TBase">僵尸基类</typeparam>
+        /// <typeparam name="TClass">僵尸自定义对象类</typeparam>
+        /// <param name="id">僵尸id</param>
+        /// <param name="zombie">僵尸预制体</param>
+        /// <param name="data">僵尸数据</param>
+        public static void RegisterCustomZombie<TBase>(ZombieType id, GameObject zombie, Sprite preview, ZombieDataManager.ZombieData data)
+            where TBase : Zombie
+        {
+            zombie.AddComponent<TBase>().theZombieType = id;
+
+            if (!CustomZombieTypes.Contains(id))
+            {
+                CustomZombieTypes.Add(id);
+                CustomZombies.Add(id, (zombie, preview, data));
+            }
+            else
+                Instance.Value.Log.LogError($"Duplicate ZombieType: {id}");
+        }
+        #endregion
 
         /// <summary>
         /// 注册植物大招
@@ -1200,14 +1263,15 @@ namespace CustomizeLib.BepInEx
                 CLogger.LogError($"Duplicate strong ultimate type: {plantType}");
         }
 
+        #region 注册融合配方
         /// <summary>
         /// 注册自定义融合洋芋配方
         /// </summary>
         /// <param name="left">左植物</param>
         /// <param name="center">中间植物</param>
         /// <param name="right">右植物</param>
-        /// <param name="action">融合成功执行事件</param>
-        /// <param name="failAction">融合失败执行事件</param>
+        /// <param name="actions">融合成功执行事件列表</param>
+        /// <param name="failActions">融合失败执行事件列表</param>
         public static void RegisterCustomMixBombFusion([NotNull] PlantType left, [NotNull] PlantType center, [NotNull] PlantType right,
             [NotNull] List<Action<Plant, Plant, Plant>> actions, [NotNull] List<Action<Plant, Plant, Plant>> failActions)
         {
@@ -1298,6 +1362,23 @@ namespace CustomizeLib.BepInEx
                 p2.Die();
                 p3.Die();
             }, failAction);
+
+        /// <summary>
+        /// 添加融合配方
+        /// </summary>
+        /// <param name="target">目标植物</param>
+        /// <param name="item1">亲本（地上长的）</param>
+        /// <param name="item2">亲本（后融合上去的）</param>
+        public static void AddFusion(int target, int item1, int item2) => CustomFusions.Add((target, item1, item2));
+
+        /// <summary>
+        /// 添加融合配方
+        /// </summary>
+        /// <param name="target">目标植物</param>
+        /// <param name="item1">亲本（地上长的）</param>
+        /// <param name="item2">亲本（后融合上去的）</param>
+        public static void AddFusion(PlantType target, PlantType item1, PlantType item2) => CustomFusions.Add(((int)target, (int)item1, (int)item2));
+        #endregion
 
         /// <summary>
         /// 注册自定义子弹移动方式
@@ -1416,6 +1497,7 @@ namespace CustomizeLib.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<EmptyDoom>();
             ClassInjector.RegisterTypeInIl2Cpp<InterfaceBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomHealthText>();
+            ClassInjector.RegisterTypeInIl2Cpp<SaveMaterial>();
             SkinBehaviourMgr.Init();
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
             Instance = new(this);
@@ -1427,6 +1509,7 @@ namespace CustomizeLib.BepInEx
             return true;
         }
 
+        #region 数据
         public static Dictionary<int, (PlantType, string, Func<bool>, int)> CustomAdvancedBuffs { get; set; } = [];
         public static Dictionary<BulletType, GameObject> CustomBullets { get; set; } = [];
 
@@ -1489,7 +1572,7 @@ namespace CustomizeLib.BepInEx
         /// </summary>
         public static Dictionary<PlantType, (string, string)?> PlantsSkinAlmanac { get; set; } = [];
         public static Dictionary<PlantType, (Func<Plant, int>, Action<Plant>, int)> SuperSkills { get; set; } = [];
-        public static Dictionary<ZombieType, (string, string)> ZombiesAlmanac { get; set; } = [];
+        public static Dictionary<ZombieType, (string?, string?, ZombieInfo?)> ZombiesAlmanac { get; set; } = [];
 
         /// <summary>
         /// 自定义融合洋芋配方
@@ -1658,5 +1741,6 @@ namespace CustomizeLib.BepInEx
 
         public static Dictionary<Il2CppSystem.Type, string> CustomEndlessSaveData { get; set; } = new();
         // public static List<PlantType> CustomWeakUltimatePlant = new();
+        #endregion
     }
 }

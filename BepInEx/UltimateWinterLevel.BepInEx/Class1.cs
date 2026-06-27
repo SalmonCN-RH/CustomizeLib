@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Core;
 using CustomizeLib.BepInEx;
 using HarmonyLib;
 using System.Collections;
@@ -15,7 +16,7 @@ namespace UltimateWinterLevel.BepInEx
         public static int levelID = -1;
         public override void OnGameInit()
         {
-            CustomLevelData customLevelData = new CustomLevelData();
+            var customLevelData = new CustomLevelData();
             var boardTag = new Board.BoardTag();
             customLevelData.BoardTag = boardTag;
             customLevelData.Name = () => "我是僵尸·陨冬雪影";
@@ -27,7 +28,7 @@ namespace UltimateWinterLevel.BepInEx
             customLevelData.ZombieList = () => new List<ZombieType>()
             {
                 ZombieType.UltimateSnowZombie,
-                ZombieType.IceZombie,
+                ZombieType.SnowConeZombie,
                 ZombieType.SnowDrownZombie,
                 ZombieType.LevatationZombie,
                 ZombieType.SnowShieldZombie,
@@ -45,94 +46,6 @@ namespace UltimateWinterLevel.BepInEx
     public class UltimateSnowZombieLevel : MonoBehaviour
     {
         public UltimateSnowZombie zombie => gameObject.GetComponent<UltimateSnowZombie>();
-        public static float ColumnX => Mouse.Instance.GetBoxXFromColumn(1) - Mouse.Instance.GetBoxXFromColumn(0);
-        public static float RowY => Mouse.Instance.GetBoxYFromRow(1) - Mouse.Instance.GetBoxYFromRow(0);
-
-        public float speed = 6f;
-        public Vector3 position;
-        public Board? board;
-        public int damage = 100;
-        public float attackCountDown = 0.02f;
-        public bool entering = true;
-
-        public void Awake()
-        {
-            position = transform.position;
-            board = Board.Instance;
-            if (board == null)
-            {
-                Destroy(this);
-                return;
-            }
-            this.StartCoroutine(Enter());
-        }
-
-        public IEnumerator Enter()
-        {
-            var start = transform.position;
-            var target = new Vector3(-5f, start.y);
-            float elapsedTime = 0f;
-
-            while (elapsedTime < 1.5f)
-            {
-                float t = elapsedTime / 1.5f;
-
-                // 线性插值
-                transform.position = Vector3.Lerp(start, target, t);
-
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            transform.position = target;
-            entering = false;
-            yield break;
-        }
-
-        public void Update()
-        {
-            if (board == null) return;
-            if (GameAPP.theGameStatus == GameStatus.InGame && !entering)
-            {
-                if (Input.GetKey(KeyCode.W))
-                    position += new Vector3(0f, speed * Time.deltaTime);
-                if (Input.GetKey(KeyCode.S))
-                    position += new Vector3(0f, -speed * Time.deltaTime);
-                if (Input.GetKey(KeyCode.A))
-                    position += new Vector3(-speed * Time.deltaTime, 0f);
-                if (Input.GetKey(KeyCode.D))
-                    position += new Vector3(speed * Time.deltaTime, 0f);
-                var x = position.x;
-                x = Mathf.Clamp(x, Mouse.Instance.GetBoxXFromColumn(0), Mouse.Instance.GetBoxXFromColumn(board.columnNum - 1) + ColumnX);
-                var y = position.y;
-                y = Mathf.Clamp(y, board.boardMinY, board.boardMaxY);
-                position = new Vector3(x, y);
-
-                attackCountDown -= Time.deltaTime;
-
-                zombie.SetPosition(position);
-            }
-            if (zombie != null && (zombie.beforeDying || zombie.theHealth <= 0))
-                foreach (var component in CreateZombie.Instance.SetZombie(2, ZombieType.TrainingDummy, -9.9f).GetComponentsInChildren<SpriteRenderer>())
-                    component.enabled = false;
-        }
-
-        public void OnTriggerStay2D(Collider2D collision)
-        {
-            if (collision != null && collision.gameObject != null && !collision.IsDestroyed() && !collision.gameObject.IsDestroyed())
-            {
-                if (collision.TryGetComponent<Zombie>(out var zombie) && zombie != null && !zombie.isMindControlled)
-                {
-                    if (attackCountDown <= 0f)
-                    {
-                        zombie.TakeDamage(DmgType.NormalAll, damage);
-                        if (zombie.theZombieType is ZombieType.UltimateSnowZombie or ZombieType.SnowMonsterZombie or ZombieType.SuperSnowMonsterZombie)
-                            this.zombie.TakeDamage(DmgType.Normal, 20);
-                        attackCountDown = 0.02f;
-                    }
-                }
-            }
-        }
     }
 
     [HarmonyPatch(typeof(CheckAdv), nameof(CheckAdv.Start))]

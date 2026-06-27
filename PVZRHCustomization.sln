@@ -299,6 +299,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMineGatling.BepInEx", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterSuperMachine.BepInEx", "BepInEx\BetterSuperMachine.BepInEx\BetterSuperMachine.BepInEx.csproj", "{6582B3D3-1345-4C08-9671-16AED4448487}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeriousSquash4.BepInEx", "BepInEx\SeriousSquash4.BepInEx\SeriousSquash4.BepInEx.csproj", "{F9A6872B-80C4-4BC9-8606-35E5F23959CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -877,6 +879,10 @@ Global
 		{6582B3D3-1345-4C08-9671-16AED4448487}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6582B3D3-1345-4C08-9671-16AED4448487}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6582B3D3-1345-4C08-9671-16AED4448487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9A6872B-80C4-4BC9-8606-35E5F23959CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9A6872B-80C4-4BC9-8606-35E5F23959CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9A6872B-80C4-4BC9-8606-35E5F23959CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9A6872B-80C4-4BC9-8606-35E5F23959CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
