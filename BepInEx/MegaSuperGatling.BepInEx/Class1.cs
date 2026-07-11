@@ -2,6 +2,7 @@
 using BepInEx;
 using CustomizeLib.BepInEx;
 using CustomizeLib.BepInEx.ExtensionData.Unity;
+using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using System.Collections;
 using System.Reflection;
@@ -67,7 +68,7 @@ namespace MegaSuperGatling.BepInEx
         {
             if (init) return;
             AlmanacDataLoader.plantDatas[PlantType.SuperGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级机枪射手的攻击力x10，发射的子弹改为超级机枪射手系列的随机子弹，每次发射时有50%概率额外散射20发随机子弹</color>";
-            AlmanacDataLoader.plantDatas[PlantType.SuperSnowGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级寒冰机枪射手的攻击力x10，发射的子弹改为冰锥，子弹命中的首个目标赋予1秒冻结，对冻结或免疫寒冷的僵尸伤害x15</color>";
+            AlmanacDataLoader.plantDatas[PlantType.SuperSnowGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级寒冰机枪射手的攻击力x10，发射的子弹改为冰锥，子弹命中的首个目标赋予1秒冻结，对冻结或免疫寒冷的僵尸伤害x10</color>";
             AlmanacDataLoader.plantDatas[PlantType.SuperThreeGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：三线超级机枪射手的攻击力x10，大招效果改为每0.02秒散射9颗伤害为3倍的豌豆</color>";
             init = true;
         }
@@ -89,7 +90,7 @@ namespace MegaSuperGatling.BepInEx
             }
         }
 
-        [HarmonyPatch(nameof(SuperSnowGatling.SuperShoot))]
+        [HarmonyPatch(nameof(SuperSnowGatling.SuperShoot), [typeof(float), typeof(float), typeof(float), typeof(float), typeof(BulletMoveWay), typeof(int)])]
         [HarmonyPostfix]
         public static void PostSuperShoot(SuperSnowGatling __instance)
         {
@@ -177,7 +178,7 @@ namespace MegaSuperGatling.BepInEx
                 int damage = __instance.Damage;
 
                 if (zombie.HasBuff(EffectType.Freeze) || !zombie.HasBuff(EffectType.Cold))
-                    damage *= 15;
+                    damage *= 10;
 
                 ParticleManager.Instance.SetParticle(ParticleType.SnowPeaSplat, __instance.transform.position, zombie.theZombieRow);
 
@@ -218,9 +219,6 @@ namespace MegaSuperGatling.BepInEx
     {
         [HarmonyPatch(nameof(GameAPP.Start))]
         [HarmonyPostfix]
-        public static void PostStart(GameAPP __instance)
-        {
-            __instance.SetData("MegaSuperGatling_BuffID", Core.BuffID);
-        }
+        public static void PostStart(GameAPP __instance) => __instance.SetData("MegaSuperGatling_BuffID", Core.BuffID);
     }
 }

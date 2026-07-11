@@ -91,10 +91,14 @@ namespace SuperSniperGatling.BepInEx
 
         public void SuperEvent()
         {
-            if (plant.targetZombie == null || !plant.SearchUniqueZombie(plant.targetZombie))
-                plant.targetZombie = plant.SearchZombie().GetComponent<Zombie>();
-            plant.Shoot1();
-            super = 0.02f;
+            try
+            {
+                if (plant.targetZombie == null || !plant.SearchUniqueZombie(plant.targetZombie))
+                    plant.targetZombie = plant.SearchZombie().GetComponent<Zombie>();
+                plant.Shoot1();
+                super = 0.02f;
+            }
+            catch (NullReferenceException) { }
         }
 
         public GameObject SearchZombie()

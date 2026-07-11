@@ -273,7 +273,7 @@ namespace IceDoomSniperPea.BepInEx
                     };
                     Board.Instance.boardAction.CreateCherryExplode(transform.position, zombie.theZombieRow, CherryBombType.IceCharry, dmg, action: action, fromType: (PlantType)IceDoomSniperPea.PlantID);
                     int totalHealth = zombie.theHealth + zombie.theFirstArmorHealth + zombie.theSecondArmorHealth;
-                    if (Utils.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
+                    if (MultiLevelBuff.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
                     {
                         int damage = zombie.GetDamage((int)(totalHealth * 0.1f) + 1, DamageType.Normal, false);
                         if (zombie.theZombieType == ZombieType.TrainingDummy)
@@ -348,7 +348,7 @@ namespace IceDoomSniperPea.BepInEx
 
             board.boardAction.CreateCherryExplode(gameObject.transform.position, zombie.theZombieRow, CherryBombType.IceCharry, dmg, action: action);
             int totalHealth = zombie.theHealth + zombie.theFirstArmorHealth + zombie.theSecondArmorHealth;
-            if (Utils.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
+            if (MultiLevelBuff.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
             {
                 int damage = zombie.GetDamage((int)(totalHealth * 0.1f) + 1, DamageType.Normal, false);
                 if (zombie.theZombieType == ZombieType.TrainingDummy)
@@ -381,7 +381,7 @@ namespace IceDoomSniperPea.BepInEx
                 iceDoom = true;
             }
 
-            if (Utils.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
+            if (MultiLevelBuff.TravelCustomBuffLevel(BuffType.AdvancedBuff, (int)IceDoomSniperPea.buff1) == 2)
             {
                 if (UnityEngine.Random.Range(0, 2) == 0)
                 {
@@ -441,6 +441,7 @@ namespace IceDoomSniperPea.BepInEx
                 z.theFirstArmorHealth = 0;
             if (z.theSecondArmorHealth < 0)
                 z.theSecondArmorHealth = 0;
+            z.UpdateHealthText();
         }
     }
 }

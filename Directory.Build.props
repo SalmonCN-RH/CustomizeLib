@@ -12,9 +12,13 @@
     <Reference Remove="@(Reference)" />
     
     <!-- 添加全局BepInEx引用 -->
-    <Reference Include="..\..\lib\BepInEx\libs\*.dll" 
-               Exclude="..\..\lib\BepInEx\libs\dobby.dll">
+    <Reference Include="F:\vsrepos\CustomizeLib\lib\BepInEx\libs\*.dll" 
+               Exclude="F:\vsrepos\CustomizeLib\lib\BepInEx\libs\dobby.dll">
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+</Target>
 </Project>

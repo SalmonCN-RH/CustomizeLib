@@ -261,7 +261,7 @@ namespace SubspeciesEntry.BepInEx
             {
                 CardClickMgr.AddCardClickOnPlant(PlantType.DoomShroom, PlantType.UltimateGloom, (plant) =>
                 {
-                    plant.GetComponent<IceDoomGloom>().DieEvent();
+                    plant.GetComponent<UltimateGloom>().DieEvent();
                 }, () => CoreTools.TravelUltimate("万籁俱寂"));
                 CardClickMgr.AddCardClickOnPlant(PlantType.DoomShroom, PlantType.UltimatePlantern, (plant) =>
                 {

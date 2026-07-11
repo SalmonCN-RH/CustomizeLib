@@ -83,6 +83,7 @@ namespace DoomGatlingBlover.BepInEx
                 CustomCore.RegisterCustomParticle(DoomBomb.doomID, ab.GetAsset<GameObject>("Doom"));
                 CustomCore.RegisterCustomParticle(DoomBomb.doomSplatID, ab.GetAsset<GameObject>("DoomSplat"));
             }
+            CustomCore.RegisterCustomDebuff("test", () => true);
         }
     }
 

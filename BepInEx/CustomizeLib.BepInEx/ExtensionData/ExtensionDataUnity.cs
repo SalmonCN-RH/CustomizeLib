@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace CustomizeLib.BepInEx.ExtensionData.Unity
 {
+    #pragma warning disable
     public static class ExtensionDataUnity
     {
         public static ExtDataRef<T> GetData<T>(this UnityEngine.Object obj, string name)
@@ -80,5 +81,7 @@ namespace CustomizeLib.BepInEx.ExtensionData.Unity
             this.parent = parent;
             this.name = name;
         }
+
+        public static implicit operator T(ExtDataRef<T> extDataRef) => extDataRef.val;
     }
 }

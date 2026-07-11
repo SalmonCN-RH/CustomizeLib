@@ -323,46 +323,8 @@ namespace CustomizeLib.BepInEx
             return null;
         }
 
-        /// <summary>
-        /// 自定义词条是否是多级词条
-        /// </summary>
-        /// <param name="buffType">词条类型</param>
-        /// <param name="returnID">对应的数组的ID（索引），即注册词条是返回的ID</param>
-        /// <returns>Item1: 是否是多级词条, Item2: 在CustomBuffsLevel中的索引</returns>
-        public static (bool, int) IsMultiLevelBuff(BuffType buffType, int returnID)
-        {
-            var list = CustomCore.CustomBuffsLevel.Where(kvp => kvp.Key.Item1 == buffType && kvp.Key.Item2 == returnID).ToList();
-            if (list.Count > 0)
-            {
-                var index = list[0].Value.Item1;
-                return (list.Count > 0, index);
-            }
-            return (false, -1);
-        }
-
-        public static int TravelCustomBuffLevel(BuffType buffType, int returnID)
-        {
-            var result = IsMultiLevelBuff(buffType, returnID);
-            if (result.Item1)
-            {
-                if (TravelMgr.Instance is null)
-                    return 0;
-                var array = (int[])TravelMgr.Instance.GetData("CustomBuffsLevel");
-                if (array is null)
-                    return 0;
-                return array[result.Item2];
-            }
-            return 0;
-        }
-
-        public static bool IsCheat()
-        {
-            return GameAPP.developerMode;
-        }
-        public static bool EnableTravelPlant()
-        {
-            return Board.Instance.boardTag.enableAllTravelPlant || Board.Instance.boardTag.isSuperRandom || Board.Instance.boardTag.isUltimateSuperRandom || IsCheat() || Board.Instance.boardTag.isTravel;
-        }
+        public static bool IsCheat() => GameAPP.developerMode;
+        public static bool EnableTravelPlant() => Board.Instance.boardTag.enableAllTravelPlant || Board.Instance.boardTag.isSuperRandom || Board.Instance.boardTag.isUltimateSuperRandom || IsCheat() || Board.Instance.boardTag.isTravel;
     }
 
     // json对象

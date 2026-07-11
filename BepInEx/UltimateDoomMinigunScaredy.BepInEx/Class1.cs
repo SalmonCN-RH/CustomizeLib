@@ -30,8 +30,7 @@ namespace UltimateDoomMinigunScaredy.BepInEx
                 "<color=#3D1400>伤害：</color><color=red>300/0.5秒</color>\n" +
                 "<color=#3D1400>特点：</color><color=red>①每攻击1次减少0.02秒攻击间隔，最低0.1秒\n" +
                 "②启动射击需要预热1秒\n" +
-                "③每次发射有5%概率发射大毁灭菇，每第16发为大毁灭菇\n" +
-                "④3x3范围内有僵尸会害怕自爆并释放毁灭菇效果</color>\n\n" +
+                "③每次发射有5%概率发射大毁灭菇，每第16发为大毁灭菇</color>\n\n" +
                 "<color=#3D1400>究极毁灭速射机枪胆小菇经营着植物界最大的服装店，“一株植物，根据他的穿着就能看出他的性格或是爱好，我喜欢有个性的植物，他们勇敢又正义。”他曾荣获植物界服装设计绿叶奖，这是所有设计师们梦寐以求的奖项，每当有人问起，他总会说“不知道啊，我去参赛他们给我的～”</color>");
             CustomCore.TypeMgrExtra.LevelPlants.Add(UltimateDoomMinigunScaredy.PlantID, CardLevel.Red);
             CustomCore.AddFusion((int)PlantType.GatlingDoomScaredy, (int)UltimateDoomMinigunScaredy.PlantID, (int)PlantType.ScaredyShroom);
@@ -60,7 +59,8 @@ namespace UltimateDoomMinigunScaredy.BepInEx
                 plant.anim.speed += 0.375f;
             }
 
-            plant.anim.speed = 1 + (0.5f - plant.thePlantAttackInterval) / 0.02f * 0.375f;
+            plant.thePlantAttackInterval = Mathf.Min(0.5f, plant.thePlantAttackInterval);
+            plant.anim.speed = 1 + (0.5f - (Mathf.Min(plant.thePlantAttackInterval, 0.5f))) / 0.02f * 0.375f;
 
             plant.doomTimes++;
 
@@ -82,6 +82,20 @@ namespace UltimateDoomMinigunScaredy.BepInEx
             }
 
             GameAPP.PlaySound(UnityEngine.Random.Range(3, 5), 0.5f, 1.0f);
+        }
+    }
+
+    [HarmonyPatch(typeof(ScaredyDoom))]
+    public static class ScaredyDoomPatch
+    {
+        [HarmonyPatch(nameof(ScaredyDoom.ScaredEvent))]
+        [HarmonyPrefix]
+        public static void PreScaredEvent(ScaredyDoom __instance)
+        {
+            if (__instance.thePlantType == UltimateDoomMinigunScaredy.PlantID)
+            {
+                if (__instance.thePlantAttackInterval <= 0.1f) __instance.thePlantAttackInterval = 0.2f;
+            }
         }
     }
 

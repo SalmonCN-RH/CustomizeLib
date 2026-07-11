@@ -80,6 +80,9 @@ namespace EvolveGodSuperSnowGatling.BepInEx
             plant.ModifyDamage(PlantDamageAdder.Shooting, 19.0f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));
             plant.ModifySpeed(PlantSpeedAdder.Shooting, 1f, 0f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));
         }
+
+        public override string Role => "输出";
+
         // 自定义的方法
 
         private List<BaseBuff> CustomBuffs = new List<BaseBuff> { new UpgradeBuff(PlantType.SnowGatling, PlantType.SuperSnowGatling) };
@@ -101,6 +104,9 @@ namespace EvolveGodSuperSnowGatling.BepInEx
                 return result;
             }
         }
+
+        public override string Role => "输出";
+
         public override void ReinforcePlant(Plant plant)
         {
             plant.ModifyDamage(PlantDamageAdder.Shooting, 14.0f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));

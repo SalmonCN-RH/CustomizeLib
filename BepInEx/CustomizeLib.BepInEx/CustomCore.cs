@@ -1,27 +1,31 @@
 ﻿// #define DEBUG_FEATURE__ENABLE_MULTI_LEVEL_BUFF // 启用多级词条
 
+using AlmanacData;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
+using Core;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
 using CustomizeLib.BepInEx.ExtensionData.Unity;
+using CustomizeLib.BepInEx.UnmanagedTools;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppInterop.Runtime.InteropTypes;
+using Il2CppInterop.Runtime.Runtime;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using Core;
-using AlmanacData;
 
+#pragma warning disable
 ///
 ///Credit to likefengzi(https://github.com/likefengzi)(https://space.bilibili.com/237491236)
 ///
 namespace CustomizeLib.BepInEx
 {
-    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.7")]
+    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.8")]
     public class CustomCore : BasePlugin
     {
         #region TypeMgrExtra
@@ -1498,16 +1502,30 @@ namespace CustomizeLib.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<InterfaceBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomHealthText>();
             ClassInjector.RegisterTypeInIl2Cpp<SaveMaterial>();
+            ClassInjector.RegisterTypeInIl2Cpp<SelectCustomPlants>();
             SkinBehaviourMgr.Init();
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-            Instance = new(this);
-            CLogger = Log;
+            InitCoreData();
+            MapValue.InitDatas();
+            Internal.HookCall.RegisterTypes();
+        }
+
+        public void InitCoreData()
+        {
+            CoreData.Instance = new(this);
+            CoreData.Logger = new(Log);
+            CoreData.Harmony = new(new Harmony("salmon.inf75.pvzcustomization"));
         }
 
         public override bool Unload()
         {
+            // 释放已固定的对象
+            UnmanagedTools.ObjectPinner.Release();
             return true;
         }
+
+        public static ManualLogSource CLogger => CoreData.Logger?.Value;
+        public static Lazy<CustomCore> Instance => new(CoreData.Instance?.Value);
 
         #region 数据
         public static Dictionary<int, (PlantType, string, Func<bool>, int)> CustomAdvancedBuffs { get; set; } = [];
@@ -1563,8 +1581,6 @@ namespace CustomizeLib.BepInEx
 
         public static List<ZombieType> CustomZombieTypes { get; set; } = [];
 
-        public static Lazy<CustomCore> Instance { get; set; } = new();
-
         public static Dictionary<PlantType, PlantAlmanac> PlantsAlmanac { get; set; } = [];
 
         /// <summary>
@@ -1615,7 +1631,7 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<int, (PlantType, string, int)> CustomUnlockBuffs { get; set; } = [];
 
         /// <summary>
-        /// 自定义强究列表
+        /// 自定义强究列表 (强究类型, 解锁词条id)
         /// </summary>
         public static Dictionary<PlantType, int> CustomStrongUltimatePlants { get; set; } = [];
 
@@ -1661,8 +1677,6 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<(BuffType, int), int> CustomBuffCost { get; set; } = new();
 
         public static int CustomBuffStartID = 17500;
-
-        public static ManualLogSource CLogger { get; set; } = null!;
 
         /// <summary>
         /// 已加载的ab包
@@ -1742,5 +1756,12 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<Il2CppSystem.Type, string> CustomEndlessSaveData { get; set; } = new();
         // public static List<PlantType> CustomWeakUltimatePlant = new();
         #endregion
+    }
+
+    public class CoreData
+    {
+        public static Lazy<CustomCore>? Instance = new(() => new());
+        public static Lazy<ManualLogSource>? Logger = new(() => Instance.Value.Log);
+        public static Lazy<Harmony>? Harmony = new(() => new Harmony("salmon.inf75.pvzcustomization"));
     }
 }

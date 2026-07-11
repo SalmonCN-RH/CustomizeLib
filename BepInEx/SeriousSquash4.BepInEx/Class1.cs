@@ -223,7 +223,7 @@ namespace SeriousSquash4.BepInEx
                 name = $"猫瓜僵尸",
                 info =
                 "能压扁身边的植物，召唤窝瓜僵尸！\n\n" +
-                "<color=#3D1400>韧性：</color><color=red>720</color>\n" +
+                "<color=#3D1400>韧性：</color><color=red>1500</color>\n" +
                 "<color=#3D1400>特点：</color><color=red>会碾压附近的植物并死亡。该方式死亡时始终产生3个窝瓜僵尸，有5%的概率额外生成1个火爆窝瓜僵尸</color>",
                 introduce = "<color=#3D1400>猫瓜僵尸紧盯着树荫下，似乎是等待着什么，这一举动被很多窝瓜僵尸看到眼中。或许她并不知道，那里并没有电子火红莲。</color>",
                 theZombieType = theNewZombieType
@@ -355,7 +355,6 @@ namespace SeriousSquash4.BepInEx
             UnityEngine.Object.Destroy(map.transform.GetChild(0).GetComponent<GiveFertilize>());
             InitZombieList.InitZombie(levelType, levelNumber);
             TravelMgr.Instance.GetNormalBuff((AdvBuff)1000); // 获得至极手速
-
             // 播放音乐并开始游戏
             GameAPP.Instance.PlayMusic(MusicType.SelectCard);
             GameAPP.theGameStatus = GameStatus.InInterlude;
@@ -408,7 +407,14 @@ namespace SeriousSquash4.BepInEx
                     GameAPP.Instance.PlayMusic(MusicType.Loon);
                     Board.Instance.timeUntilNextWave = 7.5f;
                     // 显示难度选择菜单
-                    var choiceMenu = GameAPP.UIManager.Push(UIType.MultipleChoiceMenu, GameAPP.canvasUp).GetComponent<MultipleChoiceMenu>();
+                    var type = UIType.MultipleChoiceMenu;
+                    foreach (var kvp in GameAPP.UIManager.UIPrefabs) // 飘的UIType天天动，没招了只能动态搜索了
+                        if (kvp.Value.name == "MultipleChoiceMenu" || kvp.Value.name == "MultipleChoiceMenu2")
+                        {
+                            type = kvp.Key;
+                            break;
+                        }
+                    var choiceMenu = GameAPP.UIManager.Push(type, GameAPP.canvasUp).GetComponent<MultipleChoiceMenu>();
                     if (choiceMenu != null)
                     {
                         choiceMenu.SetRefreshable(false);
@@ -506,8 +512,9 @@ namespace SeriousSquash4.BepInEx
         {
             if (GameAPP.theBoardType == levelType && GameAPP.theBoardLevel == levelID)
             {
-                (KeyCodeManager.ShowZombieHealth, LevelShowZombieHealth) = (LevelShowZombieHealth, KeyCodeManager.ShowZombieHealth);
                 var dataDic = ZombieDataManager.zombieDataDic;
+                (KeyCodeManager.ShowZombieHealth, LevelShowZombieHealth) = (LevelShowZombieHealth, KeyCodeManager.ShowZombieHealth);
+                (KeyCodeManager.ZombieGlove, LevelChangeGlove) = (LevelChangeGlove, KeyCodeManager.ZombieGlove);
                 (dataDic[ZombieType.EndoFlameZombie].summonLevel, EndoFlame_Level) = (EndoFlame_Level, dataDic[ZombieType.EndoFlameZombie].summonLevel);
                 (dataDic[ZombieType.EndoFlameZombie].summonWeight, EndoFlame_Weight) = (EndoFlame_Weight, dataDic[ZombieType.EndoFlameZombie].summonWeight);
                 (dataDic[ZombieType.JalaSquashZombie].summonLevel, Jala_Level) = (Jala_Level, dataDic[ZombieType.JalaSquashZombie].summonLevel);
@@ -560,6 +567,24 @@ namespace SeriousSquash4.BepInEx
                 __instance.zombieTypes.Add(ZombieType.SquashZombie);
                 __instance.zombieTypes.Add(ZombieType.JalaSquashZombie);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(ZombieEndoFlame), nameof(ZombieEndoFlame.DieEvent))]
+    public static class ZombieEndoFlameDieEventPatch
+    {
+        [HarmonyPrefix]
+        public static void Prefix(ZombieEndoFlame __instance)
+        {
+            if (GameAPP.theBoardLevel == levelID && GameAPP.theBoardType == levelType)
+            {
+                __instance.zombieFertilize = null;
+            }
+        }
+
+        public static Exception Finalizer()
+        {
+            return null;
         }
     }
 

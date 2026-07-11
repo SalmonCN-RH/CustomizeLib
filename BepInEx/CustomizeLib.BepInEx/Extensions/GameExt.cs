@@ -28,7 +28,6 @@ namespace CustomizeLib.BepInEx
             }
         }
         public static bool ObjectExist<T>(this Board board) => board.GameObject().transform.GetComponentsInChildren<T>().Length > 0;
-
     }
 
     public static class TravelExtensions

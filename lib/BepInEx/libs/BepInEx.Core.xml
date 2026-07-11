@@ -536,6 +536,13 @@
                 Writes the config to disk.
             </summary>
         </member>
+        <member name="M:BepInEx.Configuration.ConfigFile.TrySave">
+            <summary>
+                Writes the config to disk like <see cref="M:BepInEx.Configuration.ConfigFile.Save" />, but logs and swallows I/O failures (e.g. a read-only
+                or locked config file) instead of throwing. Used only for the creation-time saves (initial file write and
+                new-entry binds), which can run before logging is up; explicit saves and setting changes still throw.
+            </summary>
+        </member>
         <member name="M:BepInEx.Configuration.ConfigFile.GetSetting``1(BepInEx.Configuration.ConfigDefinition)">
             <summary>
                 Access one of the existing settings. If the setting has not been added yet, null is returned.
@@ -846,8 +853,18 @@
                 not load and an error will be logged instead.
             </summary>
             <param name="guid">The GUID of the referenced plugin.</param>
-            <param name="version">The version range of the referenced plugin.</param>
-            <remarks>When version is supplied the dependency is always treated as HardDependency</remarks>
+            <param name="version">
+                The version requirement of the referenced plugin, parsed as a SemVer range
+                (see <see href="https://github.com/adamreeve/semver.net#ranges" />). A plain version such as
+                <c>1.2.0</c> requires that exact version; use a range such as <c>&gt;=1.2.0</c>, <c>1.2.*</c>,
+                <c>~1.2.0</c> or <c>^1.2.0</c> to accept more than one version.
+            </param>
+            <remarks>
+                When a version is supplied the dependency is always treated as a hard dependency.
+                Plugins migrating from BepInEx 5 should note a behaviour change: a bare version was previously
+                treated as a minimum (<c>&gt;=</c>), whereas in BepInEx 6 it is an exact match. Use
+                <c>&gt;=1.2.0</c> to keep the old behaviour.
+            </remarks>
         </member>
         <member name="P:BepInEx.BepInDependency.DependencyGUID">
             <summary>
@@ -1489,6 +1506,11 @@
         <member name="P:BepInEx.Paths.BepInExVersion">
             <summary>
                BepInEx version.
+            </summary>
+        </member>
+        <member name="P:BepInEx.Paths.DisplayBepInExVersion">
+            <summary>
+               BepInEx version without the build suffix.
             </summary>
         </member>
         <member name="P:BepInEx.Paths.ManagedPath">

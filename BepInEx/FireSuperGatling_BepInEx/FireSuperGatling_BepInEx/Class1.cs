@@ -103,14 +103,21 @@ namespace FireSuperGatling_BepInEx
     {
         [HarmonyPatch(nameof(Bullet_pea_jala.HitZombie))]
         [HarmonyPrefix]
-        public static void PreTakeDamage(Bullet_pea_jala __instance, ref Zombie zombie)
+        public static void PreTakeDamage(Bullet_pea_jala __instance)
         {
-            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val) && zombie.HasBuff(EffectType.Jala))
+            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val))
             {
-                if (!CoreTools.TravelAdvanced("怒火攻心"))
-                    __instance.Damage = (int)(__instance.Damage * 11f / 3f);
-                else
-                    __instance.Damage *= 3;
+                __instance.Damage *= 5;
+            }
+        }
+
+        [HarmonyPatch(nameof(Bullet_pea_jala.HitZombie))]
+        [HarmonyPostfix]
+        public static void PostTakeDamage(Bullet_pea_jala __instance)
+        {
+            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val))
+            {
+                __instance.Damage /= 5;
             }
         }
     }
@@ -120,14 +127,21 @@ namespace FireSuperGatling_BepInEx
     {
         [HarmonyPatch(nameof(Bullet_firePea_super.HitZombie))]
         [HarmonyPrefix]
-        public static void PreTakeDamage(Bullet_firePea_super __instance, ref Zombie zombie)
+        public static void PreTakeDamage(Bullet_firePea_super __instance)
         {
-            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val) && zombie.HasBuff(EffectType.Jala))
+            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val))
             {
-                if (!CoreTools.TravelAdvanced("怒火攻心"))
-                    __instance.Damage = (int)(__instance.Damage * 11f / 3f);
-                else
-                    __instance.Damage *= 3;
+                __instance.Damage *= 5;
+            }
+        }
+
+        [HarmonyPatch(nameof(Bullet_firePea_super.HitZombie))]
+        [HarmonyPostfix]
+        public static void PostTakeDamage(Bullet_firePea_super __instance)
+        {
+            if ((int)__instance.fromType == FireSuperGatling.PlantID && Lawnf.TravelAdvanced(GameAPP.Instance.GetData<BuffID>("MegaSuperGatling_BuffID").val))
+            {
+                __instance.Damage /= 5;
             }
         }
     }

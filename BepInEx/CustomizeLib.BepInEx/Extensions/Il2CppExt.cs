@@ -43,11 +43,11 @@ namespace CustomizeLib.BepInEx
 
         public static bool IsTypeOf(this Il2CppSystem.Object obj, Type type) => obj.GetIl2CppType() == Il2CppType.From(type);
         public static bool IsTypeOf<T>(this Il2CppSystem.Object obj) => obj.GetIl2CppType() == Il2CppType.From(typeof(T));
-        public static Il2CppSystem.Object BoxEnumToIl2Object<TEnum>(this object obj) where TEnum : Enum =>
+        public static Il2CppSystem.Object BoxEnumToIl2Object<TEnum>(object obj) where TEnum : Enum =>
             Il2CppSystem.Enum.ToObject(Il2CppType.From(typeof(TEnum)), (int)obj);
-        public static Il2CppSystem.Object BoxEnumToIl2Object(this object obj, Type enumType) =>
+        public static Il2CppSystem.Object BoxEnumToIl2Object(object obj, Type enumType) =>
             Il2CppSystem.Enum.ToObject(Il2CppType.From(enumType), (int)obj);
-        public static Il2CppSystem.Object BoxEnumToIl2Object(this object obj, Il2CppSystem.Type enumType) =>
+        public static Il2CppSystem.Object BoxEnumToIl2Object(object obj, Il2CppSystem.Type enumType) =>
             Il2CppSystem.Enum.ToObject(enumType, (int)obj);
         public static Il2CppSystem.Type GetIl2CppType(this object obj) => Il2CppType.From(obj.GetType());
         public static Il2CppSystem.Nullable<T> GetNullable<T>(this T obj) where T : new() => new(obj);

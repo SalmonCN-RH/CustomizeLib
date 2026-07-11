@@ -50,7 +50,8 @@ namespace SubspeciesEntry.BepInEx.Plants
                             if (zombie.theZombieType == ZombieType.SuperLadderZombie)
                             {
                                 var ladder = zombie.transform.GetComponent<SuperLadderZombie>();
-                                if (ladder != null && ladder.ladder != null && ladder.ladder.theItemRow == __instance.thePlantRow && ladder.ladder.theItemColumn == __instance.thePlantColumn)
+                                if (ladder != null && ladder.ladder != null && ladder.ladder.theItemRow == __instance.thePlantRow && 
+                                    ladder.ladder.theItemColumn == __instance.thePlantColumn)
                                 {
                                     ladder.ladder.Die();
                                 }
