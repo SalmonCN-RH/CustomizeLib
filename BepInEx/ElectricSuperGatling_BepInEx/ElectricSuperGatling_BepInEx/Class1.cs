@@ -8,6 +8,8 @@ using CustomizeLib.BepInEx;
 using Unity.VisualScripting;
 using System.Collections;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
+using CustomizeLib.BepInEx.GameTools;
+using UnityEngine.Rendering;
 
 namespace ElectricSuperGatling_BepInEx
 {
@@ -20,8 +22,10 @@ namespace ElectricSuperGatling_BepInEx
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
             ClassInjector.RegisterTypeInIl2Cpp<Bullet_electricSuperGatlingPea>();
             ClassInjector.RegisterTypeInIl2Cpp<ElectricSuperGatling>();
+            ClassInjector.RegisterTypeInIl2Cpp<ElectricLine>();
             var ab = CustomCore.GetAssetBundle(Assembly.GetExecutingAssembly(), "electricsupergatling");
-            CustomCore.RegisterCustomBullet<Bullet_pea, Bullet_electricSuperGatlingPea>((BulletType)Bullet_electricSuperGatlingPea.BulletID, ab.GetAsset<GameObject>("ElectricSuperGatlingBullet"));
+            CustomCore.RegisterCustomBullet<Bullet_pea, Bullet_electricSuperGatlingPea>((BulletType)Bullet_electricSuperGatlingPea.BulletID, 
+                ab.GetAsset<GameObject>("ElectricPea"));
             CustomCore.RegisterCustomPlant<SuperGatling, ElectricSuperGatling>(
                 ElectricSuperGatling.PlantID,
                 ab.GetAsset<GameObject>("ElectricSuperGatlingPrefab"),
@@ -30,118 +34,136 @@ namespace ElectricSuperGatling_BepInEx
                 {
                     ((int)PlantType.SuperGatling, (int)PlantType.ElectricOnion)
                 },
-                1.5f, 0f, 20, 300, 7.5f, 825
+                1.5f, 0f, 30, 300, 7.5f, 825
+            );
+            CustomCore.RegisterCustomPlantSkin<SuperGatling, ElectricSuperGatling>(
+                ElectricSuperGatling.PlantID,
+                ab.GetAsset<GameObject>("ElectricSuperGatlingSkinPrefab"),
+                ab.GetAsset<GameObject>("ElectricSuperGatlingSkinPreview"),
+                new()
+                {
+                    ((int)PlantType.SuperGatling, (int)PlantType.ElectricOnion)
+                },
+                1.5f, 0f, 30, 300, 7.5f, 825, new List<(BulletType, List<GameObject?>)>()
+                {
+                    (Bullet_electricSuperGatlingPea.BulletID, new() { ab.GetAsset<GameObject>("ElectricPeaSkin") })
+                }
+            );
+            CustomCore.RegisterCustomPlantSkin<SuperGatling, ElectricSuperGatling>(
+                ElectricSuperGatling.PlantID,
+                ab.GetAsset<GameObject>("ElectricSuperGatlingSkin2Prefab"),
+                ab.GetAsset<GameObject>("ElectricSuperGatlingSkin2Preview"),
+                new()
+                {
+                    ((int)PlantType.SuperGatling, (int)PlantType.ElectricOnion)
+                },
+                1.5f, 0f, 30, 300, 7.5f, 825, new List<(BulletType, List<GameObject?>)>()
+                {
+                    (Bullet_electricSuperGatlingPea.BulletID, new() { ab.GetAsset<GameObject>("ElectricPeaSkin2") })
+                }
             );
             CustomCore.AddUltimatePlant((PlantType)ElectricSuperGatling.PlantID);
             CustomCore.AddPlantAlmanacStrings(ElectricSuperGatling.PlantID,
-                $"超级电能机枪射手({ElectricSuperGatling.PlantID})",
+                $"电能超级机枪射手({ElectricSuperGatling.PlantID})",
                 "一次发射六颗电能豌豆，有概率一次性发射大量电能豌豆\n\n" +
-                "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
-                "<color=#3D1400>伤害：</color><color=red>20x6/1.5秒</color>\n" +
-                "<color=#3D1400>子弹伤害：</color><color=red>20/0.15秒</color>\n" +
+                "<color=#3D1400>贴图作者：@林秋-AutumnLin、@白鱼余余丶</color>\n" +
+                "<color=#3D1400>伤害：</color><color=red>30x6/1.5秒</color>\n" +
+                "<color=#3D1400>子弹伤害：</color><color=red>30/0.15秒</color>\n" +
                 "<color=#3D1400>特点：</color><color=red>每次攻击有2%概率出发大招，5秒内，每0.02秒散射3发电能豌豆</color>\n" +
-                "<color=#3D1400>电能豌豆：</color><color=red>①无限穿透，子弹会向3x3范围持续造成伤害\n" +
-                "②子弹前三次直击目标时，索敌半径3.7格的非直击目标造成一次半径0.5格的电击伤害，造成10倍攻击力的灰烬伤害\n" +
-                "③子弹伤害的目标有0.1%概率造成0.5秒的定身效果</color>\n" +
+                "<color=#3D1400>电能豌豆：</color><color=red><color=#3D1400>①</color>无限穿透，子弹会向3x3范围持续造成伤害\n" +
+                "<color=#3D1400>②</color>子弹前三次直击目标时，索敌半径3.7格的非直击目标释放一次闪电链，造成一次半径1.5格，伤害为10倍攻击力的灰烬伤害\n" +
+                "<color=#3D1400>③</color>受到伤害的目标有1%概率陷入0.5秒的定身效果</color>\n" +
+                "<color=#3D1400>词条1:</color><color=red>五阶升级：电能超级机枪射手的攻击力x10，子弹的攻击频率x3，闪电链击中目标时会减少1点护甲系数</color>\n" +
                 "<color=#3D1400>融合配方：</color><color=red>超级机枪射手+闪电洋葱</color>\n\n" +
-                "<color=#3D1400>“你是电，你是光，你是唯一的神话，我只爱你，You are my super star!”超级电能机枪豌豆总是把这句歌词挂在嘴边，电光火石间，僵尸们就因触碰114514伏的高压电流而死。</color>"
+                "<color=#3D1400>宝开鱼占位符</color>"
             );
+            Bullet_electricSuperGatlingPea.ElectricLine = ab.GetAsset<GameObject>("PrismLine");
+            Bullet_electricSuperGatlingPea.ElectricLineSkin = ab.GetAsset<GameObject>("PrismLineSkin");
+            CustomCore.RegisterCustomParticle(Bullet_electricSuperGatlingPea.OnHitParticle, 
+                ab.GetAsset<GameObject>("Bullet  ElectricSplatyellow"));
+            CustomCore.RegisterCustomParticle(Bullet_electricSuperGatlingPea.OnHitParticleSkin, 
+                ab.GetAsset<GameObject>("Bullet ElectricSplatblue"));
+            CustomCore.RegisterCustomParticle(Bullet_electricSuperGatlingPea.LineHit, ab.GetAsset<GameObject>("ElectricSplat"));
+            CustomCore.RegisterCustomParticle(Bullet_electricSuperGatlingPea.LineHitSkin, ab.GetAsset<GameObject>("ElectricSplatSkin"));
         }
     }
 
     public class Bullet_electricSuperGatlingPea : MonoBehaviour
     {
-        public static int BulletID = 1904;
+        public static GameObject ElectricLine = null!;
+        public static GameObject ElectricLineSkin = null!;
+        public static ID OnHitParticle = 1906;
+        public static ID OnHitParticleSkin = 1907;
+        public static ID LineHit = 1908;
+        public static ID LineHitSkin = 1909;
+        public static ID BulletID = 1906;
+        public static bool buff => CoreTools.TravelAdvanced("五阶升级"); // 可以省掉读buff的消耗
 
         public float attackCountDown = 0f;
         public int hitTimes = 0;
+        public GameObject line = null!;
+        public bool skin => bullet.gameObject.name.StartsWith("ElectricPeaSkin");
 
         public void Start()
         {
+            // 设置闪电链gameobject
+            if (skin) line = ElectricLineSkin;
+            else line = ElectricLine;
             hitTimes = 0;
         }
 
         public void OnHitZombie(Zombie z)
         {
             hitTimes++;
-            if (hitTimes <= 3)
+            Destroy(CreateParticle.SetParticle(skin ? OnHitParticleSkin : OnHitParticle, z.axis.position + new Vector3(0f, 0.8f), z.theZombieRow), 1f);
+            GameAPP.PlaySound(SoundType.Laser, 0.25f, 1f);
+            if (buff) z.theArmor -= 1;
+            if (hitTimes <= 3) // 如果是前3次直击
             {
-                foreach (var collider in Physics2D.OverlapCircleAll(transform.position, 3.7f, LayerMask.GetMask("Zombie")))
+                var zombiesInRange = Physics2D.OverlapCircleAll(bullet.gameObject.transform.position, CoreTools.ColumnX * 3.7f, GameInfo.zombieLayer).
+                    Where(col => col.IsObjExist() && col.TryGetComponent<Zombie>(out var zombie) && zombie.IsObjExist() && zombie != z). // 找到所有存在zombie组件的碰撞体
+                    Select(zombie => zombie.GetComponent<Zombie>()).ToList(); // 已经把空判断做了，不用再做一次了
+                if (zombiesInRange.Count <= 0)
+                    return;
+                zombiesInRange.Remove(z); // 移除直击的僵尸
+                var target = zombiesInRange.GetRandomItem(); // 获取随机的一个僵尸
+                if (buff) target.theArmor -= 1;
+                var row = Mathf.Max(bullet.theBulletRow, target.theZombieRow);
+                var end = target.axis.position + new Vector3(0f, 0.8f);
+                Destroy(CreateParticle.SetParticle(skin ? LineHitSkin : LineHit, end, row), 1f);
+                CreateLine(z.axis.position + new Vector3(0f, 0.8f), end, row);
+                foreach (var col in Physics2D.OverlapCircleAll(target.axis.position, CoreTools.ColumnX * 1.5f, GameInfo.zombieLayer))
                 {
-                    if (collider == null || collider.IsDestroyed() || collider.gameObject == null || collider.gameObject.IsDestroyed() ||
-                        !collider.TryGetComponent<Zombie>(out var zombie) || zombie == null || zombie.IsDestroyed() || zombie.gameObject == null ||
-                        zombie.gameObject.IsDestroyed() || zombie == z) continue;
-                    foreach (var coli in Physics2D.OverlapCircleAll(transform.position, 0.5f, LayerMask.GetMask("Zombie")))
-                    {
-                        if (coli == null || coli.IsDestroyed() || coli.gameObject == null || coli.gameObject.IsDestroyed() ||
-                            !coli.TryGetComponent<Zombie>(out var zi) || zi == null || zi.IsDestroyed() || zi.gameObject == null ||
-                            zi.gameObject.IsDestroyed() || zi == z) continue;
-                        zi.TakeDamage(DmgType.Carred, bullet.Damage * 10, bullet.fromType);
-                        if (UnityEngine.Random.Range(1, 1001) <= 1 && !zi.GetData<bool>("ElectricSuperGatling_Stopping"))
-                        {
-                            zi.SetData("ElectricSuperGatling_Stopping", true);
-                            zi.timers.Add((ZombieTimer)BulletID, 0.5f);
-                            zi.SetData("ElectricSuperGatling_ZombieData", (zi.theSpeed, zi.anim.speed));
-                            zi.theSpeed = 0f;
-                            zi.anim.speed = 0f;
-                            zombie.StartCoroutine(CheckTimer(zombie));
-                        }
-                    }
-                    Debug.Log("found & hit");
-                    break;
+                    // 判空
+                    if (!col.IsObjExist()) continue;
+                    if (!col.TryGetComponent<Zombie>(out var zombie)) continue;
+                    if (!zombie.IsObjExist()) continue;
+                    zombie.TakeDamage(bullet.Damage * 10, bullet, DamageType.Carred, bullet.fromType);
+                    zombie.StartCoroutine(SetTimer(zombie));
                 }
             }
         }
 
         public void FixedUpdate()
         {
-            if (GameAPP.theGameStatus is (int)GameStatus.InGame)
+            if (GameAPP.theGameStatus != GameStatus.InGame) return;
+            attackCountDown -= Time.deltaTime * (buff ? 3 : 1);
+            if (attackCountDown <= 0f)
             {
-                attackCountDown -= Time.deltaTime;
-                if (attackCountDown <= 0f)
+                var columnX = CoreTools.ColumnX;
+                foreach (var col in Physics2D.OverlapBoxAll(bullet.gameObject.transform.position, new(columnX * 3f, columnX * 3f), 0f, GameInfo.zombieLayer))
                 {
-                    bool hit = false;
-                    foreach (var collider in Physics2D.OverlapCircleAll(transform.position, 1.5f, LayerMask.GetMask("Zombie")))
-                    {
-                        if (collider == null || collider.IsDestroyed() || collider.gameObject == null || collider.gameObject.IsDestroyed() ||
-                            !collider.TryGetComponent<Zombie>(out var zombie) || zombie == null || zombie.IsDestroyed() || zombie.gameObject == null ||
-                            zombie.gameObject.IsDestroyed()) continue;
-                        zombie.TakeDamage(DmgType.NormalAll, bullet.Damage, bullet.fromType);
-                        if (UnityEngine.Random.Range(1, 1001) <= 1 && !zombie.GetData<bool>("ElectricSuperGatling_Stopping"))
-                        {
-                            zombie.SetData("ElectricSuperGatling_Stopping", true);
-                            zombie.timers.Add((ZombieTimer)BulletID, 0.5f);
-                            zombie.SetData("ElectricSuperGatling_ZombieData", (zombie.theSpeed, zombie.anim.speed));
-                            zombie.theSpeed = 0f;
-                            zombie.anim.speed = 0f;
-                            zombie.StartCoroutine(CheckTimer(zombie));
-                        }
-                        hit = true;
-                    }
-                    attackCountDown = 0.15f;
-                    if (hit)
-                        GameAPP.PlaySound(UnityEngine.Random.RandomRange(0, 3));
-                }
-            }
-        }
+                    // 对象判空
+                    if (!col.IsObjExist()) continue;
+                    if (!col.TryGetComponent<Zombie>(out var zombie)) continue;
+                    if (!zombie.IsObjExist()) continue;
 
-        public static IEnumerator CheckTimer(Zombie zombie)
-        {
-            if (zombie == null || zombie.IsDestroyed() || zombie.gameObject == null || zombie.gameObject.IsDestroyed()) yield break;
-            if (!zombie.timers.TryGetValue((ZombieTimer)BulletID, out var _)) yield break;
-            while (zombie.timers[(ZombieTimer)BulletID] > 0f)
-            {
-                if (zombie == null || zombie.IsDestroyed() || zombie.gameObject == null || zombie.gameObject.IsDestroyed()) yield break;
-                zombie.theSpeed = 0f;
-                zombie.anim.speed = 0f;
-                yield return null;
+                    zombie.TakeDamage(bullet.Damage, bullet, DamageType.Carred, bullet.fromType);
+                    zombie.StartCoroutine(SetTimer(zombie));
+                }
+                attackCountDown = 0.15f;
             }
-            if (zombie == null || zombie.IsDestroyed() || zombie.gameObject == null || zombie.gameObject.IsDestroyed()) yield break;
-            var (speed, animSpeed) = zombie.GetData<(float, float)>("ElectricSuperGatling_ZombieData");
-            zombie.theSpeed = speed;
-            zombie.anim.speed = animSpeed;
-            yield break;
         }
 
         public void OnEnable()
@@ -149,7 +171,63 @@ namespace ElectricSuperGatling_BepInEx
             hitTimes = 0;
         }
 
+        public GameObject CreateLine(Vector2 start, Vector2 end, int row)
+        {
+            var newLine = Instantiate(line, bullet.board.transform);
+            var renderer = newLine.transform.GetChild(0).GetComponent<LineRenderer>();
+            // 添加配置颜色组件
+            renderer.gameObject.AddComponent<ElectricLine>();
+            // 设置起点终点
+            renderer.SetPosition(0, start);
+            renderer.SetPosition(1, end);
+            renderer.startWidth += 0.25f;
+            renderer.endWidth += 0.25f;
+            newLine.AddComponent<SortingGroup>().sortingLayerName = $"particle{row}";
+            Destroy(newLine, 0.5f);
+            return newLine;
+        }
+
+        public static IEnumerator SetTimer(Zombie zombie)
+        {
+            if (UnityEngine.Random.Range(1, 101) != 1) yield break;
+            if (!zombie.IsObjExist()) yield break;
+            if (zombie.timers.TryGetValue((ZombieTimer)(int)BulletID, out var time) && time > 0f) yield break;
+            zombie.timers[(ZombieTimer)(int)BulletID] = 0.5f;
+            var origin = 0f; // 实际要设置的值，在交换后就变成了原来的速度
+            (origin, zombie.theOriginSpeed) = (zombie.theOriginSpeed, origin);
+            yield return new WaitForSeconds(0.5f);
+            if (!zombie.IsObjExist()) yield break;
+            (origin, zombie.theOriginSpeed) = (zombie.theOriginSpeed, origin);
+            zombie.timers[(ZombieTimer)(int)BulletID] = 0f;
+            yield break;
+        }
         public Bullet_pea bullet => gameObject.GetComponent<Bullet_pea>();
+    }
+
+    public class ElectricLine : MonoBehaviour
+    {
+        private float live = 0f;
+        private Color startColor = new();
+        private LineRenderer renderer;
+
+        public void Awake()
+        {
+            renderer = gameObject.GetComponent<LineRenderer>();
+            startColor = renderer.startColor;
+        }
+
+        public void Update()
+        {
+            live += Time.deltaTime;
+            if (live > 0.2f)
+            {
+                Color color = startColor;
+                color.a -= Time.deltaTime * 5f;
+                renderer.startColor = color;
+                renderer.endColor = color;
+                startColor = color;
+            }
+        }
     }
 
     public class ElectricSuperGatling : MonoBehaviour
@@ -160,7 +238,7 @@ namespace ElectricSuperGatling_BepInEx
 
         public void Awake()
         {
-            plant.shoot = plant.gameObject.transform.GetChild(0).FindChild("Shoot");
+            plant.shoot = plant.gameObject.transform.FindChild("GatlingPea_head/Shoot");
         }
     }
 
@@ -187,6 +265,7 @@ namespace ElectricSuperGatling_BepInEx
             if ((int)__instance.theBulletType == Bullet_electricSuperGatlingPea.BulletID)
             {
                 __instance.GetComponent<Bullet_electricSuperGatlingPea>().OnHitZombie(zombie);
+                __instance.hit = false; // 重置是否击中，不然后续都无法判定直击
                 return false;
             }
             return true;

@@ -9,10 +9,12 @@
   <ItemGroup>
     <None Remove="firesupergatling" />
     <None Remove="skin1" />
+    <None Remove="skin2" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="firesupergatling" />
     <EmbeddedResource Include="skin1" />
+    <EmbeddedResource Include="skin2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
@@ -35,6 +37,6 @@
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
 </Project>

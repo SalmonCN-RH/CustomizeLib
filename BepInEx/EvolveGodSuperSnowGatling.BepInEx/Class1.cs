@@ -39,25 +39,6 @@ namespace EvolveGodSuperSnowGatling.BepInEx
         public void Awake() => Instance = this;
     }
 
-    //public class CustomGatlingPea : Peashooter
-    //{
-    //    // 实现IntPtr构造方法
-    //    public CustomGatlingPea(IntPtr ptr) : base(ptr) { }
-    //    public CustomGatlingPea() : base(ClassInjector.DerivedConstructorPointer<CustomGatlingPea>()) => ClassInjector.DerivedConstructorBody(this);
-    //    // 实现抽象类的方法
-    //    public Il2CppSystem.Collections.Generic.List<BaseBuff> Buffs
-    //    {
-    //        get
-    //        {
-    //            var list = new Il2CppSystem.Collections.Generic.List<BaseBuff>();
-    //            list.Add(new UpgradeBuff(PlantType.Peashooter, PlantType.SnowGatling));
-    //            list.Add(new UpgradeBuff(PlantType.Peashooter, PlantType.HelmetGatling));
-    //            list.Add(new UpgradeBuff(PlantType.Peashooter, PlantType.LanternSplit));
-    //            list.Add(new UpgradeBuff(PlantType.Peashooter, PlantType.CherryGatling));
-    //            return list;
-    //        }
-    //    }
-    //}
 
     public class SnowGatling : BaseConfig
     {
@@ -78,7 +59,7 @@ namespace EvolveGodSuperSnowGatling.BepInEx
         public override void ReinforcePlant(Plant plant)
         {
             plant.ModifyDamage(PlantDamageAdder.Shooting, 19.0f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));
-            plant.ModifySpeed(PlantSpeedAdder.Shooting, 1f, 0f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));
+            plant.ModifySpeed(PlantSpeedAdder.Shooting, 1f);
         }
 
         public override string Role => "输出";
@@ -153,7 +134,7 @@ namespace EvolveGodSuperSnowGatling.BepInEx
         // 实现抽象类的方法
         public override PlantType ShowType => PlantType.SuperSnowGatling;
         public override string Title => "质变：凝冰之心";
-        public override string Description => "寒冰豌豆击中目标时，造成一次50%子弹伤害的范围伤害";
+        public override string Description => "寒冰豌豆击中目标时，额外造成1次100%原伤害的范围伤害";
         public override void OnGet()
         {
             if (Board.Instance != null)
@@ -172,7 +153,7 @@ namespace EvolveGodSuperSnowGatling.BepInEx
         // 实现抽象类的方法
         public override PlantType ShowType => PlantType.SuperSnowGatling;
         public override string Title => "质变：冰封王座";
-        public override string Description => "寒冰豌豆升级为极冰豆";
+        public override string Description => "寒冰豌豆升级为极冰豆\n其子弹赋予的冻结值翻倍";
         public override void OnGet()
         {
             if (Board.Instance != null)
@@ -217,7 +198,9 @@ namespace EvolveGodSuperSnowGatling.BepInEx
                         if (col == null || col.IsDestroyed() || col.gameObject == null || col.gameObject.IsDestroyed()) continue;
                         if (!col.gameObject.TryGetComponent<Zombie>(out var z) || z == null || z.IsDestroyed()) continue;
                         if (!Lawnf.InLandStatus(z.theStatus)) continue;
-                        z.TakeDamage(__instance.Damage / 2, __instance.Cast<IDamageMaker>(), DamageType.IceAll, __instance.fromType);
+                        var damage = __instance.Damage;
+                        if (z.HasBuff(EffectType.Freeze)) damage *= 4;
+                        z.TakeDamage(damage, __instance.Cast<IDamageMaker>(), DamageType.IceAll, __instance.fromType);
                         z.AddfreezeLevel(5);
                         z.SetCold(10f);
                     }

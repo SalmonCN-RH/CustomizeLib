@@ -373,6 +373,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="plantType">判定的植物类型</param>
         /// <param name="addProbability">增加植物在场时词条抽取概率</param>
         /// <returns>分到的词条id</returns>
+        [Obsolete("This method is only for internal implementation. For external calls, please use CustomCore.RegisterCustomBuff(BuffConfig)")]
         public static int RegisterCustomBuff(string text, BuffType buffType, Func<bool> canUnlock, int cost,
             PlantType icon, int level,
             BuffBgType bgType = default, ZombieType zombieType = ZombieType.NormalZombie,
@@ -436,6 +437,17 @@ namespace CustomizeLib.BepInEx
             }
             CustomBuffs.Add((buffType, i), (text, icon, zombieType));
             return i;
+        }
+
+        /// <summary>
+        /// 注册此综艺词条
+        /// </summary>
+        /// <param name="config">词条配置</param>
+        /// <returns>词条ID</returns>
+        public static int RegisterCustomBuff(BuffConfig config)
+        {
+            return RegisterCustomBuff(config.desc, config.type, config.unlock, config.cost, config.iconPlant, config.maxLevel, config.backGround, config.iconZombie,
+                config.ID.HasValue ? config.ID.Value : -1, config.lockPlantType, config.probably);
         }
 
         /// <summary>
@@ -622,6 +634,31 @@ namespace CustomizeLib.BepInEx
             }
         }
 
+        public static void SetBulletSkinList([NotNull] int id, List<(BulletType, List<GameObject?>)>? bulletSkinList = null)
+        {
+            if (bulletSkinList != null)
+            {
+                var index = CustomSkinIndex.TryGetValue((PlantType)id, out var val) ? (val + 1) : (0 + 1); // 主皮肤(不换肤)是0，后续每加一个索引加一
+                foreach (var (origin, list) in bulletSkinList)
+                {
+                    foreach (var bullet in list)
+                    {
+                        var bulletID = (BulletType)(CustomBulletSkinStartID + RegisteredSkinBulletCount);
+                        if (!CustomSkinBullet.ContainsKey(origin))
+                            CustomSkinBullet.Add(origin, new List<(BulletType, GameObject?)> { (bulletID, bullet) });
+                        else
+                            CustomSkinBullet[origin].Add((bulletID, bullet));
+                        if (!CustomBulletsSkinID.ContainsKey(((PlantType)id, origin, index)))
+                            CustomBulletsSkinID.Add(((PlantType)id, origin, index), new List<BulletType> { bulletID });
+                        else
+                            CustomBulletsSkinID[((PlantType)id, origin, index)].Add(bulletID);
+                        RegisteredSkinBulletCount++;
+                    }
+                }
+                CustomSkinIndex[(PlantType)id] = index;
+            }
+        }
+
         /// <summary>
         /// 注册自定义植物皮肤
         /// </summary>
@@ -644,25 +681,7 @@ namespace CustomizeLib.BepInEx
             float cd, int sun, List<(BulletType, List<GameObject?>)>? bulletSkinList = null)
             where TBase : Plant where TClass : MonoBehaviour
         {
-            if (bulletSkinList != null)
-            {
-                foreach (var (origin, list) in bulletSkinList)
-                {
-                    foreach (var bullet in list)
-                    {
-                        var bulletID = (BulletType)(CustomBulletSkinStartID + CustomSkinBullet.Count);
-                        if (!CustomSkinBullet.ContainsKey(origin))
-                            CustomSkinBullet.Add(origin, new List<(BulletType, GameObject?)> { (bulletID, bullet) });
-                        else
-                            CustomSkinBullet[origin].Add((bulletID, bullet));
-                        if (!CustomBulletsSkinID.ContainsKey(((PlantType)id, origin)))
-                            CustomBulletsSkinID.Add(((PlantType)id, origin), new List<BulletType> { bulletID });
-                        else
-                            CustomBulletsSkinID[((PlantType)id, origin)].Add(bulletID);
-                        RegisteredSkinBulletCount++;
-                    }
-                }
-            }
+            SetBulletSkinList(id, bulletSkinList);
             //植物预制体挂载植物脚本
             prefab.tag = "Plant";
             preview.tag = "Preview";
@@ -752,25 +771,7 @@ namespace CustomizeLib.BepInEx
             float cd, int sun, List<(BulletType, List<GameObject?>)>? bulletSkinList = null)
             where TBase : Plant
         {
-            if (bulletSkinList != null)
-            {
-                foreach (var (origin, list) in bulletSkinList)
-                {
-                    foreach (var bullet in list)
-                    {
-                        var bulletID = (BulletType)(CustomBulletSkinStartID + CustomSkinBullet.Count);
-                        if (!CustomSkinBullet.ContainsKey(origin))
-                            CustomSkinBullet.Add(origin, new List<(BulletType, GameObject?)> { (bulletID, bullet) });
-                        else
-                            CustomSkinBullet[origin].Add((bulletID, bullet));
-                        if (!CustomBulletsSkinID.ContainsKey(((PlantType)id, origin)))
-                            CustomBulletsSkinID.Add(((PlantType)id, origin), new List<BulletType> { bulletID });
-                        else
-                            CustomBulletsSkinID[((PlantType)id, origin)].Add(bulletID);
-                        RegisteredSkinBulletCount++;
-                    }
-                }
-            }
+            SetBulletSkinList(id, bulletSkinList);
             prefab.tag = "Plant";
             preview.tag = "Preview";
             //植物预制体挂载植物脚本
@@ -849,25 +850,7 @@ namespace CustomizeLib.BepInEx
             [NotNull] GameObject preview, Action<TBase> ctor, List<(BulletType, List<GameObject?>)>? bulletSkinList = null)
             where TBase : Plant
         {
-            if (bulletSkinList != null)
-            {
-                foreach (var (origin, list) in bulletSkinList)
-                {
-                    foreach (var bullet in list)
-                    {
-                        var bulletID = (BulletType)(CustomBulletSkinStartID + CustomSkinBullet.Count);
-                        if (!CustomSkinBullet.ContainsKey(origin))
-                            CustomSkinBullet.Add(origin, new List<(BulletType, GameObject?)> { (bulletID, bullet) });
-                        else
-                            CustomSkinBullet[origin].Add((bulletID, bullet));
-                        if (!CustomBulletsSkinID.ContainsKey(((PlantType)id, origin)))
-                            CustomBulletsSkinID.Add(((PlantType)id, origin), new List<BulletType> { bulletID });
-                        else
-                            CustomBulletsSkinID[((PlantType)id, origin)].Add(bulletID);
-                        RegisteredSkinBulletCount++;
-                    }
-                }
-            }
+            SetBulletSkinList(id, bulletSkinList);
             prefab.tag = "Plant";
             preview.tag = "Preview";
             //植物预制体挂载植物脚本
@@ -920,25 +903,7 @@ namespace CustomizeLib.BepInEx
             [NotNull] GameObject preview, Action<TBase> ctor, List<(BulletType, List<GameObject?>)>? bulletSkinList = null)
             where TBase : Plant where TClass : MonoBehaviour
         {
-            if (bulletSkinList != null)
-            {
-                foreach (var (origin, list) in bulletSkinList)
-                {
-                    foreach (var bullet in list)
-                    {
-                        var bulletID = (BulletType)(CustomBulletSkinStartID + CustomSkinBullet.Count);
-                        if (!CustomSkinBullet.ContainsKey(origin))
-                            CustomSkinBullet.Add(origin, new List<(BulletType, GameObject?)> { (bulletID, bullet) });
-                        else
-                            CustomSkinBullet[origin].Add((bulletID, bullet));
-                        if (!CustomBulletsSkinID.ContainsKey(((PlantType)id, origin)))
-                            CustomBulletsSkinID.Add(((PlantType)id, origin), new List<BulletType> { bulletID });
-                        else
-                            CustomBulletsSkinID[((PlantType)id, origin)].Add(bulletID);
-                        RegisteredSkinBulletCount++;
-                    }
-                }
-            }
+            SetBulletSkinList(id, bulletSkinList);
             prefab.tag = "Plant";
             preview.tag = "Preview";
             //植物预制体挂载植物脚本
@@ -1029,7 +994,7 @@ namespace CustomizeLib.BepInEx
         /// </summary>
         /// <param name="id">目标植物id</param>
         /// <param name="callback">事件</param>
-        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) => 
+        public static void RegisterCustomUseFertilizeOnPlantEvent([NotNull] PlantType id, [NotNull] Action<Plant> callback) =>
             CustomUseFertilize.Add(id, callback);
 
         /// <summary>
@@ -1472,8 +1437,26 @@ namespace CustomizeLib.BepInEx
         public static void RegisterCustomOnMixEvent(PlantType baseType, PlantType newType, Action<Plant> action) =>
             RegisterCustomOnMixEvent(baseType, newType, new List<Action<Plant>> { action });
 
+        /// <summary>
+        /// 注册自定义PlantInfo
+        /// </summary>
+        /// <param name="ultiType">究极植物本体类型</param>
+        /// <param name="subType">亚种类型</param>
+        /// <param name="buff1">词条1(传词条Enum, 如(AdvBuff)0)</param>
+        /// <param name="buff2">词条2(传词条Enum, 如(AdvBuff)0)</param>
+        /// <param name="isStrongUltimate">是否是强究</param>
+        public static void RegisterCustomPlantInfo(PlantType ultiType, PlantType? subType, object buff1, object buff2, bool isStrongUltimate) =>
+            CustomPlantInfos.Add(ultiType, (subType, buff1, buff2, isStrongUltimate));
         public static void AddPlantName(PlantType plantType, string name) => CustomPlantNames.Add(plantType, name);
         public static void AddZombieName(ZombieType zombieType, string name) => CustomZombieNames.Add(zombieType, name);
+
+        /// <summary>
+        /// 注册自定义音乐
+        /// </summary>
+        /// <param name="musicType">音乐ID</param>
+        /// <param name="clip">音乐</param>
+        public static void RegisterCustomMusic(int musicType, [NotNull] AudioClip clip) =>
+            CustomMusics.Add((MusicType)musicType, clip);
 
         ///// <summary>
         ///// 添加无尽保存信息
@@ -1498,7 +1481,7 @@ namespace CustomizeLib.BepInEx
             ClassInjector.RegisterTypeInIl2Cpp<DataComponent>();
             ClassInjector.RegisterTypeInIl2Cpp<CoreBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<PositionRecorder>();
-            ClassInjector.RegisterTypeInIl2Cpp<EmptyDoom>();
+            ClassInjector.RegisterTypeInIl2Cpp<EmptyDie>();
             ClassInjector.RegisterTypeInIl2Cpp<InterfaceBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomHealthText>();
             ClassInjector.RegisterTypeInIl2Cpp<SaveMaterial>();
@@ -1690,14 +1673,19 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<(PlantType, int), Dictionary<BulletType, List<BulletType>>> CustomBulletSkinReplace { get; set; } = new();
 
         /// <summary>
-        /// 自定义皮肤子弹列表 (原子弹类型，对应的所有新子弹类型)
+        /// 自定义皮肤子弹列表 ((植物类型, 原子弹类型, 皮肤索引), 对应的所有新子弹类型)
         /// </summary>
-        public static Dictionary<(PlantType, BulletType), List<BulletType>> CustomBulletsSkinID { get; set; } = new();
+        public static Dictionary<(PlantType pt, BulletType oriBulletType, int index), List<BulletType>> CustomBulletsSkinID { get; set; } = new();
 
         /// <summary>
         /// 自定义皮肤子弹类型 (原子弹类型, 所有对应的(新子弹类型, 子弹预制体))
         /// </summary>
         public static Dictionary<BulletType, List<(BulletType, GameObject?)>> CustomSkinBullet { get; set; } = new();
+
+        /// <summary>
+        /// 自定义皮肤索引
+        /// </summary>
+        public static Dictionary<PlantType, int> CustomSkinIndex { get; set; } = new();
 
         public static int CustomBulletSkinStartID = 2750;
 
@@ -1755,6 +1743,15 @@ namespace CustomizeLib.BepInEx
 
         public static Dictionary<Il2CppSystem.Type, string> CustomEndlessSaveData { get; set; } = new();
         // public static List<PlantType> CustomWeakUltimatePlant = new();
+        /// <summary>
+        /// 自定义PlantInfo (究极, (亚种, 词条1, 词条2, 强究))
+        /// </summary>
+        public static Dictionary<PlantType, (PlantType? subType, object buff1, object buff2, bool isStrongUltimate)> CustomPlantInfos { get; set; } = new();
+
+        /// <summary>
+        /// 自定义音乐
+        /// </summary>
+        public static Dictionary<MusicType, AudioClip> CustomMusics { get; set; } = new();
         #endregion
     }
 

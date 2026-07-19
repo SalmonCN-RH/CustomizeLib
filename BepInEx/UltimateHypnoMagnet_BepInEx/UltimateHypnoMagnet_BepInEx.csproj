@@ -61,79 +61,79 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" xmlns="">
     <Exec Command="COPY &amp;quot;$(TargetPath)&amp;quot; &amp;quot;$(BepResPath)&amp;quot;" />

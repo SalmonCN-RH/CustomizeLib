@@ -1,13 +1,16 @@
 ﻿using BepInEx;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using Core;
 using CustomizeLib.BepInEx;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
+using GameLevel.RogueShooting;
 using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
 using System.Collections;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Core;
 
 namespace UltimatePortalSpring.BepInEx
 {
@@ -55,6 +58,9 @@ namespace UltimatePortalSpring.BepInEx
             foreach (var item in Enum.GetValues<BucketType>())
                 if (item != BucketType.Helmet)
                     CustomCore.RegisterCustomUseItemOnPlantEvent(UltimatePortalSpring.PlantID, item, (p) => p.Recover(500f));
+
+            ClassInjector.RegisterTypeInIl2Cpp<UltimatePortalSpringConfig>(); // 把傻逼的诸神植物配置注册进沟槽的il2cpp
+            ClassInjector.RegisterTypeInIl2Cpp<UniqueUpgrade>(); // 还有他该死的专属词条
         }
 
         public static void SetLayer(Transform transform, string layer)
@@ -75,6 +81,82 @@ namespace UltimatePortalSpring.BepInEx
         }
     }
 
+    #region 诸神
+    public class UltimatePortalSpringConfig : BaseConfig
+    {
+        // 实现IntPtr构造方法
+        public UltimatePortalSpringConfig(IntPtr ptr) : base(ptr) { }
+        public UltimatePortalSpringConfig() : base(ClassInjector.DerivedConstructorPointer<UltimatePortalSpringConfig>()) => ClassInjector.DerivedConstructorBody(this);
+        // 实现抽象类的方法
+        public PlantType PlantType => UltimatePortalSpring.PlantID;
+        public Il2CppSystem.Collections.Generic.List<BaseBuff> Buffs
+        {
+            get
+            {
+                var result = new Il2CppSystem.Collections.Generic.List<BaseBuff>();
+                foreach (var item in CustomBuffs) result.Add(item);
+                return result;
+            }
+        }
+        public override void ReinforcePlant(Plant plant)
+        {
+            plant.ModifyDamage(PlantDamageAdder.Shooting, 1f, false, new Il2CppSystem.Nullable<float>(float.MaxValue));
+        }
+
+        public override string Role => "不嘻嘻";
+
+        // 自定义的方法
+        private List<BaseBuff> CustomBuffs = new List<BaseBuff> { new UniqueUpgrade() };
+    }
+
+    public class UniqueUpgrade : BaseBuff
+    {
+        // 实现IntPtr构造方法
+        public UniqueUpgrade(IntPtr ptr) : base(ptr) { }
+        public UniqueUpgrade() : base(ClassInjector.DerivedConstructorPointer<UniqueUpgrade>()) => ClassInjector.DerivedConstructorBody(this);
+
+        // 实现抽象类的方法
+        public override PlantType ShowType => UltimatePortalSpring.PlantID;
+        public override string Title => "强化：黑洞";
+        public override string Description => "黑洞大小+20%\n蓄力速度和蓄力上限+40%";
+        public override void OnGet()
+        {
+            if (ShootingManager.Instance.TryGetPlant(UltimatePortalSpring.PlantID, out var plant) && plant != null)
+            {
+                plant.attributeFloat = (int)plant.attributeFloat + 1;
+            }
+        }
+        public override int MaxCount => 5;
+        public override float AppearWeight => 0.167f; // 1/6
+        public override Quality Rarity => Quality.gold;
+    }
+
+    // 把超时空火神加进专家列表
+    [HarmonyPatch(typeof(ShootingManager))]
+    public static class ShootingManagerPatch
+    {
+        [HarmonyPatch(nameof(ShootingManager.Awake))]
+        [HarmonyPostfix]
+        public static void PostShootingManager(ShootingManager __instance)
+        {
+            __instance.ExpertPlants.Add(UltimatePortalSpring.PlantID);
+        }
+
+        [HarmonyPatch(nameof(ShootingManager.ShowBuff))]
+        [HarmonyPrefix]
+        public static void ShowBuff()
+        {
+            if (Config.configs != null)
+            {
+                if (!Config.configs.ContainsKey(UltimatePortalSpring.PlantID))
+                {
+                    Config.configs.Add(UltimatePortalSpring.PlantID, new UltimatePortalSpringConfig());
+                }
+            }
+        }
+    }
+    #endregion
+
     public class PortalDoom : MonoBehaviour
     {
         public void Die() => Destroy(gameObject);
@@ -90,6 +172,7 @@ namespace UltimatePortalSpring.BepInEx
         public static GameObject hole = null;
 
         public bool registered = false;
+        public float shootCountDown = 0f;
 
         public void Awake()
         {
@@ -98,9 +181,28 @@ namespace UltimatePortalSpring.BepInEx
             Core.SetLayer(hole.transform, "particle10");
         }
 
+        public void Start()
+        {
+            if (plant == null || plant.board == null) return;
+            if (TravelMgr.Instance == null) return;
+            // board没初始化，只能在start调用
+            // 如果是傻逼诸神
+            if (plant.board.boardTag.rogueShooting)
+            {
+                TravelMgr.Instance.GetUltiBuff(CoreTools.GetUltiBuffByString("僵尸试图在火海中游泳")); // 拿词条
+            }
+        }
+
         public void Update()
         {
             if (plant == null) return;
+            if (plant.board == null) return;
+            if (plant.board.boardTag.rogueShooting) // 如果是沟槽的诸神
+            {
+                // 把自动射击ban了
+                plant.thePlantAttackInterval = 100_0000f;
+                plant.thePlantAttackCountDown = 100_0000f;
+            }
             if (!registered)
             {
                 var func = () => $"{Math.Round(GetHoleTime(), 2, MidpointRounding.AwayFromZero)}";
@@ -109,6 +211,13 @@ namespace UltimatePortalSpring.BepInEx
                 registered = true;
             }
             plant.UpdateText();
+            if (shootCountDown > 0f)
+            {
+                shootCountDown -= Time.deltaTime;
+                if (shootCountDown <= 0f)
+                    shootCountDown = 0f;
+                plant.anim.ResetTrigger("shoot2");
+            }
             if (plant.ThrowerSearchZombie() == null) plant.anim.ResetTrigger("shoot");
         }
 
@@ -183,6 +292,8 @@ namespace UltimatePortalSpring.BepInEx
             bullet.Damage = plant.attackDamage;
             bullet.Damage *= 2;
             Extensions.StartCoroutine(this, ResetCharge());
+            if (plant.board.boardTag.rogueShooting)
+                shootCountDown = 2f;
         }
 
         public void SetShootTarget(Vector2 position)
@@ -229,7 +340,19 @@ namespace UltimatePortalSpring.BepInEx
         public Vector3 baseScale;
         public float maxGrowScale = 4f;
         public float autoGrowTargetScale = 1f;
+        public float UpdateCountDown = 0.5f;
         public Vector3 center => transform.position - new Vector3(0f, 0.5f, 0f);
+        public float scaleMulti // 获取大小倍率
+        {
+            get
+            {
+                if (ShootingManager.Instance.TryGetPlant(UltimatePortalSpring.PlantID, out var plant) && plant != null)
+                {
+                    return 1 + plant.attributeFloat * 0.2f; // 每选一个+20%
+                }
+                return 1;
+            }
+        }
 
         public static bool IsPortalHoleInRange(Vector3 center, float radius)
         {
@@ -248,17 +371,33 @@ namespace UltimatePortalSpring.BepInEx
         {
             board = Board.Instance;
             if (board == null)
+            {
                 Destroy(gameObject);
-
+                return;
+            }
+            if (board.boardTag.rogueShooting)
+                transform.localScale *= scaleMulti;
             baseScale = transform.localScale;
             originalScale = baseScale;
             autoGrowTargetScale = baseScale.x * maxGrowScale;
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
             if (isDying || enterDieAnim) return;
-
+            if (Time.timeScale == 0f) return;
+            //if (UpdateCountDown > 0f) // 0.5s计算一次
+            //{
+            //    UpdateCountDown -= Time.deltaTime;
+            //    if (UpdateCountDown <= 0f)
+            //    {
+            //        UpdateCountDown = 0.5f;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
             CheckAndRestoreZombies();
 
             attackCountDown -= Time.deltaTime;
@@ -286,13 +425,14 @@ namespace UltimatePortalSpring.BepInEx
 
             float maxRadius = CoreTools.ColumnX * 1.5f * transform.localScale.x * (CoreTools.TravelUltimate("僵尸试图在火海中游泳") ? 1.25f : 1f);
             Vector3 attractCenter = center;
-
+            myAffectedZombies = myAffectedZombies.Where(kvp => kvp.Key != null).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             foreach (var collider in Physics2D.OverlapCircleAll(attractCenter, maxRadius, LayerMask.GetMask("Zombie")))
             {
                 if (!collider.IsObjExist()) continue;
 
                 if (!collider.TryGetComponent<Zombie>(out var zombie) || !zombie.IsObjExist()) continue;
-
+                if (zombie.theZombieType is ZombieType.HorseBoss or ZombieType.ZombieBoss or ZombieType.ZombieBoss2) continue;
+                if (zombie.theSpeed == 0f) continue;
                 zombieControllerMap.TryGetValue(zombie, out var currentController);
 
                 if (currentController != null && currentController != this) continue;
@@ -369,6 +509,7 @@ namespace UltimatePortalSpring.BepInEx
             foreach (var kvp in myAffectedZombies)
             {
                 Zombie zombie = kvp.Key;
+                if (zombie.theSpeed == 0f) continue;
                 if (zombie == null || !zombie.IsObjExist())
                 {
                     zombiesToRestore.Add(zombie);
@@ -582,10 +723,11 @@ namespace UltimatePortalSpring.BepInEx
                 if (attracted.bullet != null && attracted.bullet.IsObjExist())
                     attracted.bullet.Die();
             attractedBullets.Clear();
-
-            foreach (var kvp in myAffectedZombies.ToList())
+            myAffectedZombies = myAffectedZombies.Where(kvp => kvp.Key != null).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            foreach (var kvp in myAffectedZombies)
             {
                 Zombie zombie = kvp.Key;
+                if (zombie == null) continue;
                 if (zombie != null && zombie.IsObjExist())
                 {
                     zombie.theOriginSpeed = kvp.Value;
@@ -593,7 +735,6 @@ namespace UltimatePortalSpring.BepInEx
                     if (zombie.GetAttrTimers().portaledTimer > 0f)
                         zombie.GetAttrTimers().portaledTimer = 0f;
                 }
-
                 // 移除控制权
                 if (zombieControllerMap.ContainsKey(zombie) && zombieControllerMap[zombie] == this)
                 {
@@ -767,6 +908,31 @@ namespace UltimatePortalSpring.BepInEx
                                 Quaternion.identity, __instance.board.transform);
                 mouse.theItemOnMouse.name = "target_portal";
                 __result = true;
+                return false;
+            }
+            return true;
+        }
+
+        // 给傻逼专属词条打的补丁
+        [HarmonyPatch(nameof(UltimateSpring.TimerUpdate))]
+        [HarmonyPrefix]
+        public static bool PreTimerUpdate(UltimateSpring __instance)
+        {
+            if (__instance.thePlantType == UltimatePortalSpring.PlantID && __instance.board.boardTag.rogueShooting)
+            {
+                // ai抄的
+                var multi = 1f;
+                if (ShootingManager.Instance.TryGetPlant(UltimatePortalSpring.PlantID, out var plant) && plant != null)
+                    multi += plant.attributeFloat * 0.4f;
+                // 累加到计时器
+                __instance.timer = Mathf.Min(__instance.timer + Time.deltaTime * multi, 30f * multi);
+                if (__instance.timer >= 30f * multi)
+                {
+                    var x = Mouse.Instance.GetBoxXFromColumn(7);
+                    var y = Mouse.Instance.GetBoxYFromRow(2);
+                    __instance.cannonTarget = new(x, y);
+                    __instance.anim.SetTrigger("shoot2");
+                }
                 return false;
             }
             return true;

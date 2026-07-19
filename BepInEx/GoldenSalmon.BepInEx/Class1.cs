@@ -24,7 +24,12 @@ namespace GoldenSalmon.BepInEx
 
             CustomCore.TypeMgrExtra.IsIcePlant.Add((PlantType)GoldenSalmon.PlantID);
             CustomCore.TypeMgrExtra.IsTallNut.Add((PlantType)GoldenSalmon.PlantID);
-            CustomCore.AddPlantAlmanacStrings(GoldenSalmon.PlantID, $"金鱼({GoldenSalmon.PlantID})", "纯纯的机制怪。\n\n<color=#3D1400>韧性：</color><color=red>2147483647</color>\n<color=#3D1400>特点：</color><color=red>出场3秒秒杀一次全体僵尸，随后消失。</color>\n\n<color=#3D1400>代这写.jpg</color>\n\n\n\n\n花费：<color=red>950</color>\n冷却时间：<color=red>120秒</color>");
+            CustomCore.AddPlantAlmanacStrings(GoldenSalmon.PlantID, $"金鱼({GoldenSalmon.PlantID})", "纯纯的机制怪。\n\n" +
+                "<color=#3D1400>韧性：</color><color=red>2147483647</color>\n" +
+                "<color=#3D1400>特点：</color><color=red>出场3秒秒杀一次全体僵尸，随后消失。</color>\n\n" +
+                "<color=#3D1400>代这写.jpg</color>\n\n\n\n\n" +
+                "花费：<color=red>950</color>\n" +
+                "冷却时间：<color=red>120秒</color>");
             CustomCore.RegisterCustomCardToColorfulCards((PlantType)GoldenSalmon.PlantID);
         }
     }

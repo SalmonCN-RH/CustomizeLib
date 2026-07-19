@@ -116,5 +116,98 @@ namespace CustomizeLib.BepInEx
                 }
             }
         }
+
+        /// <summary>
+        /// 获取指定根对象下所有 SpriteRenderer 的合并包围盒（世界空间）。
+        /// </summary>
+        public static Bounds GetCombinedSpriteBounds(GameObject root)
+        {
+            Bounds combined = new(root.transform.position, Vector3.zero);
+            bool hasSprite = false;
+
+            var renderers = root.GetComponentsInChildren<SpriteRenderer>();
+
+            foreach (var sr in renderers)
+            {
+                if (!sr.IsObjExist()) continue;
+                if (!hasSprite)
+                {
+                    combined = sr.bounds;
+                    hasSprite = true;
+                }
+                else
+                {
+                    combined.Encapsulate(sr.bounds);
+                }
+            }
+
+            // 如果没有任何 SpriteRenderer，返回一个以根位置为中心、尺寸为零的包围盒
+            if (!hasSprite)
+            {
+                combined.center = root.transform.position;
+                combined.size = Vector3.zero;
+            }
+
+            return combined;
+        }
+
+        /// <summary>
+        /// 使用Bound获取对象的视觉中心（世界坐标）
+        /// </summary>
+        public static Vector3 GetCenterWorldBound(this GameObject root) => GetCombinedSpriteBounds(root).center;
+
+        /// <summary>
+        /// 使用Bound获取对象的视觉中心（相对坐标）
+        /// </summary>
+        public static Vector3 GetCenterLocalBound(this GameObject root)
+        {
+            Vector3 worldCenter = GetCenterWorldBound(root);
+            return root.transform.InverseTransformPoint(worldCenter);
+        }
+
+        /// <summary>
+        /// 获取指定根对象下所有 SpriteRenderer 的网格顶点平均位置（世界坐标）
+        /// </summary>
+        public static Vector3 GetCenterWorldSprite(this GameObject root)
+        {
+            SpriteRenderer[] renderers = root.GetComponentsInChildren<SpriteRenderer>();
+
+            if (renderers.Length == 0)
+                return root.transform.position;
+
+            Vector3 sum = Vector3.zero;
+            int totalVertexCount = 0;
+
+            foreach (var sr in renderers)
+            {
+                if (sr == null) continue;
+                Sprite sprite = sr.sprite;
+                if (sprite == null) continue;
+
+                var vertices = sprite.vertices;
+                if (vertices.Length == 0) continue;
+
+                foreach (var localVertex in vertices)
+                {
+                    var worldVertex = sr.transform.TransformPoint(localVertex);
+                    sum += worldVertex;
+                    totalVertexCount++;
+                }
+            }
+
+            if (totalVertexCount == 0)
+                return root.transform.position;
+
+            return sum / totalVertexCount;
+        }
+
+        /// <summary>
+        /// 获取顶点平均中心相对于根对象的局部坐标（如果需要）
+        /// </summary>
+        public static Vector3 GetCenterLocalSprite(this GameObject root)
+        {
+            Vector3 worldCenter = GetCenterWorldSprite(root);
+            return root.transform.InverseTransformPoint(worldCenter);
+        }
     }
 }

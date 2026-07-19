@@ -26,25 +26,29 @@ namespace CustomizeLib.BepInEx
 
         public static void InitButton()
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            if (board == null) return;
-            GameObject customButton = null!;
-            if (!board.boardTag.isIZ)
+            try
             {
-                customButton = Instantiate(InGameUI.Instance.transform.FindChild("Bottom/SeedLibrary/ShowCardLayout/ColorCards"),
-                    InGameUI.Instance.transform.FindChild("Bottom/SeedLibrary/ShowCardLayout")).gameObject;
+                Console.OutputEncoding = Encoding.UTF8;
+                if (board == null) return;
+                GameObject customButton = null!;
+                if (!board.boardTag.isIZ)
+                {
+                    customButton = Instantiate(InGameUI.Instance.transform.FindChild("Bottom/SeedLibrary/ShowCardLayout/ColorCards"),
+                        InGameUI.Instance.transform.FindChild("Bottom/SeedLibrary/ShowCardLayout")).gameObject;
+                }
+                else
+                {
+                    customButton = Instantiate(IZBottomMenu.Instance.plantLibrary.transform.FindChild("Buttons/NextPage"),
+                        IZBottomMenu.Instance.plantLibrary.transform.FindChild("Buttons")).gameObject;
+                }
+                customButton.name = "SelectCustom";
+                customButton.SetActive(true);
+                customButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "二创植物";
+                Destroy(customButton.GetComponent<UIButton>());
+                Instance = customButton.AddComponent<SelectCustomPlants>();
+                CustomButton = customButton;
             }
-            else
-            {
-                customButton = Instantiate(IZBottomMenu.Instance.plantLibrary.transform.FindChild("Buttons/NextPage"),
-                    IZBottomMenu.Instance.plantLibrary.transform.FindChild("Buttons")).gameObject;
-            }
-            customButton.name = "SelectCustom";
-            customButton.SetActive(true);
-            customButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "二创植物";
-            Destroy(customButton.GetComponent<UIButton>());
-            Instance = customButton.AddComponent<SelectCustomPlants>();
-            CustomButton = customButton;
+            catch (Exception) { }
         }
 
         public void OpenPlantsCard()

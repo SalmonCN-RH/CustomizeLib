@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
@@ -14,35 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
+  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
 </Target>
 </Project>

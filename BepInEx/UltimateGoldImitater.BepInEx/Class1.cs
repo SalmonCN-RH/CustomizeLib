@@ -42,7 +42,8 @@ namespace UltimateGoldImitater.BepInEx
                 $"③获得？阳光</color>\n" +
                 $"<color=#3D1400>特殊强化：</color><color=red>①<Boss>僵王博士：血量x？，免疫寒冷，免疫冻结\n" +
                 $"②<Boss>黄金僵王博士：血量x？，免疫寒冷，免疫冻结\n" +
-                $"③<Boss>黑橄榄大帅：血量x？</color>\n" +
+                $"③<Boss>黑橄榄大帅：血量x？\n" +
+                $"④<Boss>黑橄榄将军：血量x？</color>\n" +
                 $"<color=#3D1400>词条1:</color><color=red>孤注一掷：黄金模仿者和究极黄金模仿者随机究极的概率大幅提升</color>\n\n" +
                 $"<color=#3D1400>“欲戴其冠，必承其重”\n" +
                 $"那枚头冠，从出生起，就戴在他的头上，人们都说他是天选，这是他的宿命。在他很小的时候，他的父母带他到那尊巨大面前，幼小的他看着雕像上巨大的头冠，在对比自己的，自己的头冠更像是一枚精巧的戒指，落在他的小脑袋上，他不懂那意味着什么，只是指着头冠“像～”又指了指雕像。\n" +
@@ -159,7 +160,7 @@ namespace UltimateGoldImitater.BepInEx
             if (config.levelZombieInRandom) total += 2;
             if (config.strongUltiZombieInRandom) total += 2;
             if (config.leaderInRandom) total += 6;
-            if (GameAPP.theGameStatus == GameStatus.InGame && plant != null && UnityEngine.Random.Range(1, 101) <= total && (plant.board.boardTag.isSuperRandom || plant.board.boardTag.isIZ))
+            if (GameAPP.theGameStatus == GameStatus.InGame && plant != null && UnityEngine.Random.Range(1, 101) <= total && plant.board != null && (plant.board.boardTag.isSuperRandom || plant.board.boardTag.isIZ))
             {
                 plant.StarUp();
                 plant.starUp = true;
@@ -321,6 +322,7 @@ namespace UltimateGoldImitater.BepInEx
                     }
                     break;
                 case ZombieType.HorseBoss:
+                case ZombieType.FootballBoss:
                     {
                         var v = UnityEngine.Random.Range(10f, 50f);
                         if (plant.starUp)
@@ -344,10 +346,14 @@ namespace UltimateGoldImitater.BepInEx
             zombie.theAttackDamage = (int)(zombie.theAttackDamage * healthMultiplier);
             zombie.UpdateHealthText();
 
-            float speedMultiplier = UnityEngine.Random.Range(speedMin, speedMax);
-            zombie.theOriginSpeed = zombie.theOriginSpeed * speedMultiplier;
+            if (zombie.theZombieType != ZombieType.FootballBoss)
+            {
+                float speedMultiplier = UnityEngine.Random.Range(speedMin, speedMax);
+                zombie.theOriginSpeed = zombie.theOriginSpeed * speedMultiplier;
+            }
 
-            if (zombie.theZombieType != ZombieType.ZombieBoss && zombie.theZombieType != ZombieType.ZombieBoss2)
+            if (zombie.theZombieType != ZombieType.ZombieBoss && zombie.theZombieType != ZombieType.ZombieBoss2 && 
+                zombie.theZombieType != ZombieType.FootballBoss)
             {
                 float scaleMultiplier = UnityEngine.Random.Range(scaleMin, scaleMax);
 

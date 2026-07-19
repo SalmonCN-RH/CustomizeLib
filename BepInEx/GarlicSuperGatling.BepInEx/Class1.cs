@@ -36,13 +36,13 @@ namespace GarlicSuperGatling.BepInEx
                     ((int)PlantType.SuperGatling, (int)PlantType.Garlic),
                     ((int)PlantType.GarlicSniper, (int)PlantType.Peashooter)
                 }, 1.5f, 0f, 30, 300, 7.5f, 650);
-            CustomCore.RegisterCustomPlantSkin<SuperSnowGatling, GarlicSuperGatling>
-                (GarlicSuperGatling.PlantID, ab.GetAsset<GameObject>("GarlicSuperGatlingPrefabSkin1"),
-                ab.GetAsset<GameObject>("GarlicSuperGatlingPreviewSkin1"), new List<(int, int)>
-                {
-                    ((int)PlantType.SuperGatling, (int)PlantType.Garlic),
-                    ((int)PlantType.GarlicSniper, (int)PlantType.Peashooter)
-                }, 1.5f, 0f, 30, 300, 7.5f, 650);
+            //CustomCore.RegisterCustomPlantSkin<SuperSnowGatling, GarlicSuperGatling>
+            //    (GarlicSuperGatling.PlantID, ab.GetAsset<GameObject>("GarlicSuperGatlingPrefabSkin1"),
+            //    ab.GetAsset<GameObject>("GarlicSuperGatlingPreviewSkin1"), new List<(int, int)>
+            //    {
+            //        ((int)PlantType.SuperGatling, (int)PlantType.Garlic),
+            //        ((int)PlantType.GarlicSniper, (int)PlantType.Peashooter)
+            //    }, 1.5f, 0f, 30, 300, 7.5f, 650);
             CustomCore.RegisterCustomPlantSkin<SuperSnowGatling, GarlicSuperGatling>
                 (GarlicSuperGatling.PlantID, ab.GetAsset<GameObject>("GarlicSuperGatlingPrefabSkin2"),
                 ab.GetAsset<GameObject>("GarlicSuperGatlingPreviewSkin2"), new List<(int, int)>
@@ -56,20 +56,20 @@ namespace GarlicSuperGatling.BepInEx
                     (Bullet_garlicPea_super.BulletID, new List<GameObject?> { ab.GetAsset<GameObject>("Bullet_garlicPea_super_skin") }),
                     (Bullet_garlicPea_fire_super.BulletID, new List<GameObject?> { ab.GetAsset<GameObject>("Bullet_garlicPea_fire_super_skin") })
                 });
-            CustomCore.AddPlantAlmanacStrings(GarlicSuperGatling.PlantID, $"超级病毒机枪射手({GarlicSuperGatling.PlantID})",
+            CustomCore.AddPlantAlmanacStrings(GarlicSuperGatling.PlantID, $"病毒超级机枪射手({GarlicSuperGatling.PlantID})",
                 "一次发射六颗病毒豌豆，有概率一次性发射大量病毒豌豆。\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
-                "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
+                "<color=#3D1400>贴图作者：@林秋-AutumnLin、@白鱼余余丶</color>\n" +
                 "<color=#3D1400>伤害：</color><color=red>30x6/1.5秒</color>\n" +
-                "<color=#3D1400>特点：</color><color=red>①子弹命中时赋予1蒜值和1毒素。如果目标处于中毒状态，在其位置生成一个剧毒毒瘴\n" +
-                "②毒素上限为5层。若目标拥有5层毒素时，则清空全部毒素，造成一次300伤害的爆炸，在其位置生成一个剧毒毒瘴\n" +
-                "③每次攻击有2%概率触发大招，5秒内，每0.02秒散射3发蒜豌豆，命中后造成300伤害的爆炸，在其位置生成一个剧毒毒瘴\n" +
-                "④可以和病毒狙击射手互相转化</color>\n" +
-                "<color=#3D1400>剧毒毒瘴：</color><color=red>①会在场上无规则移动\n" +
-                "②半径0.74格，持续15秒。每1秒，赋予范围内的僵尸1点蒜值\n" +
-                "③赋予蒜值时，造成（子弹攻击力x蒜值x25%）的伤害，如果目标免疫蒜毒，则造成300点伤害\n" +
-                "④如果场上的剧毒毒瘴数量达到30个，生成剧毒毒瘴时，改为使最近的剧毒毒瘴增加范围和5%伤害比例</color>\n" +
-                "<color=#3D1400>词条1:</color><color=red>五阶升级：超级病毒机枪射手的攻击力x10，剧毒毒瘴将赋予蒜黄油效果，剧毒毒瘴的增幅比例x5</color>\n" +
+                "<color=#3D1400>特点：</color><color=#3D1400>①</color><color=red>子弹命中时赋予1蒜值和1毒素。如果目标处于中毒状态，在其位置生成一个剧毒毒瘴\n" +
+                "<color=#3D1400>②</color>毒素上限为5层。若目标拥有5层毒素时，则清空全部毒素，造成一次300伤害的爆炸，在其位置生成一个剧毒毒瘴\n" +
+                "<color=#3D1400>③</color>每次攻击有2%概率触发大招，5秒内，每0.02秒散射3发蒜豌豆，命中后造成300伤害的爆炸，在其位置生成一个剧毒毒瘴\n" +
+                "<color=#3D1400>④</color>可以和病毒狙击射手互相转化</color>\n" +
+                "<color=#3D1400>剧毒毒瘴：</color><color=red><color=#3D1400>①</color>会在场上无规则移动\n" +
+                "<color=#3D1400>②</color>半径0.74格，持续15秒。每1秒，赋予范围内的僵尸1点蒜值\n" +
+                "<color=#3D1400>③</color>赋予蒜值时，造成（子弹攻击力x蒜值x25%）的伤害，如果目标免疫蒜毒，则造成300点伤害\n" +
+                "<color=#3D1400>④</color>如果场上的剧毒毒瘴数量达到30个，生成剧毒毒瘴时，改为使最近的剧毒毒瘴增加范围和5%伤害比例</color>\n" +
+                "<color=#3D1400>词条1:</color><color=red>五阶升级：病毒超级机枪射手的攻击力x10，剧毒毒瘴将赋予蒜黄油效果，剧毒毒瘴的增幅比例x5</color>\n" +
                 "<color=#3D1400>融合配方：</color><color=red>超级机枪射手+大蒜</color>\n" +
                 "<color=#3D1400>转化配方：</color><color=red>豌豆射手←→豌豆射手</color>\n\n" +
                 "<color=#3D1400>永远不要招惹一位退役的老兵，尤其是特立独行的家伙。虽然不知道是怎么传播开来的，但是招惹它的僵尸基本都后悔了。</color>");

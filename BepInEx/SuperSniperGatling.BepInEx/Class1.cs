@@ -22,7 +22,7 @@ namespace SuperSniperGatling.BepInEx
             CustomCore.AddPlantAlmanacStrings(SuperSniperGatling.PlantID, $"超级狙击射手",
                 "介绍\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
-                "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
+                "<color=#3D1400>贴图作者：@林秋-AutumnLin、@屑红leong</color>\n" +
                 "<color=#3D1400>伤害：</color><color=red>300x6/1.5秒</color>\n" +
                 "<color=#3D1400>特点：</color><color=red>①全图索敌，优先对空\n" +
                 "②每60下狙击，对目标造成爆头伤害\n" +
@@ -58,11 +58,13 @@ namespace SuperSniperGatling.BepInEx
             }
         }
 
-        public void Shoot1()
+        public void Shoot1(bool fromSuper = false)
         {
             GameAPP.PlaySound(40, 0.2f, 1.0f);
-            var shootCount = CoreTools.TravelUltimate("精准射击") ? 40 : 60;
-
+            var shootCount = CoreTools.TravelUltimate("精准射击") ? 30 : 60;
+            var damage = plant.attackDamage;
+            if (fromSuper && CoreTools.TravelUltimate("精准射击"))
+                damage *= 2;
             if (plant.targetZombie != null)
             {
                 if (!plant.SearchUniqueZombie(plant.targetZombie) && plant.SearchZombie() == null && 
@@ -74,7 +76,7 @@ namespace SuperSniperGatling.BepInEx
 
                 plant.attackCount++;
                 if (plant.attackCount % shootCount != 0)
-                    plant.AttackZombie(plant.targetZombie, plant.attackDamage, DamageType.Shieldless);
+                    plant.AttackZombie(plant.targetZombie, damage, DamageType.Shieldless);
                 else
                     plant.AttackZombie(plant.targetZombie, 100_0000, DamageType.MaxDamage);
             }
@@ -95,7 +97,7 @@ namespace SuperSniperGatling.BepInEx
             {
                 if (plant.targetZombie == null || !plant.SearchUniqueZombie(plant.targetZombie))
                     plant.targetZombie = plant.SearchZombie().GetComponent<Zombie>();
-                plant.Shoot1();
+                Shoot1(true);
                 super = 0.02f;
             }
             catch (NullReferenceException) { }

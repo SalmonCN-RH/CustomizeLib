@@ -262,13 +262,13 @@ namespace SeriousSquash4.BepInEx
                 var zombie = __instance.GetComponent<ParentZombie>().parent;
                 ParticleManager.Instance.SetParticle(ParticleType.RandomCloud, zombie.axis.position, zombie.theZombieRow);
                 CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), false, zombie.isMindControlled);
+                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
                 CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), false, zombie.isMindControlled);
+                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
                 CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), false, zombie.isMindControlled);
+                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
                 if (UnityEngine.Random.Range(0, 20) < 1)
-                    CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.JalaSquashZombie, zombie.axis.position.x, false, zombie.isMindControlled);
+                    CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.JalaSquashZombie, zombie.axis.position.x, zombie.isMindControlled);
 
                 if (GameAPP.theBoardType == levelType && GameAPP.theBoardLevel == levelID)
                 {

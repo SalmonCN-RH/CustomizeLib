@@ -3,6 +3,7 @@
 using AlmanacData;
 using Core;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
+using CustomizeLib.BepInEx.Internal;
 using CustomizeLib.BepInEx.UnmanagedTools;
 using GameLevel;
 using HarmonyLib;
@@ -25,6 +26,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using ZenGarden;
 using static SingleBuffManager;
 using static UnityEngine.Object;
 
@@ -162,7 +164,7 @@ namespace CustomizeLib.BepInEx
         {
             __state = __instance.skinButton.active;
 
-            PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
+            // PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
         }
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.LeftSkin))]
@@ -181,7 +183,7 @@ namespace CustomizeLib.BepInEx
         {
             __state = __instance.skinButton.active;
 
-            PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
+            // PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
         }
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.RightSkin))]
@@ -426,10 +428,10 @@ namespace CustomizeLib.BepInEx
             {
                 if (collider == null || collider.gameObject == null || collider.IsDestroyed() || collider.gameObject.IsDestroyed()) continue;
                 if (!collider.TryGetComponent<Plant>(out var plant) || plant == null || plant.IsDestroyed()) continue;
-                if (CustomCore.CustomBulletsSkinID.ContainsKey((plant.thePlantType, theBulletType)))
+                if (!GameAPP.resourcesManager.plantSkinDic.TryGetValue(plant.thePlantType, out var val)) continue;
+                if (CustomCore.CustomBulletsSkinID.TryGetValue((plant.thePlantType, theBulletType, val), out var list))
                 {
                     var ori = theBulletType;
-                    var list = CustomCore.CustomBulletsSkinID[(plant.thePlantType, theBulletType)];
                     theBulletType = list[UnityEngine.Random.Range(0, list.Count)];
                     __state = (true, ori, theBulletType, plant.thePlantType);
                     return;
@@ -443,10 +445,10 @@ namespace CustomizeLib.BepInEx
                 if (!collider.TryGetComponent<Bullet>(out var bullet) || bullet == null || bullet.IsDestroyed()) continue;
                 if (bullet.GetData("SkinFromType") == null || bullet.GetData("SkinData") == null) continue;
                 var pt = bullet.GetData<PlantType>("SkinFromType");
-                if (CustomCore.CustomBulletsSkinID.ContainsKey((pt, theBulletType)))
+                if (!GameAPP.resourcesManager.plantSkinDic.TryGetValue(pt, out var val)) continue;
+                if (CustomCore.CustomBulletsSkinID.TryGetValue((pt, theBulletType, val), out var list))
                 {
                     var ori = theBulletType;
-                    var list = CustomCore.CustomBulletsSkinID[(pt, theBulletType)];
                     theBulletType = list[UnityEngine.Random.Range(0, list.Count)];
                     __state = (true, ori, theBulletType, pt);
                     return;
@@ -456,10 +458,10 @@ namespace CustomizeLib.BepInEx
             var positions = PositionRecorder.GetRecordPositions(new Vector2(x - 0.1f, y), 0.1f);
             foreach (var item in positions)
             {
-                if (CustomCore.CustomBulletsSkinID.ContainsKey((item.plantType, theBulletType)))
+                if (!GameAPP.resourcesManager.plantSkinDic.TryGetValue(item.plantType, out var val)) continue;
+                if (CustomCore.CustomBulletsSkinID.TryGetValue((item.plantType, theBulletType, val), out var list))
                 {
                     var ori = theBulletType;
-                    var list = CustomCore.CustomBulletsSkinID[(item.plantType, theBulletType)];
                     theBulletType = list[UnityEngine.Random.Range(0, list.Count)];
                     __state = (true, ori, theBulletType, item.plantType);
                     PositionRecorder.RemovePosition(item.index);
@@ -1003,6 +1005,11 @@ namespace CustomizeLib.BepInEx
         [HarmonyPostfix]
         public static void PostStart(GameAPP __instance)
         {
+            if (!HookCall.load)
+            {
+                HookCall.SetBuffArr();
+                HookCall.load = true;
+            }
             __instance.StartCoroutine(CoreTools.Init());
         }
 
@@ -1097,10 +1104,24 @@ namespace CustomizeLib.BepInEx
                 GameAPP.spritePrefab[spr.Key] = spr.Value;
             }
 
-            foreach (var audio in CustomCore.CustomSounds)
+            foreach (var audio in CustomCore.CustomSounds) // 注册自定义音效
             {
                 GameAPP.soundManager.sounds[(SoundType)audio.Key] = audio.Value;
             }
+            
+            foreach (var music in CustomCore.CustomMusics) // 注册自定义音乐
+            {
+                GameAPP.soundManager.musics.Add(music.Key, music.Value);
+                SoundManager.MusicNames.Add(music.Key, music.Key.ToString());
+            }
+                
+
+            // 把键的index加上prefabs的Count得到新的实际Index
+            CustomCore.CustomBulletsSkinID = CustomCore.CustomBulletsSkinID.ToDictionary(kvp =>
+                (kvp.Key.pt, kvp.Key.oriBulletType, 
+                kvp.Key.index + (GameAPP.resourcesManager._plantPrefabs.TryGetValue(kvp.Key.pt, out var list) ? list.Count : 0)), // 如果有，用列表的长度，否则用0
+                kvp => kvp.Value);
+
             GameAPP.Instance.StartCoroutine(PatchMgr.RegisterSkin()); // 在所有注册完成之后启动皮肤协程
         }
     }
@@ -1702,10 +1723,18 @@ namespace CustomizeLib.BepInEx
             }
         }
 
-        [HarmonyPatch(nameof(AlmanacBuffMenu.Start))]
-        [HarmonyPostfix]
-        public static void PostStart(AlmanacBuffMenu __instance)
+        [HarmonyPatch(nameof(AlmanacBuffMenu.InitMenu))]
+        [HarmonyPrefix]
+        public static void PreInitMenu(AlmanacBuffMenu __instance, out bool __state)
         {
+            __state = __instance.inited;
+        }
+
+        [HarmonyPatch(nameof(AlmanacBuffMenu.InitMenu))]
+        [HarmonyPostfix]
+        public static void PostInitMenu(AlmanacBuffMenu __instance, bool __state)
+        {
+            if (__state) return;
             {
                 var curse = __instance.transform.FindChild("Scroll View/Viewport/Content/curseBuffs").gameObject;
                 var customBuffs = Instantiate(curse, __instance.transform.FindChild("Scroll View/Viewport/Content"));
@@ -1734,7 +1763,7 @@ namespace CustomizeLib.BepInEx
                             obj = Il2CppExtensions.BoxEnumToIl2Object<InvestBuff>(id);
                             break;
                     }
-                    if (!Lawnf.HasTravelBuff(obj) && !__instance.editMode && !AlmanacBuffMenu.lookBuff) continue;
+                    if (!Lawnf.HasTravelBuff(obj) && !__instance.editMode && AlmanacBuffMenu.lookBuff) continue;
                     var cardInfo = new AlmanacBuffMenu.CardInfo
                     {
                         buff = obj,
@@ -1746,9 +1775,12 @@ namespace CustomizeLib.BepInEx
                     else
                         cardInfo.plantType = icon;
                     __instance.CreateCardUI(cardInfo, list);
-                    var hasBuff = Lawnf.HasTravelBuff(obj) ? 0f : 1f;
-                    list[cnt].GetComponent<Image>().color = new Color(hasBuff, 1f, hasBuff, 1f);
-                    cnt++;
+                    if (__instance.editMode)
+                    {
+                        var hasBuff = Lawnf.HasTravelBuff(obj) ? 0f : 1f;
+                        list[cnt].GetComponent<Image>().color = new Color(hasBuff, 1f, hasBuff, 1f);
+                        cnt++;
+                    }
                 }
                 foreach (var cardUI in list)
                     cardUI.gameObject.SetActive(false);
@@ -1813,7 +1845,7 @@ namespace CustomizeLib.BepInEx
                             list = __instance.shootingBuffs;
                             break;
                     }
-                    if (!Lawnf.HasTravelBuff(obj) && !__instance.editMode && !AlmanacBuffMenu.lookBuff) continue;
+                    if (!Lawnf.HasTravelBuff(obj) && !__instance.editMode && AlmanacBuffMenu.lookBuff) continue;
                     var cardInfo = new AlmanacBuffMenu.CardInfo
                     {
                         buff = obj,
@@ -3230,18 +3262,26 @@ namespace CustomizeLib.BepInEx
             {
                 var list = CustomCore.CustomBulletSkinReplace[(almanacType, index)];
                 foreach (var (origin, replace) in list)
-                    CustomCore.CustomBulletsSkinID[(almanacType, origin)] = replace;
-            }
-            foreach (var ((pt, i), list) in CustomCore.CustomBulletSkinReplace)
-            {
-                foreach (var (ori, _) in list)
                 {
-                    if (GameAPP.resourcesManager.plantSkinDic.ContainsKey(pt) && GameAPP.resourcesManager.plantSkinDic[pt] != i)
-                    {
-                        CustomCore.CustomBulletsSkinID[(almanacType, ori)] = new List<BulletType> { ori };
-                    }
+                    foreach (var item in replace)
+                    CustomCore.CustomBulletsSkinID[(almanacType, origin, GameAPP.resourcesManager.plantSkinDic[almanacType])] = replace;
                 }
             }
+            //foreach (var ((pt, i), list) in CustomCore.CustomBulletSkinReplace)
+            //{
+            //    bool shouldReset = GameAPP.resourcesManager.plantSkinDic.ContainsKey(pt) && GameAPP.resourcesManager.plantSkinDic[pt] != i;
+            //    if (!resetDic.TryGetValue(pt, out var val))
+            //        resetDic[pt] = shouldReset;
+            //    else
+            //        resetDic[pt] = val && shouldReset;
+            //    if (!resetDic[pt])
+            //}
+            //foreach (var ((pt, _), list) in CustomCore.CustomBulletSkinReplace)
+            //{
+            //    if (resetDic.TryGetValue(pt, out var val) && val)
+            //        foreach (var (ori, _) in list)
+            //            CustomCore.CustomBulletsSkinID[(almanacType, ori)] = new List<BulletType> { ori };
+            //}
             SetEnableSkin();
         }
 
@@ -3253,10 +3293,8 @@ namespace CustomizeLib.BepInEx
                 {
                     if (GameAPP.resourcesManager.plantSkinDic.ContainsKey(pt))
                     {
-                        if (GameAPP.resourcesManager.plantSkinDic[pt] != i)
-                            CustomCore.CustomBulletsSkinID[(pt, ori)] = new List<BulletType> { ori };
-                        else
-                            CustomCore.CustomBulletsSkinID[(pt, ori)] = rep;
+                        if (GameAPP.resourcesManager.plantSkinDic[pt] == i)
+                            CustomCore.CustomBulletsSkinID[(pt, ori, GameAPP.resourcesManager.plantSkinDic[pt])] = rep;
                     }
                 }
             }
@@ -3392,22 +3430,20 @@ namespace CustomizeLib.BepInEx
                                         if (!CustomCore.CustomBulletSkinReplace.ContainsKey((plantType, index)))
                                             CustomCore.CustomBulletSkinReplace.Add((plantType, index), new Dictionary<BulletType, List<BulletType>>
                                         {
-                                            { bulletID, CustomCore.CustomBulletsSkinID[(plantType, bulletID)] }
+                                            { bulletID, CustomCore.CustomBulletsSkinID[(plantType, bulletID, index)] }
                                         });
                                         else
                                         {
                                             if (CustomCore.CustomBulletSkinReplace[(plantType, index)].ContainsKey(bulletID))
                                             {
-                                                for (int i = CustomCore.CustomBulletsSkinID[(plantType, bulletID)].Count - 1; i >= 0; i--)
+                                                for (int i = CustomCore.CustomBulletsSkinID[(plantType, bulletID, index)].Count - 1; i >= 0; i--)
                                                 {
-                                                    var itb = CustomCore.CustomBulletsSkinID[(plantType, bulletID)][i];
+                                                    var itb = CustomCore.CustomBulletsSkinID[(plantType, bulletID, index)][i];
                                                     CustomCore.CustomBulletSkinReplace[(plantType, index)][bulletID].Add(itb);
                                                 }
                                             }
                                             else
-                                            {
-                                                CustomCore.CustomBulletSkinReplace[(plantType, index)].Add(bulletID, CustomCore.CustomBulletsSkinID[(plantType, bulletID)]);
-                                            }
+                                                CustomCore.CustomBulletSkinReplace[(plantType, index)].Add(bulletID, CustomCore.CustomBulletsSkinID[(plantType, bulletID, index)]);
                                         }
                                     }
                                 }
@@ -3620,6 +3656,7 @@ namespace CustomizeLib.BepInEx
                                         }
                                         catch (Exception) { }
                                     }
+                                    OnChangeSkin(key, value);
                                 }
                                 else
                                     continue;

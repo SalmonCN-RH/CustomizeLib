@@ -21,4 +21,7 @@
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(InnerPath)&quot;" />
 </Target>
+	<PropertyGroup>
+		<NoWarn>$(NoWarn);MSB3277</NoWarn>
+	</PropertyGroup>
 </Project>

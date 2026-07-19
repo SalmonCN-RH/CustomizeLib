@@ -80,18 +80,21 @@ namespace CustomizeLib.BepInEx
         public ID(ParticleType id) { this.id = (int)id; }
         public ID(BulletType id) { this.id = (int)id; }
         public ID(CherryBombType id) { this.id = (int)id; }
+        public ID(MusicType id) { this.id = (int)id; }
         public static implicit operator int(ID id) => id.id;
         public static implicit operator PlantType(ID id) => (PlantType)id.id;
         public static implicit operator ZombieType(ID id) => (ZombieType)id.id;
         public static implicit operator ParticleType(ID id) => (ParticleType)id.id;
         public static implicit operator BulletType(ID id) => (BulletType)id.id;
         public static implicit operator CherryBombType(ID id) => (CherryBombType)id.id;
+        public static implicit operator MusicType(ID id) => (MusicType)id.id;
         public static implicit operator ID(int i) => new ID(i);
         public static implicit operator ID(PlantType id) => new ID(id);
         public static implicit operator ID(ZombieType id) => new ID(id);
         public static implicit operator ID(ParticleType id) => new ID(id);
         public static implicit operator ID(BulletType id) => new ID(id);
         public static implicit operator ID(CherryBombType id) => new ID(id);
+        public static implicit operator ID(MusicType id) => new ID(id);
 
         public override string ToString()
         {
@@ -139,7 +142,7 @@ namespace CustomizeLib.BepInEx
         public virtual void OnGameInit() { }
     }
 
-    public class EmptyDoom : MonoBehaviour
+    public class EmptyDie : MonoBehaviour
     {
         public void Die() => Destroy(gameObject);
     }
@@ -468,6 +471,12 @@ namespace CustomizeLib.BepInEx
             return total;
         }
         public static string FormatAlmanac(string input) => StringFormatter.Format(input);
+
+        public static Il2CppSystem.Collections.Generic.List<Zombie> GetAllZombies(bool mindControl)
+        {
+            if (mindControl) return Board.Instance?.zombieArray;
+            else return Lawnf.GetAllZombies();
+        }
     }
 
     public class StringFormatter

@@ -25,7 +25,7 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
             // Environment.CurrentDirectory 返回游戏本体exe的目录
             if (Enable) return;
             var patcherPath = Path.Combine(Environment.CurrentDirectory, Strings.PatcherPath);
-            if (!File.Exists(patcherPath)) { Console.WriteLine("Not found"); return; }
+            if (!File.Exists(patcherPath)) { Console.WriteLine($"Not found patcher in {patcherPath}"); return; }
             PatcherAssembly = Assembly.LoadFrom(patcherPath);
             var type = PatcherAssembly.GetType(Strings.PatcherCoreName);
             if (type == null) { Logger.LogWarning($"Can't find type {Strings.PatcherPath}"); return; }
@@ -37,7 +37,6 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
             var removeMap = type.GetMethod("RemoveMap", BindingFlags.Public | BindingFlags.Static)!;
             RemoveMapDelegate = (Action<IntPtr>)Delegate.CreateDelegate(typeof(Action<IntPtr>), null, removeMap);
             Enable = true;
-            Console.WriteLine("All init");
         }
 
         /// <summary>

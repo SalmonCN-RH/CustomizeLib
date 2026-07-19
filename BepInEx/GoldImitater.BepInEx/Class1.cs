@@ -38,7 +38,8 @@ namespace GoldImitater.BepInEx
                 "③获得1000阳光</color>\n" +
                 "<color=#3D1400>特殊强化：</color><color=red>①<Boss>僵王博士：血量x100\n" +
                 "②<Boss>黄金僵王博士：血量x100\n" +
-                "③<Boss>黑橄榄大帅：血量x15</color>\n" +
+                "③<Boss>黑橄榄大帅：血量x15\n" +
+                "④<Boss>黑橄榄将军：血量x15</color>\n" +
                 "<color=#3D1400>词条1：</color><color=red>孤注一掷：黄金模仿者出现究极植物与究极僵尸的概率大幅提高\n" +
                 "*概率明细：\n" +
                 "各类普通植物（10%）；究极植物（35%），各类普通僵尸（5%）；究极僵尸（30%）；领袖及Boss僵尸（15%）；其他事件（5%）。</color>\n\n" +
@@ -63,7 +64,7 @@ namespace GoldImitater.BepInEx
             if (config.levelZombieInRandom) total += 2;
             if (config.strongUltiZombieInRandom) total += 2;
             if (config.leaderInRandom) total += 6;
-            if (GameAPP.theGameStatus == GameStatus.InGame && plant != null && UnityEngine.Random.Range(1, 101) <= total && (plant.board.boardTag.isSuperRandom || plant.board.boardTag.isIZ))
+            if (GameAPP.theGameStatus == GameStatus.InGame && plant != null && UnityEngine.Random.Range(1, 101) <= total && plant.board != null &&  (plant.board.boardTag.isSuperRandom || plant.board.boardTag.isIZ))
             {
                 plant.StarUp();
                 plant.starUp = true;
@@ -176,6 +177,11 @@ namespace GoldImitater.BepInEx
                     zombie.SetData("GoldImitater_SpawnByGold", true);
                 }
                 if (zombieType == ZombieType.HorseBoss)
+                {
+                    zombie.theHealth *= 15;
+                    zombie.theMaxHealth *= 15;
+                }
+                if (zombieType == ZombieType.FootballBoss)
                 {
                     zombie.theHealth *= 15;
                     zombie.theMaxHealth *= 15;
