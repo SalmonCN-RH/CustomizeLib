@@ -4,6 +4,7 @@ using AlmanacData;
 using Core;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
 using CustomizeLib.BepInEx.Internal;
+using CustomizeLib.BepInEx.Script;
 using CustomizeLib.BepInEx.UnmanagedTools;
 using GameLevel;
 using HarmonyLib;
@@ -160,39 +161,41 @@ namespace CustomizeLib.BepInEx
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.LeftSkin))]
         [HarmonyPrefix]
-        public static void PreLeftSkin(AlmanacPlantWindow __instance, out bool __state)
+        public static void PreLeftSkin(AlmanacPlantWindow __instance, out (bool active, int oldIndex) __state)
         {
-            __state = __instance.skinButton.active;
+            __state = (__instance.skinButton.active, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
 
             // PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
         }
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.LeftSkin))]
         [HarmonyPostfix]
-        public static void PostLeftSkin(AlmanacPlantWindow __instance, bool __state)
+        public static void PostLeftSkin(AlmanacPlantWindow __instance, (bool active, int oldIndex) __state)
         {
-            __instance.skinButton.SetActive(__state);
+            __instance.skinButton.SetActive(__state.active);
 
             PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
+            PatchMgr.RunSkinScript(__instance.currentPlantType, __state.oldIndex, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
             PatchMgr.SaveSkin();
         }
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.RightSkin))]
         [HarmonyPrefix]
-        public static void PreRightSkin(AlmanacPlantWindow __instance, out bool __state)
+        public static void PreRightSkin(AlmanacPlantWindow __instance, out (bool active, int oldIndex) __state)
         {
-            __state = __instance.skinButton.active;
+            __state = (__instance.skinButton.active, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
 
             // PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
         }
 
         [HarmonyPatch(nameof(AlmanacPlantWindow.RightSkin))]
         [HarmonyPostfix]
-        public static void PostRightSkin(AlmanacPlantWindow __instance, bool __state)
+        public static void PostRightSkin(AlmanacPlantWindow __instance, (bool active, int oldIndex) __state)
         {
-            __instance.skinButton.SetActive(__state);
+            __instance.skinButton.SetActive(__state.active);
 
             PatchMgr.OnChangeSkin(__instance.currentPlantType, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
+            PatchMgr.RunSkinScript(__instance.currentPlantType, __state.oldIndex, GameAPP.resourcesManager.plantSkinDic[__instance.currentPlantType]);
             PatchMgr.SaveSkin();
         }
     }
@@ -1104,18 +1107,6 @@ namespace CustomizeLib.BepInEx
                 GameAPP.spritePrefab[spr.Key] = spr.Value;
             }
 
-            foreach (var audio in CustomCore.CustomSounds) // 注册自定义音效
-            {
-                GameAPP.soundManager.sounds[(SoundType)audio.Key] = audio.Value;
-            }
-            
-            foreach (var music in CustomCore.CustomMusics) // 注册自定义音乐
-            {
-                GameAPP.soundManager.musics.Add(music.Key, music.Value);
-                SoundManager.MusicNames.Add(music.Key, music.Key.ToString());
-            }
-                
-
             // 把键的index加上prefabs的Count得到新的实际Index
             CustomCore.CustomBulletsSkinID = CustomCore.CustomBulletsSkinID.ToDictionary(kvp =>
                 (kvp.Key.pt, kvp.Key.oriBulletType, 
@@ -1123,6 +1114,22 @@ namespace CustomizeLib.BepInEx
                 kvp => kvp.Value);
 
             GameAPP.Instance.StartCoroutine(PatchMgr.RegisterSkin()); // 在所有注册完成之后启动皮肤协程
+        }
+
+        [HarmonyPatch(nameof(GameAPP.LoadResources))]
+        [HarmonyPostfix]
+        public static void PostLoadResources()
+        {
+            foreach (var audio in CustomCore.CustomSounds) // 注册自定义音效
+            {
+                GameAPP.soundManager.sounds.Add((SoundType)audio.Key, audio.Value);
+            }
+
+            foreach (var music in CustomCore.CustomMusics) // 注册自定义音乐
+            {
+                GameAPP.soundManager.musics.Add(music.Key, music.Value);
+                SoundManager.MusicNames.Add(music.Key, music.Key.ToString());
+            }
         }
     }
 
@@ -1527,8 +1534,10 @@ namespace CustomizeLib.BepInEx
                 __instance.SetPlant(CustomCore.CustomBuffIcon[(buffType, buffIndex)]);
             }
             if (CustomCore.CustomBuffsBg.ContainsKey((buffType, buffIndex)))
+            {
                 __instance.SetBackground(CustomCore.CustomBuffsBg[(buffType, buffIndex)]);
-            if (CustomCore.CustomDebuffs.ContainsKey(buffIndex))
+            }
+            if (CustomCore.CustomDebuffs.ContainsKey(buffIndex) && buffType == BuffType.Debuff)
             {
                 if (__instance.show != null)
                     Destroy(__instance.show);
@@ -1837,7 +1846,7 @@ namespace CustomizeLib.BepInEx
                             list = __instance.tinyBuffs;
                             break;
                         case AlmanacBuffType.Zombie:
-                            obj = Il2CppExtensions.BoxEnumToIl2Object<AdvBuff>(id);
+                            obj = Il2CppExtensions.BoxEnumToIl2Object<TravelDebuff>(id);
                             list = __instance.zombieBuffs;
                             break;
                         case AlmanacBuffType.Shooting:
@@ -1850,8 +1859,12 @@ namespace CustomizeLib.BepInEx
                     {
                         buff = obj,
                         description = TravelMgr.Instance.GetText(obj),
-                        plantType = icon
+                        isZombie = almanacType == AlmanacBuffType.Zombie
                     };
+                    if (almanacType == AlmanacBuffType.Zombie)
+                        cardInfo.zombieType = zt;
+                    else
+                        cardInfo.plantType = icon;
                     __instance.CreateCardUI(cardInfo, list);
                 }
             }
@@ -2896,7 +2909,10 @@ namespace CustomizeLib.BepInEx
             board.theSun = levelData.Sun();
             board.config.zombieHealthMultiplier = levelData.ZombieHealthRate();
             board.seedPool = levelData.SeedRainPlantTypes().ToIl2CppList();
+            board.gridSystem.UpdateGrid(levelData.ColumnCount, levelData.RowCount);
             levelData.PostBoard(board);
+            if (levelData.LevelData != null)
+                LevelManager.registry.RegisterPredefinedLevel(levelData.LevelData);
             // 加载并实例化地图
             var map = MapData_cs.GetMap(levelData.SceneType, board);
 
@@ -3111,6 +3127,42 @@ namespace CustomizeLib.BepInEx
         }
     }
 
+    [HarmonyPatch(typeof(EffectManager))]
+    public static class EffectManagerPatch
+    {
+        [HarmonyPatch(nameof(EffectManager.SetEffect), new Type[] { typeof(Plant), typeof(EffectType), typeof(float), typeof(float) })]
+        [HarmonyPrefix]
+        public static bool PreSetEffectPlant(ref Plant plant, ref EffectType effectType, ref float duration, ref float value, ref bool __result)
+        {
+            if (CustomCore.CustomEffects.TryGetValue(effectType, out var cons))
+            {
+                var effect = (BaseEffect)cons.Invoke(plant, duration, value);
+                plant.effects[effectType] = effect;
+                if (effect.first)
+                    effect.OnStart();
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(nameof(EffectManager.SetEffect), new Type[] { typeof(Zombie), typeof(EffectType), typeof(float), typeof(float) })]
+        [HarmonyPrefix]
+        public static bool PreSetEffectZombie(ref Zombie zombie, ref EffectType effectType, ref float duration, ref float value, ref bool __result)
+        {
+            if (CustomCore.CustomEffects.TryGetValue(effectType, out var cons))
+            {
+                var effect = (BaseEffect)cons.Invoke(zombie, duration, value);
+                zombie.effects[effectType] = effect;
+                if (effect.first)
+                    effect.OnStart();
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(PatchMgr))]
     public static class PatchMgrPatch
     {
@@ -3283,6 +3335,12 @@ namespace CustomizeLib.BepInEx
             //            CustomCore.CustomBulletsSkinID[(almanacType, ori)] = new List<BulletType> { ori };
             //}
             SetEnableSkin();
+        }
+
+        public static void RunSkinScript(PlantType pt, int oldIndex, int newIndex)
+        {
+            SkinMgr.RunScript(pt, oldIndex, "OnDisable"); // 原来皮肤被禁用
+            SkinMgr.RunScript(pt, newIndex, "OnEnable"); // 新皮肤被启用
         }
 
         public static void UpdateSkin()
@@ -3582,6 +3640,11 @@ namespace CustomizeLib.BepInEx
                                     CustomCore.CustomPlantSkinIndex[plantType].Add(index_prefab);
                                 else
                                     CustomCore.CustomPlantSkinIndex.Add(plantType, new List<int> { index_prefab });
+
+                                if (ab.TryGetAsset<TextAsset>("script", out var script))
+                                {
+                                    SkinMgr.AddScript(plantType, index_prefab, script.text);
+                                }
                             }
 
                             // 注册皮肤子弹

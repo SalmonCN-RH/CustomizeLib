@@ -10,5 +10,6 @@ namespace CustomizeLib.BepInEx.LibTools
     {
         public static readonly string PatcherPath = @"BepInEx\patchers\MapValue.BepInEx.dll";
         public static readonly string PatcherCoreName = "MapValue.BepInEx.Core";
+        public static readonly string ZombieColorData = "CustomizeLib_ZombieColors";
     }
 }

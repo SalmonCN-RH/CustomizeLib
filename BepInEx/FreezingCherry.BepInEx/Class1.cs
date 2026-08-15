@@ -360,14 +360,16 @@ namespace FreezingCherry.BepInEx
                 return;
             Bullet? bullet = null;
             if (zombie != null)
+            {
                 bullet = CreateBullet.Instance.SetBullet(shoot.x, shoot.y, zombie.theZombieRow, BulletID, BulletMoveWay.Throw);
+                bullet.ThrowTo(zombie, new(), 1.5f.GetNullable());
+            }
             else
+            {
                 bullet = CreateBullet.Instance.SetBullet(shoot.x, shoot.y, Mouse.Instance.GetRowFromY(position.x, position.y), BulletID, BulletMoveWay.Throw);
+                bullet.ThrowTo(position, new(), 1.5f.GetNullable());
+            }
             bullet.Damage = plant.attackDamage;
-            bullet.Vx = projectileParams[1];
-            if (projectileParams.Length > 2)
-                bullet.Vy = projectileParams[2];
-            bullet.detaVy = -projectileParams[3];
             bullet.fromType = plant.thePlantType;
         }
 

@@ -92,7 +92,7 @@ namespace UltimateMachineChomper.BepInEx
                 if (plant != null && GameAPP.theGameStatus == GameStatus.InGame)
                 {
                     plant.shoot = transform.FindChild("Shoot");
-                    plant.SetAttackRange();
+                    // plant.attac();
                     if (plant.thePlantHealth == 16000)
                         plant.thePlantHealth = 20 * plant.thePlantMaxHealth;
                     health = plant.thePlantHealth;
@@ -115,8 +115,9 @@ namespace UltimateMachineChomper.BepInEx
                     sprites.Add(plant.gameObject.transform.FindChild("body/back/armor_back").gameObject);
                     sprites.Add(plant.gameObject.transform.FindChild("body/head/armor_head").gameObject);
                     sprites.Add(plant.gameObject.transform.FindChild("body/front/armor_front").gameObject);
-                    plant.range = new Vector2(3.5f, 3.5f);
-                    plant.centerOffset = new Vector2(0.75f, 0f);
+                    //plant.range = new Vector2(3.5f, 3.5f);
+                    //plant.centerOffset = new Vector2(0.75f, 0f);
+                    plant._ChompRange_k__BackingField = 2f;
                     totalDamage = 0;
                     landSubmarine = null;
                     isInit = true;
@@ -318,17 +319,13 @@ namespace UltimateMachineChomper.BepInEx
                     __instance.Bite(__instance.targetZombie);
                 }
 
-                // 创建咬噬检测区域
-                Vector2 biteCenter = new Vector2(__instance.Pos.x, __instance.Pos.y);
-                Vector2 biteSize = new Vector2(__instance.range.x, __instance.range.y);
-                int zombieLayerMask = __instance.zombieLayer;
-
-                // 检测区域内所有僵尸
-                Collider2D[] hitColliders = Physics2D.OverlapBoxAll(
-                    biteCenter,
-                    biteSize,
-                    0f,
-                    zombieLayerMask
+                // 获取检测框内的所有碰撞体
+                var hitColliders = global::Core.Lawnf.GetBoxCollidersFromOrigin(
+                    __instance.axis.position,
+                    new(__instance.ChompRange, 2f),
+                    __instance.ChompRange,  // 角度/方向参数
+                    2f,          // 额外参数
+                    __instance.zombieLayer
                 );
 
                 // 遍历检测到的僵尸
@@ -594,22 +591,22 @@ namespace UltimateMachineChomper.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(Chomper))]
-    public class Chomper_SetAttackRange
-    {
-        [HarmonyPatch(nameof(Chomper.SetAttackRange))]
-        [HarmonyPrefix]
-        public static bool Prefix(Chomper __instance)
-        {
-            if ((int)__instance.thePlantType == UltimateMachineChomper.PlantID)
-            {
-                __instance.range = new Vector2(3.5f, 3.5f);
-                __instance.centerOffset = new Vector2(0.75f, 0f);
-                return false;
-            }
-            return true;
-        }
-    }
+    //[HarmonyPatch(typeof(Chomper))]
+    //public class Chomper_SetAttackRange
+    //{
+    //    [HarmonyPatch(nameof(Chomper.SetAttackRange))]
+    //    [HarmonyPrefix]
+    //    public static bool Prefix(Chomper __instance)
+    //    {
+    //        if ((int)__instance.thePlantType == UltimateMachineChomper.PlantID)
+    //        {
+    //            __instance.range = new Vector2(3.5f, 3.5f);
+    //            __instance.centerOffset = new Vector2(0.75f, 0f);
+    //            return false;
+    //        }
+    //        return true;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(Bullet_superCherry), nameof(Bullet_superCherry.HitZombie))]
     public class Bullet_superCherry_HitZombie

@@ -483,7 +483,7 @@ namespace SolarEclipseCabbage.BepInEx
                     if (z.theMaxHealth + z.theFirstArmorMaxHealth + z.theSecondArmorMaxHealth > max)
                     {
                         zombie = z;
-                        max = z.theMaxHealth + z.theFirstArmorMaxHealth + z.theSecondArmorMaxHealth;
+                        max = (z.theMaxHealth + z.theFirstArmorMaxHealth + z.theSecondArmorMaxHealth).SafeToInt();
                     }
                 }
                 zombie = UnityEngine.Random.Range(1, 101) <= 80 ? zombie : list[UnityEngine.Random.Range(0, list.Count)];
@@ -641,7 +641,7 @@ namespace SolarEclipseCabbage.BepInEx
                     {
                         if (z != null && !z.IsDestroyed() && (z.GetData("SolarEclipse_added_zombie") is null || (z.GetData("SolarEclipse_added_zombie") is not null && z.GetData("SolarEclipse_added_zombie") is false)))
                         {
-                            int health = CalculateAddValue(z.theHealth);
+                            int health = CalculateAddValue(z.theHealth.SafeToInt());
                             health = z.theFirstArmorHealth + health < 0 ? int.MaxValue - health : health;
                             z.theHealth += health;
                             z.theMaxHealth += health;

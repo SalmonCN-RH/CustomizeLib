@@ -62,7 +62,7 @@ namespace FireSuperGatling_BepInEx
                 });
             CustomCore.AddPlantAlmanacStrings(FireSuperGatling.PlantID,
                 $"火焰超级机枪射手({FireSuperGatling.PlantID})",
-                $"一次发射六颗火辣豌豆，有概率一次性发射大量火辣豌豆\n\n" +
+                $"一次发生六颗火辣豌豆，并有概率如烈焰风暴般降临火雨。\n\n" +
                 $"<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
                 $"<color=#3D1400>贴图作者：@林秋-AutumnLin、@白鱼余余丶</color>\n" +
                 $"<color=#3D1400>伤害：</color><color=red>30x6/1.5秒</color>\n" +
@@ -71,7 +71,7 @@ namespace FireSuperGatling_BepInEx
                 $"<color=#3D1400>词条1:</color><color=red>五阶升级：火焰超级机枪射手的攻击力x10，子弹的伤害额外x2</color>\n" +
                 $"<color=#3D1400>融合配方：</color><color=red>超级机枪射手+火爆辣椒</color>\n" +
                 $"<color=#3D1400>转化配方：</color><color=red>豌豆射手←→豌豆射手</color>\n\n" +
-                $"<color=#3D1400>宝开鱼</color>"
+                $"<color=#3D1400>时隔一年，社区迎来了一届摩托车耐力锦标赛，在一众机车中，有一簇红色格外鲜艳，瞬间吸引了观众的视线，其喷发的火焰酷似绽放的花朵。“超帅的机车，不是么？”火焰超级机枪射手道，他称这俩摩托为“兄弟”。是的，刚才他俩又拿下了冠军！</color>"
             );
             CustomCore.AddFusion((int)PlantType.FireSniper, FireSuperGatling.PlantID, (int)PlantType.Peashooter);
             CustomCore.AddFusion((int)PlantType.FireSniper, (int)PlantType.Peashooter, FireSuperGatling.PlantID);

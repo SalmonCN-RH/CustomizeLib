@@ -109,7 +109,7 @@ namespace PuffHypnoSuperGatling.BepInEx
                     return false;
 
                 bool beforeDying = zombie.beforeDying;
-                int originHealth = zombie.theHealth;
+                var originHealth = zombie.theHealth;
 
                 zombie.TakeDamage(DmgType.Normal, __instance.Damage);
                 CreateParticle.SetParticle(Bullet_puffHypnoPea.ParticleID, __instance.transform.position, zombie.theZombieRow);
@@ -121,8 +121,8 @@ namespace PuffHypnoSuperGatling.BepInEx
                     PeaShooterZ component = CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.PeaShooterZombie, zombie.axis.transform.position.x).GetComponent<PeaShooterZ>();
                     if (component != null)
                     {
-                        int health = component.theHealth;
-                        int maxHealth = component.theMaxHealth;
+                        var health = component.theHealth;
+                        var maxHealth = component.theMaxHealth;
                         component.hypnoPea = true;
                         component.normalHead.SetActive(false);
                         component.hypnoHead.SetActive(true);
@@ -153,7 +153,7 @@ namespace PuffHypnoSuperGatling.BepInEx
                     return false;
 
                 bool beforeDying = zombie.beforeDying;
-                int originHealth = zombie.theHealth;
+                var originHealth = zombie.theHealth;
 
                 zombie.TakeDamage(DmgType.Normal, __instance.Damage);
                 int soundID = UnityEngine.Random.Range(59, 61);
@@ -174,8 +174,8 @@ namespace PuffHypnoSuperGatling.BepInEx
                     PeaShooterZ component = CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.PeaShooterZombie, zombie.axis.transform.position.x).GetComponent<PeaShooterZ>();
                     if (component != null)
                     {
-                        int health = component.theHealth;
-                        int maxHealth = component.theMaxHealth;
+                        var health = component.theHealth;
+                        var maxHealth = component.theMaxHealth;
                         component.hypnoPea = true;
                         component.normalHead.SetActive(false);
                         component.hypnoHead.SetActive(true);

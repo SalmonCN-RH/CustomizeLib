@@ -169,8 +169,7 @@ namespace PuffUltimateChomper.BepInEx
         {
             if (__instance.thePlantType == PuffUltimateChomper.PlantID)
             {
-                __instance.range = new Vector2(2f, 1.25f);
-                __instance.centerOffset = new Vector2(1.85f, 0.5f);
+                __instance._ChompRange_k__BackingField = 2f;
             }
         }
     }

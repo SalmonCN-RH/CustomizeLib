@@ -76,16 +76,16 @@ namespace CustomizeLib.BepInEx.Internal
             // debuffData
             var newDebuffData = new Il2CppSystem.Collections.Generic.Dictionary<TravelDebuff, Il2CppSystem.ValueTuple<string, ZombieType>>();
             foreach (var item in TravelDictionary.debuffData)
-                newDebuffData.SetDictionaryItem(item.Key, new(item.Value.Pointer));
+                newDebuffData.DictionarySetItem(item.Key, new(item.Value.Pointer));
             foreach (var item in CustomCore.CustomDebuffs)
-                newDebuffData.SetDictionaryItem((TravelDebuff)item.Key,
+                newDebuffData.DictionarySetItem((TravelDebuff)item.Key,
                     new Il2CppSystem.ValueTuple<string, ZombieType>(item.Value.Item1, item.Value.Item2));
             TravelDictionary.debuffData = newDebuffData;
 
             var newPlantInfo = new Il2CppSystem.Collections.Generic.Dictionary
                 <PlantType, Il2CppSystem.ValueTuple<Il2CppSystem.Nullable<PlantType>, Il2CppSystem.Object, Il2CppSystem.Object, bool>>();
             foreach (var item in TravelDictionary.PlantInfo)
-                newPlantInfo.SetDictionaryItem(item.Key, item.Value);
+                newPlantInfo.DictionarySetItem(item.Key, item.Value);
             foreach (var (key, value) in CustomCore.CustomPlantInfos)
             {
                 Il2CppSystem.Nullable<PlantType> nullable = value.subType.HasValue ? new(value.subType.Value) : new();
@@ -96,7 +96,7 @@ namespace CustomizeLib.BepInEx.Internal
                 var strongUltimate = value.isStrongUltimate;
                 var tuple = new Il2CppSystem.ValueTuple<Il2CppSystem.Nullable<PlantType>, Il2CppSystem.Object, Il2CppSystem.Object, bool>
                     (nullable, buff1, buff2, strongUltimate);
-                newPlantInfo.SetDictionaryItem(key, tuple);
+                newPlantInfo.DictionarySetItem(key, tuple);
             }
         }
 

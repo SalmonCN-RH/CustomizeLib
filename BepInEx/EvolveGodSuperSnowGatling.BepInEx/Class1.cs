@@ -96,8 +96,8 @@ namespace EvolveGodSuperSnowGatling.BepInEx
 
         public void ResetQuality()
         {
-            CustomBuffs[0].Cast<DamageBuff>().randomQuality = ShootingManager.Instance.GetRandomQuality();
-            CustomBuffs[1].Cast<SpeedBuff>().randomQuality = ShootingManager.Instance.GetRandomQuality();
+            CustomBuffs[0] = new DamageBuff(PlantType.SuperSnowGatling);
+            CustomBuffs[1] = new SpeedBuff(PlantType.SuperSnowGatling);
         }
 
         private List<BaseBuff> CustomBuffs = new List<BaseBuff> { new DamageBuff(PlantType.SuperSnowGatling), new SpeedBuff(PlantType.SuperSnowGatling), 

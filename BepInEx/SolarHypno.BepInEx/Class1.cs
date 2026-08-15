@@ -274,7 +274,6 @@ namespace SolarHypno.BepInEx
                     0,          // 猜测的参数
                     __instance.transform.position
                 );
-                __instance.hit = true;
                 GameAPP.PlaySound(UnityEngine.Random.Range(0, 3), 0.5f, 1);
                 __instance.Die();
                 return false;

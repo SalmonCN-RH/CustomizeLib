@@ -402,7 +402,7 @@ namespace UltimateWinterMelonBepInEx
                 if (__instance != null && (int)__instance.theBulletType == Bullet_ultimateWinterMelon.Bullet_ID && __instance.MoveWay == BulletMoveWay.Cannon)
                 {
                     Vector3 position = __instance.transform.position;
-                    position.y -= Time.deltaTime * __instance.detaVy;
+                    position.y -= Time.deltaTime * __instance.velocity.y;
                     __instance.transform.position = position;
                     __instance.theExistTime += Time.deltaTime;
                     if (position.y < (__instance.cannonPos.y + 0.5f) && __instance.theBulletRow == __instance.from.thePlantRow)

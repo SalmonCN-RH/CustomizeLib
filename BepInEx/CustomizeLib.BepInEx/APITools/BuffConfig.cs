@@ -23,11 +23,11 @@ namespace CustomizeLib.BepInEx
         /// <summary>
         /// 显示的植物
         /// </summary>
-        public PlantType iconPlant;
+        public PlantType iconPlant = PlantType.Peashooter;
         /// <summary>
         /// 显示的僵尸
         /// </summary>
-        public ZombieType iconZombie;
+        public ZombieType iconZombie = ZombieType.NormalZombie;
         /// <summary>
         /// 最大等级
         /// </summary>
@@ -52,6 +52,10 @@ namespace CustomizeLib.BepInEx
         /// 弱究增加概率
         /// </summary>
         public bool probably = false;
+        /// <summary>
+        /// 在词条图鉴里显示的类型
+        /// </summary>
+        public AlmanacBuffType almanac = AlmanacBuffType.Default;
 
         public BuffConfig() { }
     }

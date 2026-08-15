@@ -117,19 +117,7 @@ namespace UltimateCornFume.BepInEx
                         var bullet = CreateBullet.Instance.SetBullet(shootPos.x, shootPos.y, zombie.theZombieRow, bulletType, BulletMoveWay.Throw);
                         bullet.Damage = __instance.attackDamage;
                         bullet.fromType = __instance.thePlantType;
-
-                        Vector2 zombieVel = zombie.Velocity;
-                        Vector2 zombiePos = zombie.ColliderPosition;
-                        Vector2 startPos = __instance.shoot.position;
-                        float[] trajectory = global::Core.Lawnf.CalculateProjectileWithSpeed(
-                            startPos,
-                            zombieVel,
-                            zombiePos,
-                            1.5f);
-
-                        bullet.Vx = trajectory[1];
-                        bullet.Vy = trajectory[2];
-                        bullet.detaVy = -trajectory[3];
+                        bullet.ThrowTo(zombie, new(), 1.5f.GetNullable());
                     }
 
                     GameAPP.PlaySound(106, 0.5f, 1f);
@@ -207,9 +195,8 @@ namespace UltimateCornFume.BepInEx
 
                 zombie.TakeDamage(DmgType.Shieldless, __instance.Damage, __instance.fromType);
                 zombie.Buttered(4);
-
-                __instance.detaVy = 0.5f;
-                __instance.detaVy = 0f;
+                __instance.hitCount = int.MinValue;
+                __instance.velocity = new(0.5f, 0f);
                 return false;
             }
             return true;

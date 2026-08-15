@@ -76,7 +76,7 @@ namespace ElectricSuperGatling_BepInEx
                 "<color=#3D1400>③</color>受到伤害的目标有1%概率陷入0.5秒的定身效果</color>\n" +
                 "<color=#3D1400>词条1:</color><color=red>五阶升级：电能超级机枪射手的攻击力x10，子弹的攻击频率x3，闪电链击中目标时会减少1点护甲系数</color>\n" +
                 "<color=#3D1400>融合配方：</color><color=red>超级机枪射手+闪电洋葱</color>\n\n" +
-                "<color=#3D1400>宝开鱼占位符</color>"
+                "<color=#3D1400>电能超级机枪射手以强大的实力在植物界声名远扬，有他在的地方，观众们都会呼喊“▇▇▇▇▇”，这段话成为了植物们对他的第一印象。不过在来到了这片土地后，电能超级机枪射手受到了奇怪的影响…</color>"
             );
             Bullet_electricSuperGatlingPea.ElectricLine = ab.GetAsset<GameObject>("PrismLine");
             Bullet_electricSuperGatlingPea.ElectricLineSkin = ab.GetAsset<GameObject>("PrismLineSkin");
@@ -98,6 +98,7 @@ namespace ElectricSuperGatling_BepInEx
         public static ID LineHit = 1908;
         public static ID LineHitSkin = 1909;
         public static ID BulletID = 1906;
+        public static List<Zombie> ZombiesInTimer = new();
         public static bool buff => CoreTools.TravelAdvanced("五阶升级"); // 可以省掉读buff的消耗
 
         public float attackCountDown = 0f;
@@ -192,6 +193,11 @@ namespace ElectricSuperGatling_BepInEx
             if (UnityEngine.Random.Range(1, 101) != 1) yield break;
             if (!zombie.IsObjExist()) yield break;
             if (zombie.timers.TryGetValue((ZombieTimer)(int)BulletID, out var time) && time > 0f) yield break;
+            // 如果是二爷掉报纸或者阿尔法假死
+            if (zombie.theStatus == ZombieStatus.Paper_losePaper || zombie.theStatus == ZombieStatus.Legion_fall) yield break;
+            ZombiesInTimer = ZombiesInTimer.Where(z => z.IsObjExist()).ToList(); // 去除Null元素
+            if (ZombiesInTimer.Contains(zombie)) yield break;
+            ZombiesInTimer.Add(zombie);
             zombie.timers[(ZombieTimer)(int)BulletID] = 0.5f;
             var origin = 0f; // 实际要设置的值，在交换后就变成了原来的速度
             (origin, zombie.theOriginSpeed) = (zombie.theOriginSpeed, origin);
@@ -199,6 +205,7 @@ namespace ElectricSuperGatling_BepInEx
             if (!zombie.IsObjExist()) yield break;
             (origin, zombie.theOriginSpeed) = (zombie.theOriginSpeed, origin);
             zombie.timers[(ZombieTimer)(int)BulletID] = 0f;
+            ZombiesInTimer.Remove(zombie);
             yield break;
         }
         public Bullet_pea bullet => gameObject.GetComponent<Bullet_pea>();
@@ -265,7 +272,7 @@ namespace ElectricSuperGatling_BepInEx
             if ((int)__instance.theBulletType == Bullet_electricSuperGatlingPea.BulletID)
             {
                 __instance.GetComponent<Bullet_electricSuperGatlingPea>().OnHitZombie(zombie);
-                __instance.hit = false; // 重置是否击中，不然后续都无法判定直击
+                __instance.hitCount = int.MinValue; // 重置是否击中，不然后续都无法判定直击
                 return false;
             }
             return true;

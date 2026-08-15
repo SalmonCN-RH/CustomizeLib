@@ -57,7 +57,7 @@ namespace GarlicSuperGatling.BepInEx
                     (Bullet_garlicPea_fire_super.BulletID, new List<GameObject?> { ab.GetAsset<GameObject>("Bullet_garlicPea_fire_super_skin") })
                 });
             CustomCore.AddPlantAlmanacStrings(GarlicSuperGatling.PlantID, $"病毒超级机枪射手({GarlicSuperGatling.PlantID})",
-                "一次发射六颗病毒豌豆，有概率一次性发射大量病毒豌豆。\n\n" +
+                "一次发射六颗蒜豌豆，并有概率倾斜弹雨让病毒迅猛爆发。\n\n" +
                 "<color=#3D1400>使用条件：</color><color=red>旅行模式</color>\n" +
                 "<color=#3D1400>贴图作者：@林秋-AutumnLin、@白鱼余余丶</color>\n" +
                 "<color=#3D1400>伤害：</color><color=red>30x6/1.5秒</color>\n" +

@@ -28,6 +28,7 @@ namespace CustomizeLib.BepInEx
             }
         }
         public static bool ObjectExist<T>(this Board board) => board.GameObject().transform.GetComponentsInChildren<T>().Length > 0;
+        public static BoardGrid GetGrid(this Board board, int column, int row) => board.gridSystem.GetGrid(column, row);
     }
 
     public static class TravelExtensions

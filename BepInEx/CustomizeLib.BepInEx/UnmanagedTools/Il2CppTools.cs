@@ -82,7 +82,7 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
     }
     public static class Il2CppDictionaryHelper
     {
-        public static unsafe void SetDictionaryItem<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key, TValue value)
+        public static unsafe void DictionarySetItem<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key, TValue value)
             where TKey : unmanaged where TValue : Il2CppObjectBase
         {
             if (dic == null) throw new ArgumentNullException(nameof(dic));
@@ -100,7 +100,7 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
                 Il2CppException.RaiseExceptionIfNecessary(exec);
         }
 
-        public static unsafe TValue GetDictionaryItem<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key)
+        public static unsafe TValue DictionaryGetItem<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key)
             where TKey : unmanaged where TValue : Il2CppObjectBase
         {
             if (dic == null) throw new ArgumentNullException(nameof(dic));
@@ -115,6 +115,35 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
             if (exec != IntPtr.Zero)
                 Il2CppException.RaiseExceptionIfNecessary(exec);
             return Il2CppInterop.Runtime.Runtime.Il2CppObjectPool.Get<TValue>(result);
+        }
+
+        public static bool DictionaryTryGetValue<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key, out TValue value)
+            where TKey : unmanaged where TValue : Il2CppObjectBase
+        {
+            try
+            {
+                value = dic.DictionaryGetItem(key);
+                return true;
+            }
+            catch (Exception)
+            {
+                value = null!;
+                return false;
+            }
+        }
+
+        public static bool DictionaryContainsKey<TKey, TValue>(this Il2CppSystem.Collections.Generic.Dictionary<TKey, TValue> dic, TKey key)
+            where TKey : unmanaged where TValue : Il2CppObjectBase
+        {
+            try
+            {
+                _ = dic.DictionaryGetItem(key);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
     public static class Il2CppHelper

@@ -81,6 +81,8 @@ namespace CustomizeLib.BepInEx
         public ID(BulletType id) { this.id = (int)id; }
         public ID(CherryBombType id) { this.id = (int)id; }
         public ID(MusicType id) { this.id = (int)id; }
+        public ID(EffectType id) { this.id = (int)id; }
+        public ID(Zombie.ZombieColor id) {  this.id = (int)id; }
         public static implicit operator int(ID id) => id.id;
         public static implicit operator PlantType(ID id) => (PlantType)id.id;
         public static implicit operator ZombieType(ID id) => (ZombieType)id.id;
@@ -88,6 +90,9 @@ namespace CustomizeLib.BepInEx
         public static implicit operator BulletType(ID id) => (BulletType)id.id;
         public static implicit operator CherryBombType(ID id) => (CherryBombType)id.id;
         public static implicit operator MusicType(ID id) => (MusicType)id.id;
+        public static implicit operator EffectType(ID id) => (EffectType)id.id;
+        public static implicit operator Zombie.ZombieColor(ID id) => (Zombie.ZombieColor)id.id;
+
         public static implicit operator ID(int i) => new ID(i);
         public static implicit operator ID(PlantType id) => new ID(id);
         public static implicit operator ID(ZombieType id) => new ID(id);
@@ -95,6 +100,8 @@ namespace CustomizeLib.BepInEx
         public static implicit operator ID(BulletType id) => new ID(id);
         public static implicit operator ID(CherryBombType id) => new ID(id);
         public static implicit operator ID(MusicType id) => new ID(id);
+        public static implicit operator ID(EffectType id) => new ID(id);
+        public static implicit operator ID(Zombie.ZombieColor id) => new ID(id);
 
         public override string ToString()
         {
@@ -155,7 +162,7 @@ namespace CustomizeLib.BepInEx
             {
                 if (Mouse.Instance != null && !Mouse.Instance.IsDestroyed())
                     return Mouse.Instance.GetBoxXFromColumn(1) - Mouse.Instance.GetBoxXFromColumn(0);
-                return 1f;
+                return 1.35f;
             }
         }
         public static float RowY
@@ -164,7 +171,7 @@ namespace CustomizeLib.BepInEx
             {
                 if (Mouse.Instance != null && !Mouse.Instance.IsDestroyed())
                     return Mouse.Instance.GetBoxYFromRow(1) - Mouse.Instance.GetBoxYFromRow(0);
-                return 1f;
+                return 1.67f;
             }
         }
 

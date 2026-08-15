@@ -15,29 +15,7 @@
     <ProjectReference Include="..\..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
   </ItemGroup>
   <ItemGroup>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    <ProjectReference Include="..\..\InvisibleZombie.BepInEx\InvisibleZombie.BepInEx.csproj" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
   <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />

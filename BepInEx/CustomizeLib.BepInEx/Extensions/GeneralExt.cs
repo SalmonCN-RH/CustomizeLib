@@ -30,5 +30,22 @@ namespace CustomizeLib.BepInEx
 
         public static T ToEnumVal<T>(this int value) where T : Enum => (T)Enum.ToObject(typeof(T), value);
         public static int ToIntVal<T>(this T value) where T : Enum => (int)Enum.ToObject(typeof(T), value);
+        public static void AddOrUpdateValue<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue value)
+        {
+            if (dic == null) return;
+            if (dic.ContainsKey(key)) dic[key] = value;
+            else dic.Add(key, value);
+        }
+        public static int SafeToInt(this object value)
+        {
+            if (value is int || value is long)
+            {
+                var val = Convert.ToInt64(value);
+                if (val < int.MinValue) return int.MinValue;
+                else if (val > int.MaxValue) return int.MaxValue;
+                return (int)val;
+            }
+            throw new ArgumentException("value must be int or long");
+        }
     }
 }

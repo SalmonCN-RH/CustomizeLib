@@ -39,6 +39,7 @@ namespace CustomizeLib.BepInEx
         public Func<List<PlantType>> PreSelectCards { get; set; } = () => [];
         public bool RealBoss2 { get; set; } = false;
         public int RowCount { get; set; } = 5;
+        public int ColumnCount { get; set; } = 10;
         public SceneType SceneType { get; set; } = SceneType.Day;
         public Func<List<PlantType>> SeedRainPlantTypes { get; set; } = () => [];
         public Func<int> Sun { get; set; } = () => 500;
@@ -46,7 +47,7 @@ namespace CustomizeLib.BepInEx
         public Func<int> WaveCount { get; set; } = () => 10;
         public Func<int> ZombieHealthRate { get; set; } = () => 1;
         public Func<List<ZombieType>> ZombieList { get; set; } = () => [];
-        public GameLevel.LevelData LevelData { get; set; } = new();
+        public GameLevel.LevelData? LevelData { get; set; } = null;
     }
 
     public struct CustomPlantAlmanac
@@ -152,10 +153,11 @@ namespace CustomizeLib.BepInEx
     /// </summary>
     public enum AlmanacBuffType
     {
+        Default = -1,
         /// <summary>
         /// 弱究
         /// </summary>
-        WeakUltimate,
+        WeakUltimate = 0,
         /// <summary>
         /// 强究
         /// </summary>

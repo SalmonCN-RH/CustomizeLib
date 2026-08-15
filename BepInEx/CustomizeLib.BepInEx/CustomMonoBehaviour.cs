@@ -41,7 +41,7 @@ public class CustomPlantMonoBehaviour : MonoBehaviour
             bulletType, bulletMoveWay);
         bullet.Damage = ThisPlant.attackDamage;
         //投射抛物线子弹
-        if (bulletMoveWay == BulletMoveWay.Throw || bulletMoveWay == BulletMoveWay.Quick_throw)
+        if (bulletMoveWay == BulletMoveWay.Throw)
         {
             bullet.targetPlant = ThisPlant;
             //搜索同一行僵尸

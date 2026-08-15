@@ -21,10 +21,16 @@ namespace UltimatePortalSpring.BepInEx
         {
             var ab = CustomCore.GetAssetBundle(Tools.GetAssembly(), "ultimateportalspring");
             CustomCore.RegisterCustomPlant<UltimateSpring, UltimatePortalSpring>(UltimatePortalSpring.PlantID, ab.GetAsset<GameObject>("UltimatePortalSpringPrefab"),
-                ab.GetAsset<GameObject>("UltimatePortalSpringPreview"), [], 0f, 0f, 300, 3000, 7.5f, 500);
+                ab.GetAsset<GameObject>("UltimatePortalSpringPreview"), new List<(PlantType, PlantType)>
+                {
+                    (PlantType.UltimateSpring, PlantType.PortalPlant)
+                }.ToIntegerList(), 0f, 0f, 300, 3000, 7.5f, 500);
             CustomCore.RegisterCustomPlantSkin<UltimateSpring, UltimatePortalSpring>(UltimatePortalSpring.PlantID, ab.GetAsset<GameObject>("UltimatePortalSpringSkinPrefab"),
-                ab.GetAsset<GameObject>("UltimatePortalSpringSkinPreview"), [], 0f, 0f, 300, 3000, 7.5f, 500);
-            CustomCore.AddPlantAlmanacStrings(UltimatePortalSpring.PlantID, $"究极超时空弹弹菇",
+                ab.GetAsset<GameObject>("UltimatePortalSpringSkinPreview"), new List<(PlantType, PlantType)>
+                {
+                    (PlantType.UltimateSpring, PlantType.PortalPlant)
+                }.ToIntegerList(), 0f, 0f, 300, 3000, 7.5f, 500);
+            CustomCore.AddPlantAlmanacStrings(UltimatePortalSpring.PlantID, $"究极火神黑洞菇",
                 "投射蕴含时空力量的黑洞，能够持续吸引拉扯僵尸，并赋予传送状态。\n" +
                 "<color=#0000FF>究极火神弹弹菇同人亚种</color>\n\n" +
                 "<color=#3D1400>贴图作者：@林秋-AutumnLin</color>\n" +
@@ -42,7 +48,7 @@ namespace UltimatePortalSpring.BepInEx
                 "④持续时间结束时坍缩，对半径1.5格范围造成7200的灰烬伤害，若已存在5秒则伤害和范围半径x5</color>\n" +
                 "<color=#3D1400>词条1:</color><color=red>气定神闲：蓄力速度和蓄力上限x3</color>\n" +
                 "<color=#3D1400>词条2:</color><color=red>僵尸试图在火海中游泳：黑洞的吸引效果翻倍</color>\n\n" +
-                "<color=#3D1400>“听说您曾有一份工作，是什么原因离职的呢？”记者询问道，究极超时空弹弹菇回答“其实呢，我很喜欢那份工作的，我喜欢园艺，喜欢睡在花圃中，和修理好的植物生活在一起，可是我无法控制头上的黑洞，如您所见，它无时不刻都在吸引周围的物件，它把我工作搞砸了！”记者不慌不忙，递上了一份申请表，“是这样的，我这里正好有一份工作，尽管不是你自己喜欢的，但是只有你能做。”之后，失物侦探所迎来了他的耶路撒冷。</color>");
+                "<color=#3D1400>“听说您曾有一份工作，是什么原因离职的呢？”记者询问道，究极火神黑洞菇回答“其实呢，我很喜欢那份工作的，我喜欢园艺，喜欢睡在花圃中，和修理好的植物生活在一起，可是我无法控制头上的黑洞，如您所见，它无时不刻都在吸引周围的物件，它把我工作搞砸了！”记者不慌不忙，递上了一份申请表，“是这样的，我这里正好有一份工作，尽管不是你自己喜欢的，但是只有你能做。”之后，失物侦探所迎来了他的耶路撒冷。</color>");
             CustomCore.RegisterCustomBullet<Bullet_springMelon>(UltimatePortalSpring.BulletID, ab.GetAsset<GameObject>("Bullet_portalSpringMelon"));
             CustomCore.RegisterCustomParticle(UltimatePortalSpring.BombID, ab.GetAsset<GameObject>("PortalBombCloud"));
             CustomCore.RegisterCustomUseItemOnPlantEvent(PlantType.UltimateSpring, BucketType.PortalHeart, UltimatePortalSpring.PlantID);
@@ -154,6 +160,32 @@ namespace UltimatePortalSpring.BepInEx
                 }
             }
         }
+
+        // 特调
+        //[HarmonyPatch(nameof(ShootingManager.RegisterExpertBuff))]
+        //[HarmonyPrefix]
+        //public static bool PreRegisterExpertBuff(ShootingManager __instance, ref MultipleChoiceMenu menu)
+        //{
+        //    // 计算专家植物出现概率：基于幸运值（0.3倍 + 1）再乘以0.01
+        //    float probability = (__instance.Lucky * 8f + 1f) * 0.01f;
+        //    if (UnityEngine.Random.value > probability) return false;
+        //    if (__instance.YourPlants.Contains(UltimatePortalSpring.PlantID)) return false;
+        //    // 随机选择一个专家植物
+        //    PlantType selectedPlant = UltimatePortalSpring.PlantID;
+
+        //    // 注册菜单选项
+        //    string plantName = Lawnf.GetName(selectedPlant);
+        //    string description = "获得新植物：" + plantName;
+
+        //    menu.RegisterOption(
+        //        "专家邀请",                    // 标题
+        //        description,                  // 描述
+        //        (Action)(() => __instance.GetNewPlant(selectedPlant)), // 点击回调
+        //        selectedPlant,
+        //        frameType: Quality.diamond
+        //    );
+        //    return false;
+        //}
     }
     #endregion
 
@@ -190,6 +222,7 @@ namespace UltimatePortalSpring.BepInEx
             if (plant.board.boardTag.rogueShooting)
             {
                 TravelMgr.Instance.GetUltiBuff(CoreTools.GetUltiBuffByString("僵尸试图在火海中游泳")); // 拿词条
+                InGameText.Instance.ShowText("在该模式下，究极火神黑洞菇蓄力完成后将自动发射", 3f);
             }
         }
 
@@ -229,7 +262,7 @@ namespace UltimatePortalSpring.BepInEx
             var umbrella = plant.FindUmbrella(plant.shoot.position);
 
             if (umbrella != null)
-                bullet.ThrowTo(umbrella, new Il2CppSystem.Nullable<Vector2>(plant.shoot.position), null);
+                bullet.ThrowTo(umbrella, new Il2CppSystem.Nullable<Vector2>(plant.shoot.position), new());
             else if (plant.targetZombie != null && plant.targetZombie.col != null)
                 bullet.ThrowTo(plant.targetZombie, new Il2CppSystem.Nullable<Vector2>(plant.shoot.position), new Il2CppSystem.Nullable<float>(plant.flightTime));
             else
@@ -276,13 +309,7 @@ namespace UltimatePortalSpring.BepInEx
             if (bullet == null)
                 return;
 
-            Lawnf.SetBulletTarget(
-                bullet,
-                plant.shoot.position,
-                Vector2.zero,
-                plant.cannonTarget,
-                1.5f
-            );
+            bullet.SetSpeed(plant.shoot.position, Vector2.zero, plant.cannonTarget, 1.5f);
 
             bullet.melonSputter = plant.melonSputter;
             bullet.fromType = plant.thePlantType;
@@ -432,7 +459,6 @@ namespace UltimatePortalSpring.BepInEx
 
                 if (!collider.TryGetComponent<Zombie>(out var zombie) || !zombie.IsObjExist()) continue;
                 if (zombie.theZombieType is ZombieType.HorseBoss or ZombieType.ZombieBoss or ZombieType.ZombieBoss2) continue;
-                if (zombie.theSpeed == 0f) continue;
                 zombieControllerMap.TryGetValue(zombie, out var currentController);
 
                 if (currentController != null && currentController != this) continue;
@@ -509,7 +535,6 @@ namespace UltimatePortalSpring.BepInEx
             foreach (var kvp in myAffectedZombies)
             {
                 Zombie zombie = kvp.Key;
-                if (zombie.theSpeed == 0f) continue;
                 if (zombie == null || !zombie.IsObjExist())
                 {
                     zombiesToRestore.Add(zombie);

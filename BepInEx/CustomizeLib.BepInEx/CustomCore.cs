@@ -25,7 +25,7 @@ using UnityEngine;
 ///
 namespace CustomizeLib.BepInEx
 {
-    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.8")]
+    [BepInPlugin("salmon.inf75.pvzcustomization", "PVZCustomization", "3.9")]
     public class CustomCore : BasePlugin
     {
         #region TypeMgrExtra
@@ -326,6 +326,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="level">最大等级</param>
         /// <param name="bg">背景</param>
         /// <returns>词条ID</returns>
+        [Obsolete("This method is for the old version implementation. For the new version, please use CustomCore.RegisterCustomBuff(BuffConfig)")]
         public static int RegisterCustomBuff(string text, BuffType buffType, Func<bool> canUnlock, int cost,
             PlantType plantType = PlantType.Nothing, int level = 1, BuffBgType bg = default) =>
             RegisterCustomBuff(text, buffType, canUnlock, cost, PlantType.Nothing, false, plantType, level, bg);
@@ -343,6 +344,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="infoType">判定类型</param>
         /// <param name="addProbability">增加植物在场时词条抽取概率</param>
         /// <returns>词条ID</returns>
+        [Obsolete("This method is for the old version implementation. For the new version, please use CustomCore.RegisterCustomBuff(BuffConfig)")]
         public static int RegisterCustomBuff(string text, BuffType buffType, Func<bool> canUnlock, int cost, PlantType infoType, bool addProbability,
             PlantType plantType = PlantType.Nothing, int level = 1, BuffBgType bg = default) =>
             RegisterCustomBuff(text, buffType, canUnlock, cost, plantType, level, bg, plantType: infoType, addProbability: addProbability);
@@ -355,6 +357,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="level">等级</param>
         /// <param name="bg">背景</param>
         /// <returns></returns>
+        [Obsolete("This method is for the old version implementation. For the new version, please use CustomCore.RegisterCustomBuff(BuffConfig)")]
         public static int RegisterCustomDebuff(string text, Func<bool> unlock = null, ZombieType zombieType = ZombieType.NormalZombie, int level = 1, BuffBgType bg = default) =>
             RegisterCustomBuff(text, BuffType.Debuff, unlock, 0, PlantType.Nothing, level: level, bgType: bg, zombieType);
 
@@ -377,7 +380,8 @@ namespace CustomizeLib.BepInEx
         public static int RegisterCustomBuff(string text, BuffType buffType, Func<bool> canUnlock, int cost,
             PlantType icon, int level,
             BuffBgType bgType = default, ZombieType zombieType = ZombieType.NormalZombie,
-            int buffID = -1, PlantType plantType = PlantType.Nothing, bool addProbability = false)
+            int buffID = -1, PlantType plantType = PlantType.Nothing, bool addProbability = false, 
+            AlmanacBuffType almanac = AlmanacBuffType.Default)
         {
             CoreTools.InitBuffDic();
             int i = -1;
@@ -406,7 +410,7 @@ namespace CustomizeLib.BepInEx
                     break;
                 case BuffType.UnlockPlant:
                     i = CustomBuffStartID + CustomUnlockBuffs.Count;
-                    if (buffID == -1) i = buffID;
+                    if (buffID != -1) i = buffID;
                     CustomUnlockBuffs.Add(i, (icon, text, cost));
                     TravelDictionary.unlocksText.Add((TravelUnlocks)i, text);
                     break;
@@ -436,18 +440,25 @@ namespace CustomizeLib.BepInEx
                     CustomPlantInfo.Add(plantType, new List<(BuffType, int)> { (buffType, i) });
             }
             CustomBuffs.Add((buffType, i), (text, icon, zombieType));
+            if (almanac != AlmanacBuffType.Default)
+            {
+                if (buffType != BuffType.Debuff)
+                    CustomCore.SetCustomBuffAlmanacType(buffType, i, almanac, icon);
+                else
+                    CustomCore.SetCustomBuffAlmanacType(buffType, i, almanac, zombieType);
+            }
             return i;
         }
 
         /// <summary>
-        /// 注册此综艺词条
+        /// 注册自定义词条
         /// </summary>
         /// <param name="config">词条配置</param>
         /// <returns>词条ID</returns>
         public static int RegisterCustomBuff(BuffConfig config)
         {
             return RegisterCustomBuff(config.desc, config.type, config.unlock, config.cost, config.iconPlant, config.maxLevel, config.backGround, config.iconZombie,
-                config.ID.HasValue ? config.ID.Value : -1, config.lockPlantType, config.probably);
+                config.ID.HasValue ? config.ID.Value : -1, config.lockPlantType, config.probably, config.almanac);
         }
 
         /// <summary>
@@ -458,7 +469,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="type">类型</param>
         /// <param name="icon">图标</param>
         public static void SetCustomBuffAlmanacType(BuffType buffType, int id, AlmanacBuffType type, PlantType icon) =>
-            CustomAlmanacBuffType.Add((buffType, id), (type, icon, (ZombieType)(-1)));
+            CustomAlmanacBuffType.AddOrUpdateValue((buffType, id), (type, icon, (ZombieType)(-1)));
 
         /// <summary>
         /// 设置二创词条在词条图鉴中的类型
@@ -468,7 +479,7 @@ namespace CustomizeLib.BepInEx
         /// <param name="type">类型</param>
         /// <param name="icon">图标</param>
         public static void SetCustomBuffAlmanacType(BuffType buffType, int id, AlmanacBuffType type, ZombieType icon) =>
-            CustomAlmanacBuffType.Add((buffType, id), (type, (PlantType)(-1), icon));
+            CustomAlmanacBuffType.AddOrUpdateValue((buffType, id), (type, (PlantType)(-1), icon));
         #endregion
 
         /// <summary>
@@ -1223,9 +1234,9 @@ namespace CustomizeLib.BepInEx
                 TravelDictionary.allStrongUltimtePlant.Add(plantType);
             }
             if (!TravelDictionary.PlantInfo.ContainsKey(plantType))
-                TravelDictionary.PlantInfo.Add(plantType, new Il2CppSystem.ValueTuple<Il2CppSystem.Nullable<PlantType>, Il2CppSystem.Object, Il2CppSystem.Object, bool>(new Il2CppSystem.Nullable<PlantType>(plantType), null, null, true));
+                TravelDictionary.PlantInfo.DictionarySetItem(plantType, new Il2CppSystem.ValueTuple<Il2CppSystem.Nullable<PlantType>, Il2CppSystem.Object, Il2CppSystem.Object, bool>(new Il2CppSystem.Nullable<PlantType>(plantType), null, null, true));
             else
-                TravelDictionary.PlantInfo[plantType].Item4 = true;
+                TravelDictionary.PlantInfo.DictionaryGetItem(plantType).Item4 = true;
             if (!CustomStrongUltimatePlants.ContainsKey(plantType))
                 CustomStrongUltimatePlants.Add(plantType, id);
             else
@@ -1458,19 +1469,28 @@ namespace CustomizeLib.BepInEx
         public static void RegisterCustomMusic(int musicType, [NotNull] AudioClip clip) =>
             CustomMusics.Add((MusicType)musicType, clip);
 
-        ///// <summary>
-        ///// 添加无尽保存信息
-        ///// </summary>
-        ///// <param name="type">组件类型</param>
-        ///// <param name="name">组件字段(属性)名</param>
-        //public static void RegisterCustomEndlessData(Type type, string name) => CustomEndlessSaveData.Add(Il2CppType.From(type), name);
+        /// <summary>
+        /// 注册自定义效果
+        /// </summary>
+        /// <typeparam name="T">效果类</typeparam>
+        /// <param name="effectType">效果ID</param>
+        /// <param name="cons">
+        /// 构造函数
+        /// 按照Entity, duration, value的顺序传参，要求返回一个继承自BaseEffect的类对象
+        /// </param>
+        public static void RegisterCustomEffect<T>(EffectType effectType, Func<Entity, float, float, T> cons) where T : BaseEffect =>
+            RegisterCustomEffectType(effectType, cons);
 
-        ///// <summary>
-        ///// 添加无尽保存信息
-        ///// </summary>
-        ///// <typeparam name="T">组件类型</typeparam>
-        ///// <param name="name">组件字段(属性)名</param>
-        //public static void RegisterCustomEndlessData<T>(string name) where T : Component => RegisterCustomEndlessData(typeof(T), name);
+        /// <summary>
+        /// 注册自定义效果
+        /// </summary>
+        /// <param name="effectType">效果ID</param>
+        /// <param name="cons">
+        /// 构造函数
+        /// 按照Entity, duration, value的顺序传参，要求返回一个继承自BaseEffect的类对象
+        /// </param>
+        public static void RegisterCustomEffectType(EffectType effectType, Func<Entity, float, float, object> cons) =>
+            CustomEffects.Add(effectType, cons);
 
         public override void Load()
         {
@@ -1742,7 +1762,7 @@ namespace CustomizeLib.BepInEx
         public static Dictionary<(BuffType, int), (AlmanacBuffType, PlantType, ZombieType)> CustomAlmanacBuffType { get; set; } = new();
 
         public static Dictionary<Il2CppSystem.Type, string> CustomEndlessSaveData { get; set; } = new();
-        // public static List<PlantType> CustomWeakUltimatePlant = new();
+
         /// <summary>
         /// 自定义PlantInfo (究极, (亚种, 词条1, 词条2, 强究))
         /// </summary>
@@ -1752,6 +1772,11 @@ namespace CustomizeLib.BepInEx
         /// 自定义音乐
         /// </summary>
         public static Dictionary<MusicType, AudioClip> CustomMusics { get; set; } = new();
+
+        /// <summary>
+        /// 自定义效果
+        /// </summary>
+        public static Dictionary<EffectType, Func<Entity, float, float, object>> CustomEffects { get; set; } = new();
         #endregion
     }
 

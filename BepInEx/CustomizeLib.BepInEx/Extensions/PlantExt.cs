@@ -32,6 +32,8 @@ namespace CustomizeLib.BepInEx
             }
         }
 
+        public static int GetTotalMaxHealth(this Zombie zombie) => 
+            (int)zombie.theMaxHealth + zombie.theFirstArmorMaxHealth + zombie.theSecondArmorMaxHealth;
         public static int GetTotalHealth(this Zombie zombie) => (int)zombie.theHealth + zombie.theFirstArmorHealth + zombie.theSecondArmorHealth;
 
         public static TextMeshProUGUI RegisterText(this Plant plant, Color color, Func<string> func, Vector2? size = null)

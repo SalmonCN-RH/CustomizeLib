@@ -1,25 +1,29 @@
 ﻿using UnityEngine;
+using System;
 
 namespace ClassLibrary1
 {
     public class Class1
     {
-        public static void Test()
+        public static void Postfix() => GameLevel.RogueShooting.ShootingManager.randomType = GameLevel.RogueShooting.RandomZombieType.Default;
+        public static void Template()
         {
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                foreach (var plant in Lawnf.GetAllPlants())
-                {
-                    if (plant == null) continue;
-                    if (plant.thePlantType != PlantType.ScaredyShroom) continue;
-                    CreatePlant.Instance.SetPlant(plant.thePlantColumn + 1, plant.thePlantRow, PlantType.ScaredyShroom, plant, isFreeSet: true);
-                }
-            }
-            AlmanacData.PlantInfo data = AlmanacData.AlmanacDataLoader.plantDatas[PlantType.Peashooter];
-            Console.WriteLine($"\n" +
-                $"{data.name}\n" +
-                $"{data.info}\n" +
-                $"{data.introduce}");
+            GameAPP.config.shootingData.randomDebuffs.Clear();
+            GameAPP.config.shootingData.randomDebuffs.Add((TravelDebuff)10000);
+            GameAPP.config.shootingData.randomDebuffs.Add((TravelDebuff)10016);
+            GameAPP.config.shootingData.randomDebuffs.Add((TravelDebuff)10017);
+            GameAPP.config.shootingData.randomDebuffs.Add((TravelDebuff)10019);
+            GameAPP.config.shootingData.randomDebuffs.Add((TravelDebuff)10027);
+        }
+
+        public static void OnEnable()
+        {
+            Console.WriteLine("on enable");
+        }
+
+        public static void OnDisable()
+        {
+            Console.WriteLine("on disable");
         }
     }
 }

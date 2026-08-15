@@ -41,8 +41,10 @@ namespace MegaSuperGatling.BepInEx
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-            BuffID = CustomCore.RegisterCustomBuff("五阶升级：超级机枪射手系列的攻击力x10，其效果大幅加强", BuffType.AdvancedBuff, 
-                () => Board.Instance.ObjectExist<SuperGatling>() && TravelStore.Instance != null, 15000, PlantType.SuperGatling);
+            //BuffID = CustomCore.RegisterCustomBuff("五阶升级：超级机枪射手系列的攻击力x10，其效果大幅加强", BuffType.AdvancedBuff, 
+            //    () => (Board.Instance.ObjectExist<SuperSnowGatling>() || Board.Instance.ObjectExist<SuperThreeGatling>()) && TravelStore.Instance != null, 15000, PlantType.SuperGatling);
+            BuffID = CustomCore.RegisterCustomBuff("五阶升级：超级机枪射手系列的攻击力x10，其效果大幅加强", BuffType.AdvancedBuff,
+                () => (Board.Instance.ObjectExist<SuperSnowGatling>()) && TravelStore.Instance != null, 15000, PlantType.SuperGatling);
         }
     }
 
@@ -67,9 +69,9 @@ namespace MegaSuperGatling.BepInEx
         public static void PostLoadPlantData()
         {
             if (init) return;
-            AlmanacDataLoader.plantDatas[PlantType.SuperGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级机枪射手的攻击力x10，每次发射会额外散射20发随机豌豆子弹</color>";
-            AlmanacDataLoader.plantDatas[PlantType.SuperSnowGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级寒冰机枪射手的攻击力x10，发射的子弹改为冰锥，子弹命中的首个目标赋予1秒冻结，对冻结或免疫寒冷的僵尸伤害x10</color>";
-            AlmanacDataLoader.plantDatas[PlantType.SuperThreeGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：三线超级机枪射手的攻击力x10，大招效果改为每0.02秒散射9颗伤害为3倍的豌豆</color>";
+            AlmanacDataLoader.plantDatas[PlantType.SuperGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：超级机枪射手的攻击力x10，每次发射有概率额外散射20发随机豌豆子弹</color>";
+            AlmanacDataLoader.plantDatas[PlantType.SuperSnowGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：寒冰超级机枪射手的攻击力x10，将发射冰锥，子弹首次击中目标时赋予1秒冻结，对冻结或者免疫寒冷的目标伤害x10</color>";
+            // AlmanacDataLoader.plantDatas[PlantType.SuperThreeGatling].info += "\n<color=#3D1400>词条1:</color><color=red>五阶升级：三线超级机枪射手的攻击力x10，大招效果改为每0.02秒散射9颗伤害为3倍的豌豆</color>";
             init = true;
         }
     }
@@ -83,7 +85,7 @@ namespace MegaSuperGatling.BepInEx
         {
             if (__instance.thePlantType == PlantType.SuperGatling)
             {
-                if (Lawnf.TravelAdvanced(Core.BuffID) && UnityEngine.Random.Range(1, 101) <= 15)
+                if (Lawnf.TravelAdvanced(Core.BuffID) && UnityEngine.Random.Range(1, 101) <= 30)
                 {
                     __instance.StartCoroutine(StartExtraShoot(__instance));
                 }
@@ -155,7 +157,13 @@ namespace MegaSuperGatling.BepInEx
         [HarmonyPostfix]
         public static void PostStart(Plant __instance)
         {
-            if (Lawnf.TravelAdvanced(Core.BuffID) && (__instance.TryGetComponent<SuperSnowGatling>(out var _) || __instance.TryGetComponent<SuperThreeGatling>(out var _)))
+            //if (Lawnf.TravelAdvanced(Core.BuffID) && (__instance.TryGetComponent<SuperSnowGatling>(out var _) || __instance.TryGetComponent<SuperThreeGatling>(out var _)))
+            //{
+            //    var comp = __instance.AddComponent<DamageAdder>();
+            //    comp.oriDamage = __instance.attackDamage;
+            //    comp.plant = __instance;
+            //}
+            if (Lawnf.TravelAdvanced(Core.BuffID) && (__instance.TryGetComponent<SuperSnowGatling>(out var _)))
             {
                 var comp = __instance.AddComponent<DamageAdder>();
                 comp.oriDamage = __instance.attackDamage;
@@ -173,10 +181,10 @@ namespace MegaSuperGatling.BepInEx
         {
             if (__instance.fromType == PlantType.SuperSnowGatling)
             {
-                __instance.penetrationTimes = 3;
+                __instance.maxHitCount = 3;
                 if (CoreTools.TravelAdvanced("势如破竹"))
-                    __instance.penetrationTimes = 100_0000;
-                if (__instance.hitTimes == 1)
+                    __instance.maxHitCount = int.MaxValue;
+                if (__instance.hitCount == 0)
                     zombie.SetFreeze(1f);
                 zombie.AddfreezeLevel(10);
                 zombie.SetCold(10f);
@@ -197,33 +205,33 @@ namespace MegaSuperGatling.BepInEx
         }
     }
 
-    [HarmonyPatch(typeof(SuperThreeGatling))]
-    public static class SuperThreeGatlingPatch
-    {
-        [HarmonyPatch(nameof(SuperThreeGatling.SuperShoot))]
-        [HarmonyPrefix]
-        public static bool PreSuperShoot(SuperThreeGatling __instance)
-        {
-            if (__instance.thePlantType == PlantType.SuperThreeGatling && Lawnf.TravelAdvanced(Core.BuffID))
-            {
-                var damage = __instance.attackDamage * 3;
-                var hasBuff = CoreTools.TravelUltimate("精准射击");
-                if (hasBuff) damage *= 2;
-                var moveWay = hasBuff ? BulletMoveWay.MoveRight : BulletMoveWay.Free;
-                for (int i = 0; i < 3; i++)
-                {
-                    var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x + UnityEngine.Random.Range(-0.1f, 0.1f),
-                        __instance.shoot.position.y + UnityEngine.Random.Range(-0.1f, 0.1f), __instance.thePlantRow, BulletType.Bullet_pea, moveWay);
-                    bullet.Damage = damage;
-                    if (!hasBuff)
-                        bullet.transform.Rotate(0f, 0f, UnityEngine.Random.Range(-8f, 8f));
-                    bullet.normalSpeed *= 2;
-                }
-                return false;
-            }
-            return true;
-        }
-    }
+    //[HarmonyPatch(typeof(SuperThreeGatling))]
+    //public static class SuperThreeGatlingPatch
+    //{
+    //    [HarmonyPatch(nameof(SuperThreeGatling.SuperShoot))]
+    //    [HarmonyPrefix]
+    //    public static bool PreSuperShoot(SuperThreeGatling __instance)
+    //    {
+    //        if (__instance.thePlantType == PlantType.SuperThreeGatling && Lawnf.TravelAdvanced(Core.BuffID))
+    //        {
+    //            var damage = __instance.attackDamage * 3;
+    //            var hasBuff = CoreTools.TravelUltimate("精准射击");
+    //            if (hasBuff) damage *= 2;
+    //            var moveWay = hasBuff ? BulletMoveWay.MoveRight : BulletMoveWay.Free;
+    //            for (int i = 0; i < 3; i++)
+    //            {
+    //                var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x + UnityEngine.Random.Range(-0.1f, 0.1f),
+    //                    __instance.shoot.position.y + UnityEngine.Random.Range(-0.1f, 0.1f), __instance.thePlantRow, BulletType.Bullet_pea, moveWay);
+    //                bullet.Damage = damage;
+    //                if (!hasBuff)
+    //                    bullet.transform.Rotate(0f, 0f, UnityEngine.Random.Range(-8f, 8f));
+    //                bullet.normalSpeed *= 2;
+    //            }
+    //            return false;
+    //        }
+    //        return true;
+    //    }
+    //}
 
     [HarmonyPatch(typeof(GameAPP))]
     public static class GameAPPPatch
