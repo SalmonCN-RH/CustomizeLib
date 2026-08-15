@@ -228,149 +228,45 @@ namespace UltimateWinterCabbagecannon.BepInEx
             {
                 if (__instance.thePlantType != UltimateWinterCabbagecannon.PlantID)
                     return true;
-                // 创建临时列表存储目标僵尸
-                var targetZombies = new List<Zombie>();
 
-                // 获取棋盘上的所有僵尸
-                var allZombies = __instance.board.zombieArray;
+                var zombies = new List<Zombie>();
 
-                // 遍历所有僵尸，筛选出符合条件的
-                foreach (var zombie in allZombies)
+                foreach (Zombie zombie in __instance.board.zombieArray)
                 {
-                    if (zombie != null)
+                    
+                    if (Math.Abs(zombie.theZombieRow - __instance.thePlantRow) <= 1)
                     {
-                        // 检查僵尸行与植物行的距离是否小于等于1，并且僵尸可以被瞄准
-                        if (Mathf.Abs(zombie.theZombieRow - __instance.thePlantRow) <= 1 && Thrower.ThrowSearchZombie(zombie))
-                        {
-                            // 检查僵尸是否在植物右侧
-                            if (zombie.axis.position.x > __instance.axis.position.x)
-                            {
-                                targetZombies.Add(zombie);
-                            }
-                        }
+                        if (Thrower.ThrowSearchZombie(zombie) && zombie.axis.position.x > __instance.axis.position.x)
+                            zombies.Add(zombie);
                     }
                 }
 
-                // 获取射击点的位置
-                Vector3 shootPos = __instance.shoot.position;
+                var umbrella = __instance.FindUmbrella(__instance.shoot.position);
 
-                // 检查是否有雨伞叶保护植物
-                var plant = __instance.FindUmbrella(shootPos);
-                // 存储射击起始位置
-                float startX = shootPos.x;
-                float startY = shootPos.y;
+                float flightTime = __instance.flightTime;
+                int damage = __instance.attackDamage;
+                var plantType = __instance.thePlantType;
 
-                // 如果有雨伞叶保护
-                if (plant != null)
+                foreach (var zombie in zombies)
                 {
-                    // 再次遍历目标僵尸
-                    foreach (var zombie in targetZombies)
-                    {
-                        // 添加随机偏移
-                        float offsetX = startX + UnityEngine.Random.Range(-0.3f, 0.3f);
-                        float offsetY = startY + UnityEngine.Random.Range(-0.3f, 0.3f);
+                    int row = zombie.theZombieRow;
+                    if (umbrella != null && zombie.axis.position.x > __instance.axis.position.x)
+                        row = umbrella.thePlantRow;
+                    var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x, __instance.shoot.position.y, row,
+                        UltimateWinterCabbagecannon.BulletID, BulletMoveWay.Throw);
 
-                        // 检查僵尸是否在雨伞叶右侧
-                        if (zombie.axis.position.x > plant.axis.position.x)
-                        {
-                            // 计算弹道
-                            Vector2 mouseClickPos = MousePositionDebug.instance.GetMouseClickPosition(0.3f);
-                            float[] trajectory = global::Core.Lawnf.CalculateProjectileWithSpeed(
-                                new Vector2(offsetX, offsetY),
-                                mouseClickPos,
-                                new Vector2(plant.axis.position.x, plant.axis.position.y),
-                                __instance.flightTime
-                            );
+                    if (umbrella != null && zombie.axis.position.x > __instance.axis.position.x)
+                        bullet.ThrowTo(umbrella, new(), __instance.flightTime.GetNullable());
+                    else
+                        bullet.ThrowTo(zombie, new(), flightTime.GetNullable());
+                    bullet.targetZombie = zombie;
 
-                            // 创建子弹
-                            Bullet bullet = CreateBullet.Instance.SetBullet(
-                                offsetX,
-                                offsetY,
-                                __instance.thePlantRow,
-                                UltimateWinterCabbagecannon.BulletID,
-                                BulletMoveWay.Throw,
-                                false
-                            );
-
-                            // 设置子弹轨迹参数
-                            bullet.Vx = trajectory[1];
-                            bullet.Vy = trajectory[2];
-                            bullet.detaVy = -trajectory[3];
-                            bullet.targetPlant = plant;
-                            bullet.Damage = __instance.attackDamage;
-                            bullet.fromType = __instance.thePlantType;
-                        }
-                        else
-                        {
-                            // 直接瞄准僵尸
-                            Vector2 zombieVel = zombie.Velocity;
-                            Vector2 zombiePos = zombie.ColliderPosition;
-
-                            float[] trajectory = global::Core.Lawnf.CalculateProjectileWithSpeed(
-                                new Vector2(offsetX, offsetY),
-                                zombieVel,
-                                zombiePos,
-                                __instance.flightTime
-                            );
-
-                            Bullet bullet = CreateBullet.Instance.SetBullet(
-                                offsetX,
-                                offsetY,
-                                zombie.theZombieRow,
-                                UltimateWinterCabbagecannon.BulletID,
-                                BulletMoveWay.Throw,
-                                false
-                            );
-
-                            bullet.Vx = trajectory[1];
-                            bullet.Vy = trajectory[2];
-                            bullet.detaVy = -trajectory[3];
-                            bullet.targetPlant = plant;
-                            bullet.Damage = __instance.attackDamage;
-                            bullet.fromType = __instance.thePlantType;
-                        }
-                    }
-                }
-                else
-                {
-                    // 没有雨伞叶保护，直接瞄准僵尸
-                    foreach (var zombie in targetZombies)
-                    {
-                        float offsetX = startX + UnityEngine.Random.Range(-0.3f, 0.3f);
-                        float offsetY = startY + UnityEngine.Random.Range(-0.3f, 0.3f);
-
-                        Vector2 zombieVel = zombie.Velocity;
-                        Vector2 zombiePos = zombie.ColliderPosition;
-
-                        float[] trajectory = global::Core.Lawnf.CalculateProjectileWithSpeed(
-                            new Vector2(offsetX, offsetY),
-                            zombieVel,
-                            zombiePos,
-                            __instance.flightTime
-                        );
-
-                        Bullet bullet = CreateBullet.Instance.SetBullet(
-                            offsetX,
-                            offsetY,
-                            zombie.theZombieRow,
-                            UltimateWinterCabbagecannon.BulletID,
-                            BulletMoveWay.Throw,
-                            false
-                        );
-
-                        bullet.Vx = trajectory[1];
-                        bullet.Vy = trajectory[2];
-                        bullet.detaVy = -trajectory[3];
-                        bullet.targetPlant = plant;
-                        bullet.Damage = __instance.attackDamage;
-                        bullet.fromType = __instance.thePlantType;
-                    }
+                    bullet.Damage = damage;
+                    bullet.fromType = plantType;
                 }
                 if (UnityEngine.Random.Range(0, 100) < 5 && __instance.attributeCountdown <= 0f)
                     __instance.anim.SetTrigger("super");
-                // 播放射击音效
-                float pitch = UnityEngine.Random.Range(0.9f, 1.2f);
-                GameAPP.PlaySound(145, 0.5f, pitch);
+                GameAPP.PlaySound(145, 0.5f, UnityEngine.Random.Range(0.9f, 1.2f));
 
                 return false;
             }

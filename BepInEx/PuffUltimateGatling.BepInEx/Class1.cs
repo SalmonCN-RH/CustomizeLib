@@ -255,7 +255,7 @@ namespace PuffUltimateGatling.BepInEx
 
                     // 创建子弹
                     Bullet bullet = CreateBullet.Instance.SetBullet(
-                        bulletX, bulletY, __instance.__4__this.thePlantRow, (BulletType)PuffUltimateGatling.PlantID, BulletMoveWay.Right_free, false);
+                        bulletX, bulletY, __instance.__4__this.thePlantRow, (BulletType)PuffUltimateGatling.PlantID, BulletMoveWay.SuperGatling, false);
 
                     if (bullet != null)
                     {

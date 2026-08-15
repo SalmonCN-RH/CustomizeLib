@@ -19,7 +19,7 @@ namespace SolarSpruce
         }
         public void Start()
         {
-            bullet.penetrationTimes = 2147483647;
+            bullet.maxHitCount = 2147483647;
         }
 
         public Bullet_shulkLeaf_ultimate bullet => gameObject.GetComponent<Bullet_shulkLeaf_ultimate>();
@@ -72,7 +72,7 @@ namespace SolarSpruce
                 y: shootPos.y,
                 theRow: plant.thePlantRow,
                 theBulletType: (BulletType)Bullet_shulkSolarSpruce.BulletID,
-                theMovingWay: BulletMoveWay.Convolute
+                theMovingWay: BulletMoveWay.SmoothTrack
             );
 
             int damage = plant.attackDamage;
@@ -189,7 +189,6 @@ namespace SolarSpruce
                                 theDamageType: DmgType.Shieldless,
                                 theDamage: __instance.Damage
                             );
-                            __instance.hitTimes++;
                         }
                     }
                 }
@@ -199,15 +198,14 @@ namespace SolarSpruce
                         theDamageType: DmgType.Shieldless,
                         theDamage: __instance.Damage
                     );
-                    __instance.hitTimes++;
                 }
 
                 if (zombie != null)
                     __instance.PlaySound(zombie);
 
-                if (__instance.hitTimes >= 15)
+                if (__instance.hitCount >= 15)
                 {
-                    __instance.hitTimes = 0;
+                    __instance.hitCount = 0;
                     // MelonLogger.Msg(Lawnf.TravelUltimate(23));
                     if (Lawnf.TravelUltimate((UltiBuff)23))
                     {
