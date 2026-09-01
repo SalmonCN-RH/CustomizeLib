@@ -4,6 +4,7 @@ using BepInEx.Unity.IL2CPP;
 using Cpp2IL.Core;
 using Cpp2IL.Core.Model.Contexts;
 using Il2CppInterop.Runtime;
+using Il2CppInterop.Runtime.Runtime;
 using LibCpp2IL;
 using LibCpp2IL.Reflection;
 using System.ComponentModel.DataAnnotations;
@@ -33,39 +34,6 @@ namespace CuLibHook.BepInEx
         public override unsafe void Load()
         {
             InitGameInfo();
-            byte[] machineCode = new byte[]
-            {
-                0x8D, 0x04, 0x11, // lea eax, [rcx+rdx]
-                0x41, 0x03, 0xC0, // mov eax, r8d
-                0x41, 0x03, 0xC1, // mov eax, r9d
-                0xC3              // ret
-            };
-            var handle = AsmCore.AllocMemmory(machineCode);
-            Console.WriteLine($"{handle.AddrOfPinnedObject():X}");
-            foreach (var item in AsmCore.FindCodeOf((byte*)handle.AddrOfPinnedObject(), 2, 8, 
-                (arr) => arr[0] == 0x41 && arr[1] == 0x03))
-            {
-                Console.WriteLine($"{item:X}");
-            }
-            handle.Free();
-
-            var klass = Il2CppClassPointerStore<AbyssSwordStar>.NativeClassPtr;
-            var method = IL2CPP.il2cpp_class_get_method_from_name(klass, "Awake", 0);
-            var va = CppCore.GetRuntimeVA(method);
-            var hook = InlineHook.Install(IntPtr.Add(va, 0x53), 15, new byte[]
-            {
-                0x58, // pop rax
-                0x48, 0x83, 0xC4, 0x30, // add rsp, 30h
-                0x5B, // pop rbx
-                0xC3 // ret
-            });
-            //AsmCore.SetAssemblyCode((byte*)va, 0x53, new byte[]
-            //{
-            //    0x48, 0x83, 0xC4, 0x30, // add rsp, 30h
-            //    0x5B, // pop rbx
-            //    0xC3 // ret
-            //});
-            // hook.UnInstall();
         }
 
         private static void InitGameInfo()

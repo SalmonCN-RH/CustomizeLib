@@ -58,142 +58,25 @@ public class Plugin : BasePlugin
 
     public override unsafe void Load()
     {
-        // MyHook.InstallHook();
-        // Console.WriteLine($"get enum {EnumValueReader.ReadEnumValue(typeof(AdvBuff), "EnumValue0")}");
-        Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-        //var dic = new Dictionary<string, object>();
-        //int loop = 500;
-        //for (int i = 0; i < loop; i++)
-        //    dic.Add($"MyCustomValue{i}", 1500 + i);
-        //EnumInjector.InjectEnumValues(typeof(UltiBuff), dic);
-        //Console.WriteLine("inj");
-        //for (int i = 0; i < loop; i++)
-        //{
-        //    var item = Il2CppSystem.Enum.Parse(Il2CppType.From(typeof(UltiBuff)), $"MyCustomValue{i}");
-        //    Console.WriteLine($"{1500 + i} {(int)item.Unbox<UltiBuff>()}");
-        //}
-        //var cnt = Class_GetFieldDefaultValue_HookPatch.cnt;
-        //Console.WriteLine($"{cnt}, {Il2CppSystem.Enum.GetValues(Il2CppType.From(typeof(UltiBuff))).Length}");
-        // var builtin = Il2CppSystem.Enum.Parse(Il2CppType.From(typeof(AdvBuff)), "精兵强将");
-        // Console.WriteLine($"builtin = {(int)builtin.Unbox<AdvBuff>()}");
-        Console.WriteLine("--------------");
-        // GetFieldDefaultValueRedirect.Install();
-        EnumInjector.InjectEnumValues(typeof(AdvBuff), new Dictionary<string, object> { ["MyCustomValue"] = 1500 });
+        var clsPtr = IL2CPP.GetIl2CppClass("Assembly-CSharp.dll", "", "UltimateSpring");
+        IL2CPP.il2cpp_init(clsPtr);
+        var cls = UnityVersionHandler.Wrap((Il2CppClass*)clsPtr);
+        
+        var data = ((VirtualInvokeData*)cls.VTable)[61];
 
-        //var enumPtr = Il2CppClassPointerStore.GetNativeClassPointer(typeof(AdvBuff));
-        //var klass = UnityVersionHandler.Wrap((Il2CppClass*)enumPtr);
-        //Console.WriteLine($"[check] wrapper FieldCount = {klass.FieldCount}");
+        delegate*<IntPtr, IntPtr, IntPtr, bool> myClick = &MyOnClickedMethod;
+        data.methodPtr = (IntPtr)myClick;
+        var method = UnityVersionHandler.Wrap(data.method);
+        method.MethodPointer = method.VirtualMethodPointer = (IntPtr)myClick;
+        data.method = method.MethodInfoPointer;
 
-        // 用 IL2CPP API 真正数一遍（这是循环实际用的计数）
-        //IntPtr iter = IntPtr.Zero, f; int n = 0; IntPtr last = IntPtr.Zero;
-        //while ((f = IL2CPP.il2cpp_class_get_fields(enumPtr, ref iter)) != IntPtr.Zero) { n++; last = f; }
-        //Console.WriteLine($"[check] il2cpp_class_get_fields count = {n}, last = 0x{last.ToInt64():X}");
+        ((VirtualInvokeData*)cls.VTable)[61] = data;
+    }
 
-        // foreach (var k in GetFieldDefaultValueRedirect.DumpKeys())
-            // Console.WriteLine($"[override key] 0x{k.ToInt64():X}");
-        Console.WriteLine((int)Il2CppSystem.Enum.Parse(Il2CppType.From(typeof(AdvBuff)), "MyCustomValue").Unbox<AdvBuff>());
-
-        // 在栈上分配 2 个指针大小的空间，用来存放调用参数
-        IntPtr* ptr = stackalloc IntPtr[2];
-
-        // 第 0 个参数：枚举类型对象指针
-        ptr[0] = IL2CPP.Il2CppObjectBaseToPtr(Il2CppType.From(typeof(AdvBuff)));
-
-        // 第 1 个参数：要解析的字符串值指针
-        ptr[1] = IL2CPP.ManagedStringToIl2Cpp("MyCustomValue");
-
-        // 用于接收原生代码抛出的异常信息
-        IntPtr exception = IntPtr.Zero;
-
-        // 调用 IL2CPP 原生方法（静态方法，实例参数传 0）
-        var methodPtr = (IntPtr)typeof(Il2CppSystem.Enum).GetField("NativeMethodInfoPtr_Parse_Public_Static_Object_Type_String_0", BindingFlags.NonPublic | BindingFlags.Static)!.
-            GetValue(null)!;
-        Console.WriteLine($"{methodPtr == IntPtr.Zero}");
-        IntPtr result = IL2CPP.il2cpp_runtime_invoke(
-            methodPtr,
-            IntPtr.Zero,              // 静态方法，无实例对象
-            (void**)ptr,              // 参数数组指针
-            ref exception
-        );
-
-        // 如果原生代码有异常，此处会抛出对应的托管异常
-        // Il2CppInterop.Runtime.Il2CppException.RaiseExceptionIfNecessary(exception);
-
-        // 如果返回结果不为空，从对象池中获取托管对象包装，否则返回 null
-        Console.WriteLine($"{result}, {(int)Il2CppObjectPool.Get<Il2CppSystem.Object>(result).Unbox<AdvBuff>()}");
-        // now read the integer at rawValuePtr  
-        int value = Marshal.ReadInt32(result);
-        Console.WriteLine($"{result}");
-
-        unsafe
-        {
-            // 1. 验证字段
-            IntPtr field = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<AdvBuff>.NativeClassPtr, "全息制冷"); // 你的字段指针
-            if (field == IntPtr.Zero) return;
-
-            // 2. 获取父类
-            IntPtr parentClass = IL2CPP.il2cpp_field_get_parent(field);
-            if (parentClass == IntPtr.Zero) return;
-
-            // 3. 强制初始化类
-            IL2CPP.il2cpp_runtime_class_init(parentClass);
-
-            // 4. 尝试读取现有值
-            int existing = 0;
-            IL2CPP.il2cpp_field_static_get_value(field, &existing);
-            Console.WriteLine($"Read existing value: {existing}");
-            // 检查字段是否为静态
-            int flags = IL2CPP.il2cpp_field_get_flags(field);
-            bool isStatic = (flags & 0x10) != 0; // 根据 IL2CPP FieldAttributes 定义
-            Console.WriteLine($"{flags:X}");
-            uint offset = IL2CPP.il2cpp_field_get_offset(field);
-            Console.WriteLine($"Offset: 0x{offset:X}");
-            IntPtr staticFieldsPtr = *(IntPtr*)(parentClass + 184);
-            Console.WriteLine($"static_fields address: 0x{staticFieldsPtr:X}");
-            // 5. 写入新值
-            // int newValue = 1501;
-            // IL2CPP.il2cpp_field_static_set_value(field, &newValue);
-        }
-        Console.WriteLine("----------------");
-        ExecuteMachineCodeExample.Main();
-        Console.WriteLine($"cor: {IL2CPP.il2cpp_get_corlib():X}");
-        var clazz = Il2CppClassPointerStore<ActionCard>.NativeClassPtr;
-        // 返回的是 Il2CppMethodInfo*
-        var method = IL2CPP.il2cpp_class_get_method_from_name(clazz, "ClickedEvent", 0);
-        var strc = UnityVersionHandler.Wrap((Il2CppMethodInfo*)(void*)method);
-        Console.WriteLine($"va = 0x{strc.VirtualMethodPointer.ToInt64():X}, methodptr = 0x{strc.MethodPointer.ToInt64():X}," +
-            $"token = {strc.Token:X}, il2cpp api: {IL2CPP.il2cpp_method_get_token(method):X}, method = {method:X}, " +
-            $"name = {Marshal.PtrToStringUTF8(strc.Name)}");
-        foreach (var @byte in MemTools.MemRead(strc.MethodPointer, 64))
-        {
-            Console.WriteLine($"command: 0x{@byte:X}");
-        }
-        using (Process currentProcess = Process.GetCurrentProcess())
-        {
-            // 1. 获取主模块（EXE）的基址
-            IntPtr exeBase = currentProcess.MainModule.BaseAddress;
-            Console.WriteLine($"主模块基址: 0x{exeBase.ToInt64():X}");
-
-            // 2. 遍历所有模块，按名称查找特定 DLL（如 GameAssembly.dll）
-            foreach (ProcessModule module in currentProcess.Modules)
-            {
-                if (module.ModuleName.Equals("GameAssembly.dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    IntPtr dllBase = module.BaseAddress;
-                    Console.WriteLine($"GameAssembly.dll 基址: 0x{dllBase.ToInt64():X}");
-                    break;
-                }
-            }
-        }
-        var asm = Process.GetCurrentProcess().Modules
-            .Cast<ProcessModule>()
-            .FirstOrDefault(m => m.ModuleName == "GameAssembly.dll");
-
-        if (asm == null)
-            throw new Exception("IL2CPP module not found.");
-        Console.WriteLine($"addr {asm.BaseAddress:X}");
-
-        Console.WriteLine($"tool: {GetMethodRVA<AbyssSwordStar>("AbyssSwordStar", "PlantShootUpdate")}");
+    public static bool MyOnClickedMethod(IntPtr @this, IntPtr mouse, IntPtr method)
+    {
+        Console.WriteLine("my click");
+        return true;
     }
 
     public override bool Unload()
@@ -268,7 +151,6 @@ public class Plugin : BasePlugin
                 $"{IL2CPP.il2cpp_method_get_token((IntPtr)info.MethodInfoPointer):X}");
             Console.WriteLine($"{Marshal.PtrToStringUTF8(info.Name)}");
         }
-        Cpp2IL.Core.Cpp2IlApi.DetermineUnityVersion()
         Cpp2IL.Core.Cpp2IlApi.InitializeLibCpp2Il("GameAssembly.dll", "metadata", new());
         Console.WriteLine($"{strc.MethodPointer:X}, {baseAddress:X}, {rva:X}");
         var filter = Il2CppSystem.Reflection.Module.FilterTypeName;

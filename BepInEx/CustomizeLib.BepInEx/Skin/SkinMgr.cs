@@ -27,7 +27,7 @@ namespace CustomizeLib.BepInEx
 
         public static void AddScript(PlantType pt, int index, string script)
         {
-            var asm = ScriptMgr.GetCSharpScript(script);
+            var asm = SkinScript.GetCSharpScript(script);
             if (asm != null)
                 SkinScripts[(pt, index)] = asm;
         }
@@ -36,7 +36,7 @@ namespace CustomizeLib.BepInEx
         {
             if (SkinScripts.TryGetValue((pt, index), out var asm))
             {
-                ScriptMgr.CallMethod(asm, name);
+                SkinScript.CallMethod(asm, name);
             }
         }
     }

@@ -1,13 +1,14 @@
 ﻿using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using CustomizeLib.BepInEx;
-using CustomizeLib.BepInEx.GameExtra;
+using CustomizeLib.BepInEx.Extra.ZombieExtra;
 using CustomizeLib.BepInEx.UnmanagedTools;
 using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppInterop.Runtime.Runtime;
+using System.Reflection;
 using UnityEngine;
 
 namespace UltimateHellThreePeater.BepInEx
@@ -34,7 +35,7 @@ namespace UltimateHellThreePeater.BepInEx
             CustomCore.RegisterCustomParticle(UltimateHellThreePeater.SkinParticleID, ab.GetAsset<GameObject>("FireFreeBlue"));
 
             CustomCore.AddPlantAlmanacStrings(UltimateHellThreePeater.PlantID, $"究极邪火射手",
-                "介绍\n" +
+                "凤凰已堕，黑焰骤起。\n" +
                 "<color=#0000FF>究极浴火射手的特殊形态</color>\n\n" +
                 "<color=#3D1400>使用条件：</color><color=#3D1400>①</color><color=red>种植究极浴火射手有2%概率变异</color>\n" +
                 "<color=#3D1400>②</color><color=red>神秘模式</color>\n" +
@@ -133,8 +134,17 @@ namespace UltimateHellThreePeater.BepInEx
             attackTimer += Time.deltaTime;
             if (attackTimer >= 1f)
             {
-                zombie.TakeDamage((int)(0.005f * zombie.CurrentAllHealth), null, DamageType.NormalAll, UltimateHellThreePeater.PlantID);
-                zombie.TakeDamage((int)(0.005f * zombie.TotalAllHealth), null, DamageType.NormalAll, UltimateHellThreePeater.PlantID);
+                var (health, first, second) = (zombie.theHealth, zombie.theFirstArmorHealth, zombie.theSecondArmorHealth);
+                zombie.TakeDamage((int)(0.005f * zombie.TotalAllHealth), null, DamageType.NormalAll, UltimateHellThreePeater.PlantID, true);
+                var (newHealth, newFirst, newSecond) = (zombie.theHealth, zombie.theFirstArmorHealth, zombie.theSecondArmorHealth);
+                var (calHealth, calFirst, calSecond) = (health - newHealth, first - newFirst, second - newSecond);
+                zombie.theMaxHealth -= calHealth;
+                zombie.theFirstArmorMaxHealth -= calFirst;
+                zombie.theSecondArmorMaxHealth -= calSecond;
+                zombie.theMaxHealth = (long)Mathf.Max(zombie.theMaxHealth, 0);
+                zombie.theFirstArmorMaxHealth = Mathf.Max(zombie.theFirstArmorMaxHealth, 0);
+                zombie.theSecondArmorMaxHealth = Mathf.Max(zombie.theSecondArmorMaxHealth, 0);
+                zombie.UpdateHealthText();
                 attackTimer = 0f;
             }
             ClassTools.Call(IL2CPP.GetIl2CppMethod(BaseType, false, "OnUpdate", ClassTools.Void), Pointer);

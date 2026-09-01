@@ -26,7 +26,7 @@ namespace FireSuperThreeGatling.BepInEx
                     ((int)PlantType.SuperThreeGatling, (int)PlantType.Jalapeno),
                     (1901, (int)PlantType.ThreePeater),
                     ((int)PlantType.SuperGatling, (int)PlantType.DarkThreePeater)
-                }, 1.5f, 0f, 100, 300, 0f, 1000);
+                }, 1.5f, 0f, 30, 300, 7.5f, 1000);
             CustomCore.TypeMgrExtra.IsFirePlant.Add((PlantType)PlantID);
             CustomCore.AddPlantAlmanacStrings(PlantID, $"火焰三线超级机枪射手({PlantID})",
                 "向三行发射火焰豌豆的超级机枪射手。\n\n" +
@@ -42,12 +42,7 @@ namespace FireSuperThreeGatling.BepInEx
 
     public class FireSuperThreeGatling : MonoBehaviour
     {
-
-        public FireSuperThreeGatling() : base(ClassInjector.DerivedConstructorPointer<FireSuperThreeGatling>()) => ClassInjector.DerivedConstructorBody(this);
-
-        public FireSuperThreeGatling(IntPtr i) : base(i)
-        {
-        }
+        public static ID BulletID = BulletType.Bullet_pea_jala;
 
         public void Awake()
         {
@@ -69,7 +64,7 @@ namespace FireSuperThreeGatling.BepInEx
                 if (__instance.shoot == null) return false;
 
                 var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x, __instance.shoot.position.y, __instance.thePlantRow, 
-                    BulletType.Bullet_pea_jala, BulletMoveWay.MoveRight);
+                    FireSuperThreeGatling.BulletID, BulletMoveWay.MoveRight);
 
                 bullet.Damage = __instance.attackDamage;
                 bullet.fromType = __instance.thePlantType;
@@ -101,7 +96,7 @@ namespace FireSuperThreeGatling.BepInEx
             if (__instance != null && (int)__instance.thePlantType == Core.PlantID)
             {
                 var bullet = CreateBullet.Instance.SetBullet(__instance.shoot.position.x, __instance.shoot.position.y,
-                    __instance.thePlantRow, BulletType.Bullet_pea_jala, BulletMoveWay.MoveRight);
+                    __instance.thePlantRow, FireSuperThreeGatling.BulletID, BulletMoveWay.MoveRight);
 
                 if (bullet == null) return false;
 
@@ -118,7 +113,7 @@ namespace FireSuperThreeGatling.BepInEx
         {
             if (__instance != null && (int)__instance.thePlantType == Core.PlantID)
             {
-                var bullet = CreateBullet.Instance.SetBullet(X, Y, row, BulletType.Bullet_pea_jala, BulletMoveWay.Three_down);
+                var bullet = CreateBullet.Instance.SetBullet(X, Y, row, FireSuperThreeGatling.BulletID, BulletMoveWay.MoveRight_threePeater);
 
                 if (bullet == null) return false;
 
@@ -135,7 +130,7 @@ namespace FireSuperThreeGatling.BepInEx
         {
             if (__instance != null && (int)__instance.thePlantType == Core.PlantID)
             {
-                var bullet = CreateBullet.Instance.SetBullet(X, Y, row, BulletType.Bullet_pea_jala, BulletMoveWay.Three_up);
+                var bullet = CreateBullet.Instance.SetBullet(X, Y, row, FireSuperThreeGatling.BulletID, BulletMoveWay.MoveRight_threePeater);
 
                 if (bullet == null) return false;
 
@@ -156,7 +151,7 @@ namespace FireSuperThreeGatling.BepInEx
         {
             if (__instance != null && (int)__instance.thePlantType == Core.PlantID)
             {
-                var bullet = CreateBullet.Instance.SetBullet(x, y, row, BulletType.Bullet_pea_jala, bulletMoveWay, false);
+                var bullet = CreateBullet.Instance.SetBullet(x, y, row, FireSuperThreeGatling.BulletID, bulletMoveWay, false);
                 // 配置子弹属性
                 if (bullet != null)
                 {

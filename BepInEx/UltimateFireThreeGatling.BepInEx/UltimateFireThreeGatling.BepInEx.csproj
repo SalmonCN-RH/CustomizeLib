@@ -8,135 +8,14 @@
   <ItemGroup>
     <None Remove="ashthreegaling" />
     <None Remove="ultimatefiresupergatling" />
+    <None Remove="ultimatefiresupergatling_sp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ashthreegaling" />
     <EmbeddedResource Include="ultimatefiresupergatling" />
+    <EmbeddedResource Include="ultimatefiresupergatling_sp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CustomizeLib.BepInEx\CustomizeLib.BepInEx.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-  </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(BepResPath)&quot;" />
-  <Exec Command="COPY &quot;$(TargetPath)&quot; &quot;$(PluginsPath)&quot;" />
-</Target>
 </Project>

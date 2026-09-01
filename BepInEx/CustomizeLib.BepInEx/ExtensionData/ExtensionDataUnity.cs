@@ -11,6 +11,13 @@ namespace CustomizeLib.BepInEx.ExtensionData.Unity
     #pragma warning disable
     public static class ExtensionDataUnity
     {
+        public static ExtDataRef<T> GetOrInitData<T>(this UnityEngine.Object obj, string name, T defaultValue = default(T))
+        {
+            var data = obj.GetData<T>(name);
+            if (data.val == null) obj.SetData(name, defaultValue);
+            return obj.GetData<T>(name);
+        }
+
         public static ExtDataRef<T> GetData<T>(this UnityEngine.Object obj, string name)
         {
             if (obj is GameObject go) return GetData<T>(go, name);
@@ -18,10 +25,24 @@ namespace CustomizeLib.BepInEx.ExtensionData.Unity
             return null;
         }
 
+        public static ExtDataRef<T> GetOrInitData<T>(this GameObject obj, string name, T defaultValue = default(T))
+        {
+            var data = obj.GetData<T>(name);
+            if (data.val == null) obj.SetData(name, defaultValue);
+            return obj.GetData<T>(name);
+        }
+
         public static ExtDataRef<T> GetData<T>(this GameObject obj, string name)
         {
             var dataComp = obj.GetOrAddComponent<DataComponent>();
             return new ExtDataRef<T>(obj, name);
+        }
+
+        public static ExtDataRef<T> GetOrInitData<T>(this Component obj, string name, T defaultValue = default(T))
+        {
+            var data = obj.GetData<T>(name);
+            if (data.val == null) obj.SetData(name, defaultValue);
+            return obj.GetData<T>(name);
         }
 
         public static ExtDataRef<T> GetData<T>(this Component obj, string name)
@@ -69,8 +90,11 @@ namespace CustomizeLib.BepInEx.ExtensionData.Unity
     {
         public T? val
         {
-            get => (T)(parent.GetOrAddComponent<DataComponent>().GetData(name) == null ? 
-                default(T) : parent.GetOrAddComponent<DataComponent>().GetData(name));
+            get
+            {
+                return (T)((parent.GetOrAddComponent<DataComponent>().GetData(name) == null ?
+                    default(T) : parent.GetOrAddComponent<DataComponent>().GetData(name)));
+            }
             set => parent.GetOrAddComponent<DataComponent>().SetData(name, value);
         }
         public string name = "";

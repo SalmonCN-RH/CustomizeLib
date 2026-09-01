@@ -90,11 +90,5 @@ namespace CustomizeLib.BepInEx.UnmanagedTools
             fixed (byte* p = bytes) Unsafe.Write(p, value);
             return bytes;
         }
-
-        public static unsafe int* ToIntPtr(this IntPtr ptr) => (int*)ptr;
-        public static unsafe T* GetPtr<T>(ref this T self) where T : unmanaged
-        {
-            fixed (T* ptr = &self) return ptr;
-        }
     }
 }

@@ -19,7 +19,6 @@ namespace SeriousSquash4.BepInEx
     [BepInPlugin("salmon.serioussquash4", "SeriousSquash4", "1.0")]
     public class Core : BasePlugin
     {
-        public static ZombieType theNewZombieType = (ZombieType)19000;
         public static LevelType levelType = (LevelType)19000;
         public static int levelID = 19000;
         public static List<ZombieType> zombieList = new()
@@ -28,12 +27,11 @@ namespace SeriousSquash4.BepInEx
             ZombieType.JalaSquashZombie,
             ZombieType.EndoFlameZombie,
             ZombieType.BungiZombie,
-            theNewZombieType
+            ZombieType.SqualourZombie
         };
         public static List<ZombieType> BungiPool = new()
         {
-            ZombieType.SquashZombie,
-            theNewZombieType
+            ZombieType.SquashZombie
         };
         public static KeyCode LevelShowZombieHealth = KeyCode.R;
         public static KeyCode LevelChangeGlove = KeyCode.None;
@@ -74,80 +72,8 @@ namespace SeriousSquash4.BepInEx
 
         public static void InitSeriousSquash4()
         {
-            // 加载梦珞僵尸
-            var ab = GetAssetBundle("squalourzombie");
-            SquashZombie? squashZombie = null;
-            GameObject? zombieSquash = null;
-            foreach (var item in ab.LoadAllAssetsAsync().allAssets)
-            {
-                if (item.TryCast<GameObject>()?.name == "SqualourZombiePrefab")
-                {
-                    GameAPP.resourcesManager.zombiePrefabs[theNewZombieType] = item.TryCast<GameObject>();
-                    var zombie = GameAPP.resourcesManager.zombiePrefabs[theNewZombieType].AddComponent<SquashZombie>();
-                    GameAPP.resourcesManager.allZombieTypes.Add(theNewZombieType);
-                    zombie.gameObject.layer = LayerMask.NameToLayer("Zombie");
-                    zombie.theZombieType = theNewZombieType;
-                    zombie.tag = "Zombie";
-                    // 初始化僵尸属性
-                    var zombieData = new ZombieDataManager.ZombieData
-                    {
-                        theMaxHealth = 1500,
-                        theAttackDamage = 50,
-                        summonWeight = 1000,
-                        cost = 0,
-                        summonLevel = 4
-                    };
-                    zombie.squashHead = GameAPP.resourcesManager.zombiePrefabs[theNewZombieType].transform.FindChild("Zombie_head/SquashPrefab");
-                    squashZombie = zombie;
-                    foreach (var child in global::Core.Lawnf.GetChilds(GameAPP.resourcesManager.zombiePrefabs[theNewZombieType].transform))
-                    {
-                        string tag = "";
-                        switch (child.name)
-                        {
-                            case "Zombie_outerarm_hand":
-                            case "Zombie_outerarm_lower": tag = "ZombieHand"; break;
-                            case "Zombie_outerarm_upper": tag = "ZombieArmUpper"; break;
-                            case "Zombie_head": tag = "ZombieHead"; break;
-                            case "Shadow": tag = "other"; break;
-                            default: continue;
-                        }
-                        child.tag = tag;
-                    }
-                    ZombieDataManager.zombieDataDic[theNewZombieType] = zombieData;
-                    InitZombieList.allowAllzombies.Add(theNewZombieType);
-                }
-                if (item.TryCast<Sprite>()?.name == "SqualourZombiePreview") // 注册预览图
-                    GameAPP.resourcesManager.zombieSprites[theNewZombieType] = item.TryCast<Sprite>();
-                if (item.TryCast<GameObject>()?.name == "Squash") // 注册窝瓜
-                    zombieSquash = item.TryCast<GameObject>();
-            }
-            if (zombieSquash != null)
-                zombieSquash.AddComponent<ZombieSquash>().progress = 1;
-            if (squashZombie != null && zombieSquash != null)
-                squashZombie.squashPrefab = zombieSquash;
-            ClassInjector.RegisterTypeInIl2Cpp<ParentZombie>();
-            ClassInjector.RegisterTypeInIl2Cpp<SquashZombieData>();
             // 关卡
             ClassInjector.RegisterTypeInIl2Cpp<ControlPlant>();
-        }
-
-        public static AssetBundle GetAssetBundle(string name)
-        {
-            try
-            {
-                using Stream stream =
-                    Assembly.GetExecutingAssembly().GetManifestResourceStream(Assembly.GetExecutingAssembly().FullName!.Split(",")[0] + "." + name) ??
-                    Assembly.GetExecutingAssembly().GetManifestResourceStream(name)!;
-                using MemoryStream stream1 = new();
-                stream.CopyTo(stream1);
-                var ab = AssetBundle.LoadFromMemory(stream1.ToArray());
-                ArgumentNullException.ThrowIfNull(ab);
-                return ab;
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException($"Failed to load {name} \n{e}");
-            }
         }
     }
 
@@ -188,16 +114,6 @@ namespace SeriousSquash4.BepInEx
         }
     }
 
-    public class SquashZombieData : MonoBehaviour
-    {
-        public bool summon = false;
-    }
-
-    public class ParentZombie : MonoBehaviour
-    {
-        public Zombie parent = null;
-    }
-
     [HarmonyPatch(typeof(GameAPP))]
     public static class GameAPPPatch
     {
@@ -209,80 +125,6 @@ namespace SeriousSquash4.BepInEx
         }
     }
 
-    #region 珞僵尸
-    [HarmonyPatch(typeof(AlmanacDataLoader))]
-    public static class AlmanacDataLoaderPatch
-    {
-        [HarmonyPatch(nameof(AlmanacDataLoader.LoadZombieData))]
-        [HarmonyPostfix]
-        public static void PostLoadZombieData()
-        {
-            if (AlmanacDataLoader.zombieDatas.ContainsKey(theNewZombieType)) return;
-            var data = new ZombieInfo
-            {
-                name = $"猫瓜僵尸",
-                info =
-                "能压扁身边的植物，召唤窝瓜僵尸！\n\n" +
-                "<color=#3D1400>韧性：</color><color=red>1500</color>\n" +
-                "<color=#3D1400>特点：</color><color=red>会碾压附近的植物并死亡。该方式死亡时始终产生3个窝瓜僵尸，有5%的概率额外生成1个火爆窝瓜僵尸</color>",
-                introduce = "<color=#3D1400>猫瓜僵尸紧盯着树荫下，似乎是等待着什么，这一举动被很多窝瓜僵尸看到眼中。或许她并不知道，那里并没有电子火红莲。</color>",
-                theZombieType = theNewZombieType
-            };
-            AlmanacDataLoader.zombieDatas.Add(theNewZombieType, data);
-        }
-    }
-
-    [HarmonyPatch(typeof(SquashZombie))]
-    public static class SquashZombiePatch
-    {
-        [HarmonyPatch(nameof(SquashZombie.OnTriggerStay2D))]
-        [HarmonyPostfix]
-        public static void PreOnTriggerStay2D(SquashZombie __instance)
-        {
-            if (__instance.theZombieType == theNewZombieType)
-            {
-                if (__instance.squash != null && __instance.squash.progress == 0)
-                {
-                    __instance.squash.progress = 1;
-                    __instance.squash.AddComponent<ParentZombie>().parent = __instance;
-                }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(ZombieSquash))]
-    public static class ZombieSquashPatch
-    {
-        [HarmonyPatch(nameof(ZombieSquash.Update))]
-        [HarmonyPostfix]
-        public static void PostUpdate(ZombieSquash __instance)
-        {
-            if (__instance.GetComponent<ParentZombie>() != null && __instance.GetComponent<ParentZombie>().parent != null && __instance.progress == 4)
-            {
-                var zombie = __instance.GetComponent<ParentZombie>().parent;
-                ParticleManager.Instance.SetParticle(ParticleType.RandomCloud, zombie.axis.position, zombie.theZombieRow);
-                CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
-                CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
-                CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.SquashZombie,
-                    zombie.axis.position.x + UnityEngine.Random.Range(-0.15f, 0.15f), zombie.isMindControlled);
-                if (UnityEngine.Random.Range(0, 20) < 1)
-                    CreateZombie.Instance.SetZombie(zombie.theZombieRow, ZombieType.JalaSquashZombie, zombie.axis.position.x, zombie.isMindControlled);
-
-                if (GameAPP.theBoardType == levelType && GameAPP.theBoardLevel == levelID)
-                {
-                    if (UnityEngine.Random.Range(1, 100) <= (zombie.board.GetComponentsInChildren<ZombieEndoFlame>().Count > 0 ? 50 : 15))
-                    {
-                        Lawnf.SetDroppedCard(zombie.axis.position, PlantType.Squalour);
-                    }
-                }
-
-                __instance.GetComponent<ParentZombie>().parent = null;
-            }
-        }
-    }
-    #endregion
     #region 关卡初始化
     [HarmonyPatch(typeof(UIMgr))]
     public static class UIMgrPatch
@@ -584,7 +426,7 @@ namespace SeriousSquash4.BepInEx
 
         public static Exception Finalizer()
         {
-            return null;
+            return null!;
         }
     }
 
@@ -652,21 +494,6 @@ namespace SeriousSquash4.BepInEx
     [HarmonyPatch(typeof(CreateZombie))]
     public static class CreateZombiePatch
     {
-        [HarmonyPatch(nameof(CreateZombie.SetZombie))]
-        [HarmonyPrefix]
-        public static bool PreSetZombie(ref ZombieType theZombieType)
-        {
-            if (GameAPP.theBoardLevel == levelID && GameAPP.theBoardType == levelType)
-            {
-                if (TypeMgr.UltimateZombie(theZombieType) && theZombieType != theNewZombieType)
-                    return false;
-                //// 僵尸保留
-                //if (UnityEngine.Random.Range(0f, 1f) > LevelZombieSpawn[difficult])
-                //    return false;
-            }
-            return true;
-        }
-
         [HarmonyPatch(nameof(CreateZombie.SetZombie))]
         [HarmonyPostfix]
         public static void PostSetZombie(ref Zombie __result)

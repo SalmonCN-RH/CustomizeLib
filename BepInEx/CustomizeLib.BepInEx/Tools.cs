@@ -358,14 +358,6 @@ namespace CustomizeLib.BepInEx
         public static int TravelUltimateLevel(string name) => Lawnf.TravelUltimateLevel(GetUltiBuffByString(name));
         public static bool TravelDebuff(string name) => Lawnf.TravelDebuff(GetTravelDebuffByString(name));
 
-        public static List<int> Range(int end = 1)
-        {
-            var result = new List<int>();
-            for (int i = 0; i < end; i++)
-                result.Add(i);
-            return result;
-        }
-
         public static GameObject CreateCherryExplodeCustom(Vector2 v, int theRow, CherryBombType bombType = CherryBombType.Normal,
             int damage = 1800, PlantType fromType = PlantType.Nothing, Il2CppSystem.Action<Zombie> action = null, bool immediately = true,
             bool shake = true)

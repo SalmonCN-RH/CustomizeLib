@@ -5,8 +5,11 @@ using CustomizeLib.BepInEx;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
 using GameLevel.RogueShooting;
 using HarmonyLib;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
+using Il2CppInterop.Runtime.Runtime;
 using System.Collections;
+using System.Runtime.InteropServices;
 using TMPro;
 using UI;
 using UnityEngine;
@@ -919,7 +922,7 @@ namespace UltimatePortalSpring.BepInEx
     {
         [HarmonyPatch(nameof(UltimateSpring.OnClicked))]
         [HarmonyPrefix]
-        public static bool PreOnlicked(UltimateSpring __instance, ref Mouse mouse, ref bool __result)
+        public static unsafe bool PreOnlicked(UltimateSpring __instance, ref Mouse mouse, ref bool __result)
         {
             if (__instance.thePlantType == UltimatePortalSpring.PlantID)
             {

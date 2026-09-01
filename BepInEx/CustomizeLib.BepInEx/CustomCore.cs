@@ -5,8 +5,14 @@ using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using Core;
+using CustomizeLib.BepInEx.Ext.SystemExt;
 using CustomizeLib.BepInEx.ExtensionData.Basic;
 using CustomizeLib.BepInEx.ExtensionData.Unity;
+using CustomizeLib.BepInEx.Extra;
+using CustomizeLib.BepInEx.Extra.PlantExtra.IPlantEvent;
+using CustomizeLib.BepInEx.Hook;
+using CustomizeLib.BepInEx.LoadEvent;
+using CustomizeLib.BepInEx.Patch;
 using CustomizeLib.BepInEx.UnmanagedTools;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
@@ -1458,7 +1464,19 @@ namespace CustomizeLib.BepInEx
         /// <param name="isStrongUltimate">是否是强究</param>
         public static void RegisterCustomPlantInfo(PlantType ultiType, PlantType? subType, object buff1, object buff2, bool isStrongUltimate) =>
             CustomPlantInfos.Add(ultiType, (subType, buff1, buff2, isStrongUltimate));
+
+        /// <summary>
+        /// 添加植物名称
+        /// </summary>
+        /// <param name="plantType">植物ID</param>
+        /// <param name="name">名称</param>
         public static void AddPlantName(PlantType plantType, string name) => CustomPlantNames.Add(plantType, name);
+
+        /// <summary>
+        /// 添加僵尸名称
+        /// </summary>
+        /// <param name="zombieType">僵尸ID</param>
+        /// <param name="name">名称</param>
         public static void AddZombieName(ZombieType zombieType, string name) => CustomZombieNames.Add(zombieType, name);
 
         /// <summary>
@@ -1492,25 +1510,35 @@ namespace CustomizeLib.BepInEx
         public static void RegisterCustomEffectType(EffectType effectType, Func<Entity, float, float, object> cons) =>
             CustomEffects.Add(effectType, cons);
 
-        public override void Load()
+        /// <summary>
+        /// 注册自定义子弹过滤器
+        /// </summary>
+        /// <param name="filter">ID</param>
+        /// <param name="func">能否击中</param>
+        /// <param name="igonreTeam">忽略同阵营</param>
+        public static void RegisterCustomBulletHitFilter(BulletHitFilter filter, Func<Zombie, bool> func, bool igonreTeam = true) =>
+            CustomBulletHitFilter.AddErrorIfDup(filter, (igonreTeam, func), $"Duplicate BulletHitFilter ID: {filter}");
+
+        public override unsafe void Load()
         {
             ClassInjector.RegisterTypeInIl2Cpp<CustomPlantMonoBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<SelectCustomPlants>();
             ClassInjector.RegisterTypeInIl2Cpp<CheckCardState>();
             ClassInjector.RegisterTypeInIl2Cpp<ExtensionDataComponent>();
             ClassInjector.RegisterTypeInIl2Cpp<DataComponent>();
-            ClassInjector.RegisterTypeInIl2Cpp<CoreBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<PositionRecorder>();
             ClassInjector.RegisterTypeInIl2Cpp<EmptyDie>();
             ClassInjector.RegisterTypeInIl2Cpp<InterfaceBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<CustomHealthText>();
             ClassInjector.RegisterTypeInIl2Cpp<SaveMaterial>();
-            ClassInjector.RegisterTypeInIl2Cpp<SelectCustomPlants>();
+            ClassInjector.RegisterTypeInIl2Cpp<MouseBehaviour>();
             SkinBehaviourMgr.Init();
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
             InitCoreData();
             MapValue.InitDatas();
-            Internal.HookCall.RegisterTypes();
+            PatchMgr.TravelData.RegisterTypes();
+
+            CoreOnLoad.OnLoad();
         }
 
         public void InitCoreData()
@@ -1777,6 +1805,11 @@ namespace CustomizeLib.BepInEx
         /// 自定义效果
         /// </summary>
         public static Dictionary<EffectType, Func<Entity, float, float, object>> CustomEffects { get; set; } = new();
+
+        /// <summary>
+        /// 自定义子弹击中判定
+        /// </summary>
+        public static Dictionary<BulletHitFilter, (bool igonreTeam, Func<Zombie, bool> func)> CustomBulletHitFilter { get; set; } = new();
         #endregion
     }
 
